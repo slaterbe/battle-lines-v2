@@ -12,9 +12,23 @@ public class GameWorld
 
     public int SpearProduction { get; set; }
 
-    public bool IsPaused { get; set; } = true;
+    public GameState State { get; set; } = GameState.Village;
 
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];
 
     public List<EnemyWaveModel> EnemyWaveList { get; set; } = [];
+
+    public int PlayerTotalHealth { get; set; }
+
+    public int PlayerTotalAttack { get; set; }
+
+    public int CurrentWaveTotalHealth { get; set; }
+
+    public int CurrentWaveTotalAttack { get; set; }
+
+    public bool LastBattleWon { get; set; }
+
+    public bool HasPendingPostBattleResolution { get; set; }
+
+    public int PlayerHealthAtBattleStart { get; set; }
 }

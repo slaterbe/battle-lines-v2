@@ -3,23 +3,36 @@ using BattleLines.ConsoleApp.Services;
 
 namespace BattleLines.ConsoleApp.Tests;
 
-public class GameServiceTests
+public class GameFlowTests
 {
     [Fact]
-    public void CreateGameWorld_StartsPlayerWithOneSpearmenLvl1()
+    public void Create_StartsPlayerWithFiveSpearmenLvl1()
     {
-        var gameService = new GameService();
+        var gameWorldFactory = new GameWorldFactory();
 
-        var gameWorld = gameService.CreateGameWorld();
+        var gameWorld = gameWorldFactory.Create();
 
         Assert.True(gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var count));
-        Assert.Equal(1, count);
+        Assert.Equal(5, count);
     }
 
     [Fact]
-    public void Tick_IncrementsResourcesByProduction_WhenRunning()
+    public void Create_PopulatesAggregatedCombatStats()
     {
-        var gameService = new GameService();
+        var gameWorldFactory = new GameWorldFactory();
+
+        var gameWorld = gameWorldFactory.Create();
+
+        Assert.Equal(70, gameWorld.PlayerTotalHealth);
+        Assert.Equal(25, gameWorld.PlayerTotalAttack);
+        Assert.Equal(24, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(9, gameWorld.CurrentWaveTotalAttack);
+    }
+
+    [Fact]
+    public void Tick_DoesNotIncrementResources_InVillageState()
+    {
+        var preparationService = new PreparationService();
         var gameWorld = new GameWorld
         {
             Commoners = 10,
@@ -28,39 +41,174 @@ public class GameServiceTests
             SpearProduction = 1
         };
 
-        gameService.TogglePause(gameWorld);
-        gameService.Tick(gameWorld);
-
-        Assert.Equal(12, gameWorld.Commoners);
-        Assert.Equal(6, gameWorld.Spears);
-    }
-
-    [Fact]
-    public void Tick_DoesNotIncrementResources_WhenPaused()
-    {
-        var gameService = new GameService();
-        var gameWorld = new GameWorld
-        {
-            Commoners = 10,
-            Spears = 5,
-            CommonerProduction = 2,
-            SpearProduction = 1
-        };
-
-        gameService.Tick(gameWorld);
+        preparationService.Tick(gameWorld);
 
         Assert.Equal(10, gameWorld.Commoners);
         Assert.Equal(5, gameWorld.Spears);
     }
 
     [Fact]
-    public void TogglePause_ChangesPauseState()
+    public void AddSpearman_InVillageState_IncreasesUnitCountAndStats()
     {
-        var gameService = new GameService();
-        var gameWorld = new GameWorld { IsPaused = true };
+        var preparationService = new PreparationService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
 
-        gameService.TogglePause(gameWorld);
+        preparationService.AddSpearman(gameWorld);
 
-        Assert.False(gameWorld.IsPaused);
+        Assert.Equal(6, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(9, gameWorld.Commoners);
+        Assert.Equal(4, gameWorld.Spears);
+        Assert.Equal(84, gameWorld.PlayerTotalHealth);
+        Assert.Equal(30, gameWorld.PlayerTotalAttack);
+    }
+
+    [Fact]
+    public void AddSpearman_DoesNothing_OutsideVillageState()
+    {
+        var preparationService = new PreparationService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.State = GameState.Battle;
+
+        preparationService.AddSpearman(gameWorld);
+
+        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(70, gameWorld.PlayerTotalHealth);
+        Assert.Equal(25, gameWorld.PlayerTotalAttack);
+    }
+
+    [Fact]
+    public void AddSpearman_DoesNothing_WhenPlayerCannotPayCost()
+    {
+        var preparationService = new PreparationService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.Commoners = 0;
+        gameWorld.Spears = 0;
+
+        preparationService.AddSpearman(gameWorld);
+
+        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(0, gameWorld.Commoners);
+        Assert.Equal(0, gameWorld.Spears);
+        Assert.Equal(70, gameWorld.PlayerTotalHealth);
+        Assert.Equal(25, gameWorld.PlayerTotalAttack);
+    }
+
+    [Fact]
+    public void StartBattle_SetsGameStateToPreBattle()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+
+        battleService.StartBattle(gameWorld);
+
+        Assert.Equal(GameState.PreBattle, gameWorld.State);
+    }
+
+    [Fact]
+    public void BeginBattle_SetsGameStateToBattle()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+
+        battleService.StartBattle(gameWorld);
+        battleService.BeginBattle(gameWorld);
+
+        Assert.Equal(GameState.Battle, gameWorld.State);
+        Assert.Equal(70, gameWorld.PlayerHealthAtBattleStart);
+    }
+
+    [Fact]
+    public void ResolveBattleTick_InBattleState_DealsDamageToBothSides()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+
+        battleService.StartBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+
+        Assert.Equal(61, gameWorld.PlayerTotalHealth);
+        Assert.Equal(0, gameWorld.CurrentWaveTotalHealth);
+    }
+
+    [Fact]
+    public void ResolveBattleTick_WhenBattleEnds_MovesToPostBattleStateWithoutAdvancingWave()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.PlayerTotalAttack = 100;
+
+        battleService.StartBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+
+        Assert.Equal(GameState.PostBattle, gameWorld.State);
+        Assert.True(gameWorld.LastBattleWon);
+        Assert.True(gameWorld.HasPendingPostBattleResolution);
+        Assert.Equal(5, gameWorld.EnemyWaveList.Count);
+        Assert.Equal(0, gameWorld.CurrentWaveTotalHealth);
+    }
+
+    [Fact]
+    public void ExitBattleScreen_AppliesRewardAndAdvancesToNextWave()
+    {
+        var battleService = new BattleService();
+        var postBattleService = new PostBattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.PlayerTotalAttack = 100;
+
+        battleService.StartBattle(gameWorld);
+        battleService.BeginBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+        postBattleService.ExitBattleScreen(gameWorld);
+
+        Assert.Equal(GameState.Village, gameWorld.State);
+        Assert.Equal(4, gameWorld.EnemyWaveList.Count);
+        Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(10, gameWorld.Spears);
+        Assert.Equal(0, gameWorld.PlayerTotalHealth);
+        Assert.Equal(0, gameWorld.PlayerTotalAttack);
+        Assert.Equal(40, gameWorld.CurrentWaveTotalHealth);
+        Assert.False(gameWorld.HasPendingPostBattleResolution);
+    }
+
+    [Fact]
+    public void ExitBattleScreen_DoesNothing_IfBattleScreenIsStillActive()
+    {
+        var postBattleService = new PostBattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+
+        postBattleService.ExitBattleScreen(gameWorld);
+
+        Assert.Equal(GameState.Village, gameWorld.State);
+        Assert.Equal(5, gameWorld.EnemyWaveList.Count);
+    }
+
+    [Fact]
+    public void ExitBattleScreen_RunsOnlyOnceAfterBattle()
+    {
+        var battleService = new BattleService();
+        var postBattleService = new PostBattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.PlayerTotalAttack = 100;
+
+        battleService.StartBattle(gameWorld);
+        battleService.BeginBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+        postBattleService.ExitBattleScreen(gameWorld);
+        postBattleService.ExitBattleScreen(gameWorld);
+
+        Assert.Equal(10, gameWorld.Spears);
+        Assert.Equal(4, gameWorld.EnemyWaveList.Count);
+        Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 }

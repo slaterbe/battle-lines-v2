@@ -5,34 +5,46 @@ namespace BattleLines.ConsoleApp.Services;
 
 public class RenderService
 {
-    public void Render(GameWorld gameWorld)
+    public void Render(GameWorld gameWorld, IReadOnlyList<string> commandOptions, int selectedCommandIndex)
     {
         Console.Clear();
         Console.SetCursorPosition(0, 0);
 
         WriteLineWithColor("Battle Lines", ConsoleColor.White);
         WriteLineWithColor(
-            $"Commoners: {gameWorld.Commoners} (+{gameWorld.CommonerProduction}/tick)    Spears: {gameWorld.Spears} (+{gameWorld.SpearProduction}/tick)    State: {(gameWorld.IsPaused ? "Paused" : "Running")}        ");
+            $"Commoners: {gameWorld.Commoners}    Spears: {gameWorld.Spears}    Gold: {gameWorld.Gold}    State: {gameWorld.State}        ");
         WriteLineWithColor(new string('=', 80));
 
-        if (gameWorld.IsPaused)
+        if (gameWorld.State == GameState.Battle)
         {
-            WriteLineWithColor("Production is paused. Press P to resume.                ", ConsoleColor.Yellow);
+            WriteLineWithColor("Battle is active. Both sides deal damage each tick.     ", ConsoleColor.Yellow);
+        }
+        else if (gameWorld.State == GameState.PreBattle)
+        {
+            WriteLineWithColor("Pre-battle is active. Review your army and begin combat.", ConsoleColor.Yellow);
+        }
+        else if (gameWorld.State == GameState.PostBattle)
+        {
+            var resultText = gameWorld.LastBattleWon
+                ? "Battle ended. Claim your reward and continue.          "
+                : "Battle ended. Continue to the next wave.               ";
+            WriteLineWithColor(resultText, ConsoleColor.Yellow);
         }
         else
         {
-            WriteLineWithColor("Production is active. Resources increase each tick.     ", ConsoleColor.Green);
+            WriteLineWithColor("Village is active. Resources only change from rewards.  ", ConsoleColor.Green);
         }
 
         Console.WriteLine();
         WriteLineWithColor("Current Wave", ConsoleColor.Red);
-        WriteLineWithColor(RenderCurrentWave(gameWorld), ConsoleColor.Red);
+        RenderCurrentWave(gameWorld);
         Console.WriteLine();
         Console.WriteLine();
         WriteLineWithColor("Player Units", ConsoleColor.Blue);
         WriteLineWithColor(RenderPlayerUnits(gameWorld), ConsoleColor.Blue);
         Console.WriteLine();
-        WriteLineWithColor("Controls: [P] Pause/Resume  [Q] Quit");
+        WriteLineWithColor("Commands");
+        RenderCommandOptions(commandOptions, selectedCommandIndex);
     }
 
     private static void WriteLineWithColor(string text, ConsoleColor color = ConsoleColor.Gray)
@@ -57,26 +69,44 @@ public class RenderService
             builder.AppendLine($"{playerUnit.Key}: {playerUnit.Value}");
         }
 
+        builder.AppendLine($"Total Health: {gameWorld.PlayerTotalHealth}");
+        builder.AppendLine($"Total Attack: {gameWorld.PlayerTotalAttack}");
+
         return builder.ToString().TrimEnd();
     }
 
-    private static string RenderCurrentWave(GameWorld gameWorld)
+    private static void RenderCurrentWave(GameWorld gameWorld)
     {
         if (gameWorld.EnemyWaveList.Count == 0)
         {
-            return "No enemy waves queued.";
+            WriteLineWithColor("No enemy waves queued.", ConsoleColor.Red);
+            return;
         }
 
         var currentWave = gameWorld.EnemyWaveList[0];
-        var builder = new StringBuilder();
 
         foreach (var enemy in currentWave.Enemies)
         {
-            builder.AppendLine($"{enemy.EnemyType}: {enemy.Count}");
+            WriteLineWithColor($"{enemy.EnemyType}: {enemy.Count}", ConsoleColor.Red);
         }
 
-        builder.Append($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}");
+        WriteLineWithColor($"Total Health: {gameWorld.CurrentWaveTotalHealth}", ConsoleColor.Red);
+        WriteLineWithColor($"Total Attack: {gameWorld.CurrentWaveTotalAttack}", ConsoleColor.Red);
+        WriteLineWithColor($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
+    }
 
-        return builder.ToString();
+    private static void RenderCommandOptions(IReadOnlyList<string> commandOptions, int selectedCommandIndex)
+    {
+        for (var optionIndex = 0; optionIndex < commandOptions.Count; optionIndex++)
+        {
+            var isSelected = optionIndex == selectedCommandIndex;
+            var prefix = isSelected ? "> " : "  ";
+            var color = isSelected ? ConsoleColor.Yellow : ConsoleColor.Gray;
+
+            WriteLineWithColor($"{prefix}{commandOptions[optionIndex]}", color);
+        }
+
+        Console.WriteLine();
+        WriteLineWithColor("Use arrow keys to change selection and Enter to confirm.");
     }
 }
