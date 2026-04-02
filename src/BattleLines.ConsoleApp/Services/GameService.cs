@@ -4,6 +4,8 @@ namespace BattleLines.ConsoleApp.Services;
 
 public class GameService
 {
+    private readonly EnemyWaveFactory enemyWaveFactory = new();
+
     public GameWorld CreateGameWorld()
     {
         return new GameWorld
@@ -12,7 +14,12 @@ public class GameService
             Spears = 5,
             CommonerProduction = 2,
             SpearProduction = 1,
-            IsPaused = true
+            IsPaused = true,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.SpearmenLvl1] = 1
+            },
+            EnemyWaveList = enemyWaveFactory.CreateGiantRatWaves(5)
         };
     }
 

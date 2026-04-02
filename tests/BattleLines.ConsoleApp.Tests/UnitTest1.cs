@@ -6,6 +6,17 @@ namespace BattleLines.ConsoleApp.Tests;
 public class GameServiceTests
 {
     [Fact]
+    public void CreateGameWorld_StartsPlayerWithOneSpearmenLvl1()
+    {
+        var gameService = new GameService();
+
+        var gameWorld = gameService.CreateGameWorld();
+
+        Assert.True(gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var count));
+        Assert.Equal(1, count);
+    }
+
+    [Fact]
     public void Tick_IncrementsResourcesByProduction_WhenRunning()
     {
         var gameService = new GameService();
