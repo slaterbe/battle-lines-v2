@@ -1,3 +1,4 @@
+using BattleLines.ConsoleApp.Controllers;
 using BattleLines.ConsoleApp.Services;
 
 namespace BattleLines.ConsoleApp;
@@ -11,12 +12,18 @@ public static class Program
         var battleService = new BattleService();
         var postBattleService = new PostBattleService();
         var preparationService = new PreparationService();
+        var controllerFactory = new GameStateControllerFactory(
+            new VillageController(preparationService, battleService),
+            new PreWaveController(battleService, preparationService),
+            new WaveController(battleService),
+            new PostBattleController(postBattleService));
         var gameWorldFactory = new GameWorldFactory();
         var renderService = new RenderService();
         var gameWorld = gameWorldFactory.Create();
         var nextTickAt = DateTime.UtcNow.Add(TickRate);
         var shouldExit = false;
         var selectedCommandIndex = 0;
+        var previousGameState = gameWorld.State;
 
         Console.CursorVisible = false;
 
@@ -27,7 +34,8 @@ public static class Program
                 while (Console.KeyAvailable)
                 {
                     var key = Console.ReadKey(intercept: true).Key;
-                    var availableCommands = GetCommandOptions(gameWorld);
+                    var activeController = controllerFactory.GetController(gameWorld.State);
+                    var availableCommands = activeController.GetCommandOptions();
 
                     switch (key)
                     {
@@ -40,20 +48,36 @@ public static class Program
                             selectedCommandIndex = GetNextCommandIndex(selectedCommandIndex, availableCommands.Count);
                             break;
                         case ConsoleKey.Enter:
-                            shouldExit = ExecuteSelectedCommand(preparationService, battleService, postBattleService, gameWorld, selectedCommandIndex);
+                            shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
                             break;
                     }
+                }
+
+                if (gameWorld.State != previousGameState)
+                {
+                    selectedCommandIndex = 0;
+                    previousGameState = gameWorld.State;
                 }
 
                 var now = DateTime.UtcNow;
                 if (now >= nextTickAt)
                 {
-                    TickGameState(preparationService, battleService, gameWorld);
+                    controllerFactory.GetController(gameWorld.State).Tick(gameWorld);
                     nextTickAt = now.Add(TickRate);
                 }
 
-                var commandOptions = GetCommandOptions(gameWorld);
-                if (selectedCommandIndex >= commandOptions.Count)
+                if (gameWorld.State != previousGameState)
+                {
+                    selectedCommandIndex = 0;
+                    previousGameState = gameWorld.State;
+                }
+
+                var commandOptions = controllerFactory.GetController(gameWorld.State).GetCommandOptions();
+                if (commandOptions.Count == 0)
+                {
+                    selectedCommandIndex = 0;
+                }
+                else if (selectedCommandIndex >= commandOptions.Count)
                 {
                     selectedCommandIndex = commandOptions.Count - 1;
                 }
@@ -69,99 +93,23 @@ public static class Program
         }
     }
 
-    private static IReadOnlyList<string> GetCommandOptions(Models.GameWorld gameWorld)
-    {
-        if (gameWorld.State == Models.GameState.Battle)
-        {
-            return ["Quit"];
-        }
-
-        if (gameWorld.State == Models.GameState.PreBattle)
-        {
-            return ["Begin Battle", "Back to Village", "Quit"];
-        }
-
-        if (gameWorld.State == Models.GameState.PostBattle)
-        {
-            return ["Continue", "Quit"];
-        }
-
-        return ["Add Spearman", "Start Battle", "Quit"];
-    }
-
     private static int GetNextCommandIndex(int selectedCommandIndex, int optionCount)
     {
+        if (optionCount == 0)
+        {
+            return 0;
+        }
+
         return (selectedCommandIndex + 1) % optionCount;
     }
 
     private static int GetPreviousCommandIndex(int selectedCommandIndex, int optionCount)
     {
+        if (optionCount == 0)
+        {
+            return 0;
+        }
+
         return (selectedCommandIndex - 1 + optionCount) % optionCount;
-    }
-
-    private static bool ExecuteSelectedCommand(PreparationService preparationService, BattleService battleService, PostBattleService postBattleService, Models.GameWorld gameWorld, int selectedCommandIndex)
-    {
-        if (gameWorld.State == Models.GameState.Battle)
-        {
-            return selectedCommandIndex == 0;
-        }
-
-        if (gameWorld.State == Models.GameState.PreBattle)
-        {
-            switch (selectedCommandIndex)
-            {
-                case 0:
-                    battleService.BeginBattle(gameWorld);
-                    return false;
-                case 1:
-                    gameWorld.State = Models.GameState.Village;
-                    return false;
-                case 2:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        if (gameWorld.State == Models.GameState.PostBattle)
-        {
-            switch (selectedCommandIndex)
-            {
-                case 0:
-                    postBattleService.ExitBattleScreen(gameWorld);
-                    return false;
-                case 1:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        switch (selectedCommandIndex)
-        {
-            case 0:
-                preparationService.AddSpearman(gameWorld);
-                return false;
-            case 1:
-                battleService.StartBattle(gameWorld);
-                return false;
-            case 2:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private static void TickGameState(PreparationService preparationService, BattleService battleService, Models.GameWorld gameWorld)
-    {
-        switch (gameWorld.State)
-        {
-            case Models.GameState.Village:
-                preparationService.Tick(gameWorld);
-                break;
-            case Models.GameState.Battle:
-                battleService.ResolveBattleTick(gameWorld);
-                break;
-        }
     }
 }

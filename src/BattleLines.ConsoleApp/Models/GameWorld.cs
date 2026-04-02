@@ -18,6 +18,8 @@ public class GameWorld
 
     public List<EnemyWaveModel> EnemyWaveList { get; set; } = [];
 
+    public int TotalWaveCount { get; set; }
+
     public int PlayerTotalHealth { get; set; }
 
     public int PlayerTotalAttack { get; set; }

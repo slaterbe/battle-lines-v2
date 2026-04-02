@@ -9,6 +9,7 @@ public class GameWorldFactory
 
     public GameWorld Create()
     {
+        var enemyWaves = enemyWaveFactory.CreateGiantRatWaves(5);
         var gameWorld = new GameWorld
         {
             Commoners = 10,
@@ -20,7 +21,8 @@ public class GameWorldFactory
             {
                 [UnitType.SpearmenLvl1] = 5
             },
-            EnemyWaveList = enemyWaveFactory.CreateGiantRatWaves(5)
+            EnemyWaveList = enemyWaves,
+            TotalWaveCount = enemyWaves.Count
         };
 
         gameWorldStatsService.Refresh(gameWorld);

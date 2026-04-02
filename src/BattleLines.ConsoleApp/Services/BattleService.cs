@@ -22,7 +22,6 @@ public class BattleService
         }
 
         gameWorld.PlayerHealthAtBattleStart = gameWorld.PlayerTotalHealth;
-        gameWorld.State = GameState.Battle;
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
     }

@@ -170,10 +170,10 @@ public class GameFlowTests
 
         Assert.Equal(GameState.Village, gameWorld.State);
         Assert.Equal(4, gameWorld.EnemyWaveList.Count);
-        Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(10, gameWorld.Spears);
-        Assert.Equal(0, gameWorld.PlayerTotalHealth);
-        Assert.Equal(0, gameWorld.PlayerTotalAttack);
+        Assert.Equal(70, gameWorld.PlayerTotalHealth);
+        Assert.Equal(25, gameWorld.PlayerTotalAttack);
         Assert.Equal(40, gameWorld.CurrentWaveTotalHealth);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
@@ -208,7 +208,23 @@ public class GameFlowTests
 
         Assert.Equal(10, gameWorld.Spears);
         Assert.Equal(4, gameWorld.EnemyWaveList.Count);
-        Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
+    }
+
+    [Fact]
+    public void ExitBattleScreen_ReducesSpearmenByWholeUnitsLostFromHealthLost()
+    {
+        var postBattleService = new PostBattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.State = GameState.PostBattle;
+        gameWorld.HasPendingPostBattleResolution = true;
+        gameWorld.PlayerHealthAtBattleStart = 70;
+        gameWorld.PlayerTotalHealth = 42;
+
+        postBattleService.ExitBattleScreen(gameWorld);
+
+        Assert.Equal(3, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
     }
 }

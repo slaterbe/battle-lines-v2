@@ -13,7 +13,7 @@ public class PreparationService
 
     public void AddSpearman(GameWorld gameWorld)
     {
-        if (gameWorld.State != GameState.Village)
+        if (gameWorld.State != GameState.Village && gameWorld.State != GameState.PreBattle)
         {
             return;
         }

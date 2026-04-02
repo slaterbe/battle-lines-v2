@@ -32,11 +32,12 @@ public class RenderService
         }
         else
         {
-            WriteLineWithColor("Village is active. Resources only change from rewards.  ", ConsoleColor.Green);
+            WriteLineWithColor("Village: Choose upgrades or start a battle", ConsoleColor.Green);
         }
 
         Console.WriteLine();
         WriteLineWithColor("Current Wave", ConsoleColor.Red);
+        RenderWaveProgress(gameWorld);
         RenderCurrentWave(gameWorld);
         Console.WriteLine();
         Console.WriteLine();
@@ -93,6 +94,24 @@ public class RenderService
         WriteLineWithColor($"Total Health: {gameWorld.CurrentWaveTotalHealth}", ConsoleColor.Red);
         WriteLineWithColor($"Total Attack: {gameWorld.CurrentWaveTotalAttack}", ConsoleColor.Red);
         WriteLineWithColor($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
+    }
+
+    private static void RenderWaveProgress(GameWorld gameWorld)
+    {
+        var totalWaveCount = Math.Max(0, gameWorld.TotalWaveCount);
+        var remainingWaveCount = Math.Max(0, gameWorld.EnemyWaveList.Count);
+        var defeatedWaveCount = Math.Max(0, totalWaveCount - remainingWaveCount);
+        const int progressBarWidth = 20;
+
+        var filledSegments = totalWaveCount == 0
+            ? 0
+            : (int)Math.Round((double)defeatedWaveCount / totalWaveCount * progressBarWidth, MidpointRounding.AwayFromZero);
+        filledSegments = Math.Clamp(filledSegments, 0, progressBarWidth);
+
+        var progressBar = $"[{new string('#', filledSegments)}{new string('-', progressBarWidth - filledSegments)}]";
+        WriteLineWithColor(
+            $"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated, {remainingWaveCount} remaining",
+            ConsoleColor.Cyan);
     }
 
     private static void RenderCommandOptions(IReadOnlyList<string> commandOptions, int selectedCommandIndex)

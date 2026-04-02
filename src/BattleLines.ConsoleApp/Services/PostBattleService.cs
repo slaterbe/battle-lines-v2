@@ -40,8 +40,14 @@ public class PostBattleService
             return;
         }
 
+        if (!UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel) || spearmanModel.Health <= 0)
+        {
+            return;
+        }
+
         gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmenCount);
-        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = Math.Max(0, spearmenCount - healthLost);
+        var spearmenLost = healthLost / spearmanModel.Health;
+        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = Math.Max(0, spearmenCount - spearmenLost);
     }
 
     private static void ApplyWaveReward(GameWorld gameWorld)
