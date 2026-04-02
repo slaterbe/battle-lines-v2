@@ -20,6 +20,8 @@ public class GameWorld
 
     public int TotalWaveCount { get; set; }
 
+    public int MaxSpearmenPositions { get; set; }
+
     public int PlayerTotalHealth { get; set; }
 
     public int PlayerTotalAttack { get; set; }
@@ -33,4 +35,8 @@ public class GameWorld
     public bool HasPendingPostBattleResolution { get; set; }
 
     public int PlayerHealthAtBattleStart { get; set; }
+
+    public List<int> PlayerHealthHistory { get; set; } = [];
+
+    public List<int> EnemyHealthHistory { get; set; } = [];
 }

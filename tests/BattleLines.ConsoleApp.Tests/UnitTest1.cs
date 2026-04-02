@@ -48,19 +48,12 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void AddSpearman_InVillageState_IncreasesUnitCountAndStats()
+    public void Create_StartsWithSevenSpearmenPositions()
     {
-        var preparationService = new PreparationService();
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
 
-        preparationService.AddSpearman(gameWorld);
-
-        Assert.Equal(6, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
-        Assert.Equal(9, gameWorld.Commoners);
-        Assert.Equal(4, gameWorld.Spears);
-        Assert.Equal(84, gameWorld.PlayerTotalHealth);
-        Assert.Equal(30, gameWorld.PlayerTotalAttack);
+        Assert.Equal(7, gameWorld.MaxSpearmenPositions);
     }
 
     [Fact]
@@ -94,6 +87,24 @@ public class GameFlowTests
         Assert.Equal(0, gameWorld.Spears);
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
         Assert.Equal(25, gameWorld.PlayerTotalAttack);
+    }
+
+    [Fact]
+    public void AddSpearman_DoesNothing_WhenSpearmenPositionsAreFull()
+    {
+        var preparationService = new PreparationService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxSpearmenPositions;
+        gameWorld.Commoners = 10;
+        gameWorld.Spears = 10;
+        new GameWorldStatsService().Refresh(gameWorld);
+
+        preparationService.AddSpearman(gameWorld);
+
+        Assert.Equal(gameWorld.MaxSpearmenPositions, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(10, gameWorld.Commoners);
+        Assert.Equal(10, gameWorld.Spears);
     }
 
     [Fact]

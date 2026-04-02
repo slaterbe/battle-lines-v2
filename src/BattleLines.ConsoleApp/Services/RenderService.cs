@@ -36,12 +36,13 @@ public class RenderService
         }
 
         Console.WriteLine();
-        WriteLineWithColor("Current Wave", ConsoleColor.Red);
         RenderWaveProgress(gameWorld);
+        RenderWaveReward(gameWorld);
+        Console.WriteLine();
         RenderCurrentWave(gameWorld);
         Console.WriteLine();
         Console.WriteLine();
-        WriteLineWithColor("Player Units", ConsoleColor.Blue);
+        Console.WriteLine();
         WriteLineWithColor(RenderPlayerUnits(gameWorld), ConsoleColor.Blue);
         Console.WriteLine();
         WriteLineWithColor("Commands");
@@ -67,10 +68,10 @@ public class RenderService
 
         foreach (var playerUnit in gameWorld.PlayerUnits)
         {
-            builder.AppendLine($"{playerUnit.Key}: {playerUnit.Value}");
+            builder.AppendLine($"{playerUnit.Key}: {RenderUnitCount(gameWorld, playerUnit.Key, playerUnit.Value)}");
         }
 
-        builder.AppendLine($"Total Health: {gameWorld.PlayerTotalHealth}");
+        builder.AppendLine($"Total Health: {RenderPlayerHealth(gameWorld)}");
         builder.AppendLine($"Total Attack: {gameWorld.PlayerTotalAttack}");
 
         return builder.ToString().TrimEnd();
@@ -88,12 +89,11 @@ public class RenderService
 
         foreach (var enemy in currentWave.Enemies)
         {
-            WriteLineWithColor($"{enemy.EnemyType}: {enemy.Count}", ConsoleColor.Red);
+            WriteLineWithColor($"{enemy.EnemyType}: {RenderUnitCount(gameWorld, enemy.EnemyType, enemy.Count)}", ConsoleColor.Red);
         }
 
-        WriteLineWithColor($"Total Health: {gameWorld.CurrentWaveTotalHealth}", ConsoleColor.Red);
+        WriteLineWithColor($"Total Health: {RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
         WriteLineWithColor($"Total Attack: {gameWorld.CurrentWaveTotalAttack}", ConsoleColor.Red);
-        WriteLineWithColor($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
     }
 
     private static void RenderWaveProgress(GameWorld gameWorld)
@@ -112,6 +112,57 @@ public class RenderService
         WriteLineWithColor(
             $"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated, {remainingWaveCount} remaining",
             ConsoleColor.Cyan);
+    }
+
+    private static void RenderWaveReward(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyWaveList.Count == 0)
+        {
+            return;
+        }
+
+        var currentWave = gameWorld.EnemyWaveList[0];
+        WriteLineWithColor($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
+    }
+
+    private static string RenderPlayerHealth(GameWorld gameWorld)
+    {
+        if (gameWorld.PlayerHealthHistory.Count == 0)
+        {
+            return gameWorld.PlayerTotalHealth.ToString();
+        }
+
+        var history = gameWorld.PlayerHealthHistory.Select(health => health.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.PlayerTotalHealth}";
+    }
+
+    private static string RenderEnemyHealth(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyHealthHistory.Count == 0)
+        {
+            return gameWorld.CurrentWaveTotalHealth.ToString();
+        }
+
+        var history = gameWorld.EnemyHealthHistory.Select(health => health.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalHealth}";
+    }
+
+    private static string RenderUnitCount(GameWorld gameWorld, UnitType unitType, int count)
+    {
+        return unitType switch
+        {
+            UnitType.SpearmenLvl1 => RenderSpearmenPositions(gameWorld.MaxSpearmenPositions, count),
+            UnitType.GiantRat => new string('|', Math.Max(0, count)),
+            _ => count.ToString()
+        };
+    }
+
+    private static string RenderSpearmenPositions(int maxSpearmenPositions, int count)
+    {
+        var clampedMaxPositions = Math.Max(0, maxSpearmenPositions);
+        var filledPositions = Math.Clamp(count, 0, clampedMaxPositions);
+        var emptyPositions = clampedMaxPositions - filledPositions;
+        return $"{new string('|', filledPositions)}{new string('O', emptyPositions)}";
     }
 
     private static void RenderCommandOptions(IReadOnlyList<string> commandOptions, int selectedCommandIndex)

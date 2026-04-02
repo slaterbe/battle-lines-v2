@@ -30,6 +30,8 @@ public class PostBattleService
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.State = GameState.Village;
         gameWorldStatsService.Refresh(gameWorld);
+        gameWorld.PlayerHealthHistory.Clear();
+        gameWorld.EnemyHealthHistory.Clear();
     }
 
     private static void ApplyPlayerBattleLosses(GameWorld gameWorld)

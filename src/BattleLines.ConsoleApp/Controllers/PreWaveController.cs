@@ -24,11 +24,10 @@ public class PreWaveController : IGameStateController
         switch (selectedCommandIndex)
         {
             case 0:
-                preparationService.AddSpearman(gameWorld);
+                battleService.BeginBattle(gameWorld);
                 return false;
             case 1:
-                battleService.BeginBattle(gameWorld);
-                gameWorld.State = GameState.Battle;
+                preparationService.AddSpearman(gameWorld);
                 return false;
             case 2:
                 gameWorld.State = GameState.Village;
@@ -44,6 +43,6 @@ public class PreWaveController : IGameStateController
 
     private static IReadOnlyList<string> BuildCommandOptions()
     {
-        return ["Add to Spearmen", "Fight Wave", "Back to Village"];
+        return ["Fight Wave", "Add to Spearmen", "Back to Village"];
     }
 }

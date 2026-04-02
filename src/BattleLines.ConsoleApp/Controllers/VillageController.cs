@@ -40,6 +40,6 @@ public class VillageController : IGameStateController
 
     private static IReadOnlyList<string> BuildCommandOptions()
     {
-        return ["Start Battle", "Quit"];
+        return ["Start Battle"];
     }
 }

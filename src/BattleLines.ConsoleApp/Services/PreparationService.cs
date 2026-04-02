@@ -23,9 +23,14 @@ public class PreparationService
             return;
         }
 
+        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var currentCount);
+        if (currentCount >= gameWorld.MaxSpearmenPositions)
+        {
+            return;
+        }
+
         gameWorld.Commoners -= 1;
         gameWorld.Spears -= 1;
-        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var currentCount);
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = currentCount + 1;
         gameWorldStatsService.Refresh(gameWorld);
     }

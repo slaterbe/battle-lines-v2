@@ -22,7 +22,8 @@ public class GameWorldFactory
                 [UnitType.SpearmenLvl1] = 5
             },
             EnemyWaveList = enemyWaves,
-            TotalWaveCount = enemyWaves.Count
+            TotalWaveCount = enemyWaves.Count,
+            MaxSpearmenPositions = 7
         };
 
         gameWorldStatsService.Refresh(gameWorld);

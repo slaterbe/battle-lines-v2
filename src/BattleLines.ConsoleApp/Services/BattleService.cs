@@ -22,14 +22,28 @@ public class BattleService
         }
 
         gameWorld.PlayerHealthAtBattleStart = gameWorld.PlayerTotalHealth;
+        gameWorld.PlayerHealthHistory.Clear();
+        gameWorld.EnemyHealthHistory.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
+        gameWorld.State = GameState.Battle;
     }
 
     public void ResolveBattleTick(GameWorld gameWorld)
     {
+        var previousEnemyHealth = gameWorld.CurrentWaveTotalHealth;
+        var previousPlayerHealth = gameWorld.PlayerTotalHealth;
         gameWorld.CurrentWaveTotalHealth = Math.Max(0, gameWorld.CurrentWaveTotalHealth - gameWorld.PlayerTotalAttack);
         gameWorld.PlayerTotalHealth = Math.Max(0, gameWorld.PlayerTotalHealth - gameWorld.CurrentWaveTotalAttack);
+        if (gameWorld.CurrentWaveTotalHealth < previousEnemyHealth)
+        {
+            gameWorld.EnemyHealthHistory.Add(previousEnemyHealth);
+        }
+
+        if (gameWorld.PlayerTotalHealth < previousPlayerHealth)
+        {
+            gameWorld.PlayerHealthHistory.Add(previousPlayerHealth);
+        }
 
         if (gameWorld.CurrentWaveTotalHealth > 0 && gameWorld.PlayerTotalHealth > 0)
         {
