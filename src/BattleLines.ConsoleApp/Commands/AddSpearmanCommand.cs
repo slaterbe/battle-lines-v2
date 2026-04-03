@@ -8,6 +8,7 @@ public class AddSpearmanCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
     public string Label => "Add to Spearmen";
+    public string HelpText => "Spend 1 commoner and 1 spear to recruit a spearman.";
 
     public bool Execute(GameWorld gameWorld)
     {

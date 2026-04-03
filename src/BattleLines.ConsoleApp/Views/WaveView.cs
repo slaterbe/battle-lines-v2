@@ -1,3 +1,4 @@
+using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views.Components;
 
@@ -7,7 +8,7 @@ public class WaveView : IGameView
 {
     private static readonly GameScreenLayoutComponent Layout = new();
 
-    public void Render(GameWorld gameWorld, IReadOnlyList<string> commandOptions, int selectedCommandIndex)
+    public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         Layout.Render(
             gameWorld,

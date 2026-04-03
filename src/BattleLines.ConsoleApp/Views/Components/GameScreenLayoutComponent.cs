@@ -1,3 +1,4 @@
+using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 
 namespace BattleLines.ConsoleApp.Views.Components;
@@ -14,7 +15,7 @@ public class GameScreenLayoutComponent
         GameWorld gameWorld,
         string statusMessage,
         ConsoleColor statusColor,
-        IReadOnlyList<string> commandOptions,
+        IReadOnlyList<GameCommandOption> commandOptions,
         int selectedCommandIndex)
     {
         gameHeaderComponent.Render(gameWorld, statusMessage, statusColor);

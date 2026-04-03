@@ -13,9 +13,11 @@ public abstract class GameStateControllerBase : IGameStateController
         this.tickCommand = tickCommand;
     }
 
-    public IReadOnlyList<string> GetCommandOptions()
+    public IReadOnlyList<GameCommandOption> GetCommandOptions()
     {
-        return Commands.Select(command => command.Label).ToArray();
+        return Commands
+            .Select(command => new GameCommandOption(command.Label, command.HelpText.ReplaceLineEndings(" ")))
+            .ToArray();
     }
 
     public bool HandleCommand(GameWorld gameWorld, int selectedCommandIndex)

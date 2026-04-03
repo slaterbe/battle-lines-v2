@@ -8,6 +8,7 @@ public class ResetCurrentWaveCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
     public string Label => "Back to Village";
+    public string HelpText => "Leave battle prep and return to the village screen.";
 
     public bool Execute(GameWorld gameWorld)
     {

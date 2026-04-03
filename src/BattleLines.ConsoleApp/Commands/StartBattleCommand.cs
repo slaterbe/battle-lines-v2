@@ -5,6 +5,7 @@ namespace BattleLines.ConsoleApp.Commands;
 public class StartBattleCommand : IGameCommand
 {
     public string Label => "Start Battle";
+    public string HelpText => "Move to battle prep for the next enemy wave.";
 
     public bool Execute(GameWorld gameWorld)
     {

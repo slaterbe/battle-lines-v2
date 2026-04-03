@@ -1,10 +1,11 @@
+using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 
 namespace BattleLines.ConsoleApp.Controllers;
 
 public interface IGameStateController
 {
-    IReadOnlyList<string> GetCommandOptions();
+    IReadOnlyList<GameCommandOption> GetCommandOptions();
 
     bool HandleCommand(GameWorld gameWorld, int selectedCommandIndex);
 

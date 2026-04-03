@@ -8,6 +8,7 @@ public class ExitPostBattleCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
     public string Label => "Continue";
+    public string HelpText => "Apply battle results, collect rewards, and move on.";
 
     public bool Execute(GameWorld gameWorld)
     {

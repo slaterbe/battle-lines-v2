@@ -1,3 +1,4 @@
+using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views;
 
@@ -18,7 +19,7 @@ public class RenderService
         };
     }
 
-    public void Render(GameWorld gameWorld, IReadOnlyList<string> commandOptions, int selectedCommandIndex)
+    public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         if (!views.TryGetValue(gameWorld.State, out var view))
         {
