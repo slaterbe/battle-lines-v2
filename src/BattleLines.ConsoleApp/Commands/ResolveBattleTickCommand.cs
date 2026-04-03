@@ -42,7 +42,9 @@ public class ResolveBattleTickCommand : IGameTickCommand
 
         gameWorld.LastBattleWon = gameWorld.CurrentWaveTotalHealth == 0;
         gameWorld.HasPendingPostBattleResolution = true;
-        gameWorld.State = GameState.PostBattle;
+        gameWorld.State = gameWorld.EnemyWaveList.Count > 1
+            ? GameState.PostWave
+            : GameState.PostBattle;
     }
 
     private static int CalculateCurrentPlayerAttack(GameWorld gameWorld)

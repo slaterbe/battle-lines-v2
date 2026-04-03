@@ -15,6 +15,7 @@ public class RenderService
             [GameState.Village] = new VillageView(),
             [GameState.PreBattle] = new PreWaveView(),
             [GameState.Battle] = new WaveView(),
+            [GameState.PostWave] = new PostWaveView(),
             [GameState.PostBattle] = new PostBattleView()
         };
     }

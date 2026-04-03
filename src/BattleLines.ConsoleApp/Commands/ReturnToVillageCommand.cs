@@ -3,7 +3,7 @@ using BattleLines.ConsoleApp.Services;
 
 namespace BattleLines.ConsoleApp.Commands;
 
-public class ResetCurrentWaveCommand : IGameCommand
+public class ReturnToVillageCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
@@ -12,6 +12,8 @@ public class ResetCurrentWaveCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
+        gameWorld.Commoners += gameWorld.CommonerProduction;
+        gameWorld.Spears += gameWorld.SpearProduction;
         gameWorld.PlayerHealthAtBattleStart = 0;
         gameWorld.SpearmenCountAtBattleStart = 0;
         gameWorld.LastBattleWon = false;

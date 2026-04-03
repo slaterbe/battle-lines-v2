@@ -4,33 +4,75 @@ namespace BattleLines.ConsoleApp.Services;
 
 public class EnemyWaveFactory
 {
-    public List<EnemyWaveModel> CreateGiantRatWaves(int waveCount, int startingCount = 3, int countIncreasePerWave = 2)
+    public List<EnemyWaveModel> CreateGiantRatWaves()
     {
-        if (waveCount <= 0)
-        {
-            return [];
-        }
-
-        var waves = new List<EnemyWaveModel>(waveCount);
-        var rewardTypes = Enum.GetValues<EnemyWaveRewardType>();
-
-        for (var waveIndex = 0; waveIndex < waveCount; waveIndex++)
-        {
-            waves.Add(new EnemyWaveModel
+        return
+        [
+            new EnemyWaveModel
             {
                 Enemies =
                 [
                     new EnemyWaveUnitModel
                     {
                         EnemyType = UnitType.GiantRat,
-                        Count = startingCount + (waveIndex * countIncreasePerWave)
+                        Count = 3
                     }
                 ],
-                RewardType = rewardTypes[waveIndex % rewardTypes.Length],
-                RewardAmount = 5 + (waveIndex * 5)
-            });
-        }
-
-        return waves;
+                RewardType = EnemyWaveRewardType.Spears,
+                RewardAmount = 2
+            },
+            new EnemyWaveModel
+            {
+                Enemies =
+                [
+                    new EnemyWaveUnitModel
+                    {
+                        EnemyType = UnitType.GiantRat,
+                        Count = 5
+                    }
+                ],
+                RewardType = EnemyWaveRewardType.Gold,
+                RewardAmount = 10
+            },
+            new EnemyWaveModel
+            {
+                Enemies =
+                [
+                    new EnemyWaveUnitModel
+                    {
+                        EnemyType = UnitType.GiantRat,
+                        Count = 7
+                    }
+                ],
+                RewardType = EnemyWaveRewardType.Gold,
+                RewardAmount = 15
+            },
+            new EnemyWaveModel
+            {
+                Enemies =
+                [
+                    new EnemyWaveUnitModel
+                    {
+                        EnemyType = UnitType.GiantRat,
+                        Count = 9
+                    }
+                ],
+                RewardType = EnemyWaveRewardType.Spears,
+                RewardAmount = 5
+            },
+            new EnemyWaveModel
+            {
+                Enemies =
+                [
+                    new EnemyWaveUnitModel
+                    {
+                        EnemyType = UnitType.GiantRat,
+                        Count = 11
+                    }
+                ],
+                RewardType = EnemyWaveRewardType.Spears,
+                RewardAmount = 25
+            }
+        ];
     }
 }

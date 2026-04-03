@@ -20,7 +20,8 @@ public static class UnitDisplayComponent
         var displayedCount = Math.Clamp(count, 0, clampedMaxPositions);
 
         if (gameWorld.State != GameState.Battle &&
-            !(gameWorld.State == GameState.PostBattle && gameWorld.HasPendingPostBattleResolution))
+            !((gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle) &&
+              gameWorld.HasPendingPostBattleResolution))
         {
             return $"{new string('|', displayedCount)}{new string('O', clampedMaxPositions - displayedCount)}";
         }

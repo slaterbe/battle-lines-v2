@@ -2,10 +2,10 @@ using BattleLines.ConsoleApp.Commands;
 
 namespace BattleLines.ConsoleApp.Controllers;
 
-public class PreWaveController : GameStateControllerBase
+public class PostWaveController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands()
     {
-        return [new BeginBattleCommand(), new AddSpearmanCommand(), new ReturnToVillageCommand()];
+        return [new ExitPostBattleCommand()];
     }
 }

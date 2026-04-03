@@ -7,17 +7,20 @@ public class GameStateControllerFactory
     private readonly IGameStateController villageController;
     private readonly IGameStateController preBattleController;
     private readonly IGameStateController battleController;
+    private readonly IGameStateController postWaveController;
     private readonly IGameStateController postBattleController;
 
     public GameStateControllerFactory(
         IGameStateController villageController,
         IGameStateController preBattleController,
         IGameStateController battleController,
+        IGameStateController postWaveController,
         IGameStateController postBattleController)
     {
         this.villageController = villageController;
         this.preBattleController = preBattleController;
         this.battleController = battleController;
+        this.postWaveController = postWaveController;
         this.postBattleController = postBattleController;
     }
 
@@ -28,6 +31,7 @@ public class GameStateControllerFactory
             GameState.Village => villageController,
             GameState.PreBattle => preBattleController,
             GameState.Battle => battleController,
+            GameState.PostWave => postWaveController,
             GameState.PostBattle => postBattleController,
             _ => villageController
         };

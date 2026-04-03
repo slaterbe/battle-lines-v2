@@ -4,15 +4,15 @@ using BattleLines.ConsoleApp.Views.Components;
 
 namespace BattleLines.ConsoleApp.Views;
 
-public class PostBattleView : IGameView
+public class PostWaveView : IGameView
 {
     private static readonly GameScreenLayoutComponent Layout = new();
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         var message = gameWorld.LastBattleWon
-            ? "Battle Won: Claim your reward and review the final results"
-            : "Battle Lost: Review the outcome and return to the village";
+            ? "Wave Defeated: Claim your reward and prepare for the next wave"
+            : "Battle ended. Continue to the next wave.               ";
 
         Layout.Render(
             gameWorld,

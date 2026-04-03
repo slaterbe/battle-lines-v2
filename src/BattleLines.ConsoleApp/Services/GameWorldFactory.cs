@@ -9,7 +9,7 @@ public class GameWorldFactory
 
     public GameWorld Create()
     {
-        var enemyWaves = enemyWaveFactory.CreateGiantRatWaves(5);
+        var enemyWaves = enemyWaveFactory.CreateGiantRatWaves();
         var gameWorld = new GameWorld
         {
             Commoners = 5,

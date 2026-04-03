@@ -12,7 +12,15 @@ public class ExitPostBattleCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (gameWorld.State != GameState.PostBattle || !gameWorld.HasPendingPostBattleResolution)
+        var nextState = gameWorld.State switch
+        {
+            GameState.PostWave => GameState.PreBattle,
+            GameState.PostBattle => GameState.Village,
+            _ => gameWorld.State
+        };
+
+        if ((gameWorld.State != GameState.PostWave && gameWorld.State != GameState.PostBattle) ||
+            !gameWorld.HasPendingPostBattleResolution)
         {
             return false;
         }
@@ -33,7 +41,7 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorld.SpearmenCountAtBattleStart = 0;
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
-        gameWorld.State = GameState.Village;
+        gameWorld.State = nextState;
         gameWorldStatsService.Refresh(gameWorld);
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();

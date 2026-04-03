@@ -13,6 +13,7 @@ public static class Program
             new VillageController(),
             new PreWaveController(),
             new WaveController(),
+            new PostWaveController(),
             new PostBattleController());
         var gameWorldFactory = new GameWorldFactory();
         var renderService = new RenderService();

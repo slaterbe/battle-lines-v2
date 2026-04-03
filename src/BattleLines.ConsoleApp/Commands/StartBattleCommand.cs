@@ -9,7 +9,10 @@ public class StartBattleCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (gameWorld.State == GameState.Battle || gameWorld.State == GameState.PostBattle || gameWorld.EnemyWaveList.Count == 0)
+        if (gameWorld.State == GameState.Battle ||
+            gameWorld.State == GameState.PostWave ||
+            gameWorld.State == GameState.PostBattle ||
+            gameWorld.EnemyWaveList.Count == 0)
         {
             return false;
         }
