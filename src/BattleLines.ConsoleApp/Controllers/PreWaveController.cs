@@ -30,7 +30,7 @@ public class PreWaveController : IGameStateController
                 preparationService.AddSpearman(gameWorld);
                 return false;
             case 2:
-                gameWorld.State = GameState.Village;
+                battleService.ResetCurrentWave(gameWorld);
                 return false;
             default:
                 return false;

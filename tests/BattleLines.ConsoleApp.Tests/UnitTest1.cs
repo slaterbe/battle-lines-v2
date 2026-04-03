@@ -48,12 +48,12 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void Create_StartsWithSevenSpearmenPositions()
+    public void Create_StartsWithEightSpearmenPositions()
     {
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
 
-        Assert.Equal(7, gameWorld.MaxSpearmenPositions);
+        Assert.Equal(8, gameWorld.MaxSpearmenPositions);
     }
 
     [Fact]
@@ -131,6 +131,26 @@ public class GameFlowTests
 
         Assert.Equal(GameState.Battle, gameWorld.State);
         Assert.Equal(70, gameWorld.PlayerHealthAtBattleStart);
+    }
+
+    [Fact]
+    public void ResetCurrentWave_ReturnsToVillageAndRestoresWaveStats()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+
+        battleService.StartBattle(gameWorld);
+        battleService.BeginBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+        battleService.ResetCurrentWave(gameWorld);
+
+        Assert.Equal(GameState.Village, gameWorld.State);
+        Assert.Equal(24, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(9, gameWorld.CurrentWaveTotalAttack);
+        Assert.Empty(gameWorld.PlayerHealthHistory);
+        Assert.Empty(gameWorld.PlayerAttackHistory);
+        Assert.Empty(gameWorld.EnemyHealthHistory);
     }
 
     [Fact]

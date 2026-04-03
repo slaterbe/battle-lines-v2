@@ -21,12 +21,12 @@ public class RenderService
         }
         else if (gameWorld.State == GameState.PreBattle)
         {
-            WriteLineWithColor("Pre-battle is active. Review your army and begin combat.", ConsoleColor.Yellow);
+            WriteLineWithColor("Battle: Reinforce your army and start combat.", ConsoleColor.Green);
         }
         else if (gameWorld.State == GameState.PostBattle)
         {
             var resultText = gameWorld.LastBattleWon
-                ? "Battle ended. Claim your reward and continue.          "
+                ? "Wave Defeated: Claim your reward and prepare for the next wave"
                 : "Battle ended. Continue to the next wave.               ";
             WriteLineWithColor(resultText, ConsoleColor.Yellow);
         }
@@ -72,7 +72,7 @@ public class RenderService
         }
 
         builder.AppendLine($"Total Health: {RenderPlayerHealth(gameWorld)}");
-        builder.AppendLine($"Total Attack: {gameWorld.PlayerTotalAttack}");
+        builder.AppendLine($"Total Attack: {RenderPlayerAttack(gameWorld)}");
 
         return builder.ToString().TrimEnd();
     }
@@ -147,22 +147,49 @@ public class RenderService
         return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalHealth}";
     }
 
+    private static string RenderPlayerAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.PlayerAttackHistory.Count == 0)
+        {
+            return gameWorld.PlayerTotalAttack.ToString();
+        }
+
+        var history = gameWorld.PlayerAttackHistory.Select(attack => attack.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.PlayerTotalAttack}";
+    }
+
     private static string RenderUnitCount(GameWorld gameWorld, UnitType unitType, int count)
     {
         return unitType switch
         {
-            UnitType.SpearmenLvl1 => RenderSpearmenPositions(gameWorld.MaxSpearmenPositions, count),
+            UnitType.SpearmenLvl1 => RenderSpearmenPositions(gameWorld, count),
             UnitType.GiantRat => new string('|', Math.Max(0, count)),
             _ => count.ToString()
         };
     }
 
-    private static string RenderSpearmenPositions(int maxSpearmenPositions, int count)
+    private static string RenderSpearmenPositions(GameWorld gameWorld, int count)
     {
-        var clampedMaxPositions = Math.Max(0, maxSpearmenPositions);
-        var filledPositions = Math.Clamp(count, 0, clampedMaxPositions);
-        var emptyPositions = clampedMaxPositions - filledPositions;
-        return $"{new string('|', filledPositions)}{new string('O', emptyPositions)}";
+        var clampedMaxPositions = Math.Max(0, gameWorld.MaxSpearmenPositions);
+        var displayedCount = Math.Clamp(count, 0, clampedMaxPositions);
+
+        if (gameWorld.State != GameState.Battle &&
+            !(gameWorld.State == GameState.PostBattle && gameWorld.HasPendingPostBattleResolution))
+        {
+            return $"{new string('|', displayedCount)}{new string('O', clampedMaxPositions - displayedCount)}";
+        }
+
+        if (!UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel) || spearmanModel.Health <= 0)
+        {
+            return $"{new string('|', displayedCount)}{new string('O', clampedMaxPositions - displayedCount)}";
+        }
+
+        var healthLost = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - gameWorld.PlayerTotalHealth);
+        var spearmenLost = Math.Min(gameWorld.SpearmenCountAtBattleStart, healthLost / spearmanModel.Health);
+        var survivingSpearmen = Math.Max(0, gameWorld.SpearmenCountAtBattleStart - spearmenLost);
+        var emptyPositions = Math.Max(0, clampedMaxPositions - gameWorld.SpearmenCountAtBattleStart);
+
+        return $"{new string('|', survivingSpearmen)}{new string('X', spearmenLost)}{new string('O', emptyPositions)}";
     }
 
     private static void RenderCommandOptions(IReadOnlyList<string> commandOptions, int selectedCommandIndex)

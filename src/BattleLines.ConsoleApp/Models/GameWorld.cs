@@ -36,7 +36,11 @@ public class GameWorld
 
     public int PlayerHealthAtBattleStart { get; set; }
 
+    public int SpearmenCountAtBattleStart { get; set; }
+
     public List<int> PlayerHealthHistory { get; set; } = [];
+
+    public List<int> PlayerAttackHistory { get; set; } = [];
 
     public List<int> EnemyHealthHistory { get; set; } = [];
 }

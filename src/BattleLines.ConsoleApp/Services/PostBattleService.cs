@@ -26,11 +26,13 @@ public class PostBattleService
         }
 
         gameWorld.PlayerHealthAtBattleStart = 0;
+        gameWorld.SpearmenCountAtBattleStart = 0;
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.State = GameState.Village;
         gameWorldStatsService.Refresh(gameWorld);
         gameWorld.PlayerHealthHistory.Clear();
+        gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
     }
 
