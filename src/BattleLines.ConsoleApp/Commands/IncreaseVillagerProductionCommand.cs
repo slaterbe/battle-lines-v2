@@ -2,12 +2,12 @@ using BattleLines.ConsoleApp.Models;
 
 namespace BattleLines.ConsoleApp.Commands;
 
-public class IncreaseCommonerProductionCommand : IGameCommand
+public class IncreaseVillagerProductionCommand : IGameCommand
 {
     private const int GoldCost = 5;
 
-    public string Label => "Boost Commoners";
-    public string HelpText => $"Spend {GoldCost} gold to increase commoner production by 1.";
+    public string Label => "Boost Villagers";
+    public string HelpText => $"Spend {GoldCost} gold to increase villager production by 1.";
 
     public bool Execute(GameWorld gameWorld)
     {
@@ -17,7 +17,7 @@ public class IncreaseCommonerProductionCommand : IGameCommand
         }
 
         gameWorld.Gold -= GoldCost;
-        gameWorld.CommonerProduction += 1;
+        gameWorld.VillagerProduction += 1;
         return false;
     }
 }

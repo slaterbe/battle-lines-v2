@@ -11,7 +11,7 @@ public class VillageView : IGameView
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         var supplementalDetails =
-            $"Commoner Production: +{gameWorld.CommonerProduction}\n" +
+            $"Villager Production: +{gameWorld.VillagerProduction}\n" +
             $"Spear Production: +{gameWorld.SpearProduction}\n" +
             $"Max Spearmen Capacity: {gameWorld.MaxSpearmenPositions}";
 

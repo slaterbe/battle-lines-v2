@@ -35,15 +35,15 @@ public class GameFlowTests
         var preparationService = new PreparationService();
         var gameWorld = new GameWorld
         {
-            Commoners = 10,
+            Villagers = 10,
             Spears = 5,
-            CommonerProduction = 2,
+            VillagerProduction = 2,
             SpearProduction = 1
         };
 
         preparationService.Tick(gameWorld);
 
-        Assert.Equal(10, gameWorld.Commoners);
+        Assert.Equal(10, gameWorld.Villagers);
         Assert.Equal(5, gameWorld.Spears);
     }
 
@@ -77,13 +77,13 @@ public class GameFlowTests
         var preparationService = new PreparationService();
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
-        gameWorld.Commoners = 0;
+        gameWorld.Villagers = 0;
         gameWorld.Spears = 0;
 
         preparationService.AddSpearman(gameWorld);
 
         Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
-        Assert.Equal(0, gameWorld.Commoners);
+        Assert.Equal(0, gameWorld.Villagers);
         Assert.Equal(0, gameWorld.Spears);
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
         Assert.Equal(25, gameWorld.PlayerTotalAttack);
@@ -96,14 +96,14 @@ public class GameFlowTests
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxSpearmenPositions;
-        gameWorld.Commoners = 10;
+        gameWorld.Villagers = 10;
         gameWorld.Spears = 10;
         new GameWorldStatsService().Refresh(gameWorld);
 
         preparationService.AddSpearman(gameWorld);
 
         Assert.Equal(gameWorld.MaxSpearmenPositions, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
-        Assert.Equal(10, gameWorld.Commoners);
+        Assert.Equal(10, gameWorld.Villagers);
         Assert.Equal(10, gameWorld.Spears);
     }
 

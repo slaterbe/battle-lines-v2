@@ -90,8 +90,8 @@ public class ExitPostBattleCommand : IGameCommand
             case EnemyWaveRewardType.Spears:
                 gameWorld.Spears += reward.RewardAmount;
                 break;
-            case EnemyWaveRewardType.Commoners:
-                gameWorld.Commoners += reward.RewardAmount;
+            case EnemyWaveRewardType.Villagers:
+                gameWorld.Villagers += reward.RewardAmount;
                 break;
             case EnemyWaveRewardType.Gold:
                 gameWorld.Gold += reward.RewardAmount;

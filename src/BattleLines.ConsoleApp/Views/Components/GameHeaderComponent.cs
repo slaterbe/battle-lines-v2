@@ -11,7 +11,7 @@ public class GameHeaderComponent
 
         ConsoleTextComponent.WriteLine("Battle Lines", ConsoleColor.White);
         ConsoleTextComponent.WriteLine(
-            $"Commoners: {gameWorld.Commoners}    Spears: {gameWorld.Spears}    Gold: {gameWorld.Gold}    State: {gameWorld.State}        ");
+            $"Villagers: {gameWorld.Villagers}    Spears: {gameWorld.Spears}    Gold: {gameWorld.Gold}    State: {gameWorld.State}        ");
         ConsoleTextComponent.WriteLine(new string('=', 80));
         ConsoleTextComponent.WriteLine(statusMessage, statusColor);
     }

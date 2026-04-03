@@ -12,9 +12,9 @@ public class GameWorldFactory
         var enemyWaves = enemyWaveFactory.CreateGiantRatWaves();
         var gameWorld = new GameWorld
         {
-            Commoners = 5,
+            Villagers = 5,
             Spears = 5,
-            CommonerProduction = 2,
+            VillagerProduction = 2,
             SpearProduction = 1,
             State = GameState.Village,
             PlayerUnits = new Dictionary<UnitType, int>

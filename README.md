@@ -22,7 +22,7 @@ Controls:
 - `P` toggles pause and resume
 - `Q` quits the game
 
-While the game is running, `Commoners` and `Spears` increase by their production values once per tick.
+While the game is running, `Villagers` and `Spears` increase by their production values once per tick.
 
 ## Run the tests
 

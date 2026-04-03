@@ -10,7 +10,7 @@ public class VillageController : GameStateControllerBase
         [
             new StartBattleCommand(),
             new AddSpearmanCommand(),
-            new IncreaseCommonerProductionCommand(),
+            new IncreaseVillagerProductionCommand(),
             new IncreaseSpearProductionCommand(),
             new IncreaseSpearmenCapacityCommand()
         ];

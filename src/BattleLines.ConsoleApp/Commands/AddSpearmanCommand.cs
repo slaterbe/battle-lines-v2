@@ -8,7 +8,7 @@ public class AddSpearmanCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
     public string Label => "Add to Spearmen";
-    public string HelpText => "Spend 1 commoner and 1 spear to recruit a spearman.";
+    public string HelpText => "Spend 1 villager and 1 spear to recruit a spearman.";
 
     public bool Execute(GameWorld gameWorld)
     {
@@ -17,7 +17,7 @@ public class AddSpearmanCommand : IGameCommand
             return false;
         }
 
-        if (gameWorld.Commoners < 1 || gameWorld.Spears < 1)
+        if (gameWorld.Villagers < 1 || gameWorld.Spears < 1)
         {
             return false;
         }
@@ -28,7 +28,7 @@ public class AddSpearmanCommand : IGameCommand
             return false;
         }
 
-        gameWorld.Commoners -= 1;
+        gameWorld.Villagers -= 1;
         gameWorld.Spears -= 1;
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = currentCount + 1;
         gameWorldStatsService.Refresh(gameWorld);
