@@ -1,37 +1,36 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Services;
 
-namespace BattleLines.ConsoleApp.Services;
+namespace BattleLines.ConsoleApp.Commands;
 
-public class PreparationService
+public class AddSpearmanCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
-    public void Tick(GameWorld gameWorld)
-    {
-        // Resources no longer increment during preparation.
-    }
+    public string Label => "Add to Spearmen";
 
-    public void AddSpearman(GameWorld gameWorld)
+    public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.Village && gameWorld.State != GameState.PreBattle)
         {
-            return;
+            return false;
         }
 
         if (gameWorld.Commoners < 1 || gameWorld.Spears < 1)
         {
-            return;
+            return false;
         }
 
         gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var currentCount);
         if (currentCount >= gameWorld.MaxSpearmenPositions)
         {
-            return;
+            return false;
         }
 
         gameWorld.Commoners -= 1;
         gameWorld.Spears -= 1;
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = currentCount + 1;
         gameWorldStatsService.Refresh(gameWorld);
+        return false;
     }
 }

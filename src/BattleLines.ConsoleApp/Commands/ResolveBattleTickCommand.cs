@@ -1,41 +1,10 @@
 using BattleLines.ConsoleApp.Models;
 
-namespace BattleLines.ConsoleApp.Services;
+namespace BattleLines.ConsoleApp.Commands;
 
-public class BattleService
+public class ResolveBattleTickCommand : IGameTickCommand
 {
-    private readonly GameWorldStatsService gameWorldStatsService = new();
-
-    public void StartBattle(GameWorld gameWorld)
-    {
-        if (gameWorld.State == GameState.Battle || gameWorld.State == GameState.PostBattle || gameWorld.EnemyWaveList.Count == 0)
-        {
-            return;
-        }
-
-        gameWorld.State = GameState.PreBattle;
-    }
-
-    public void BeginBattle(GameWorld gameWorld)
-    {
-        if (gameWorld.State != GameState.PreBattle)
-        {
-            return;
-        }
-
-        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmenCount);
-        gameWorld.PlayerHealthAtBattleStart = gameWorld.PlayerTotalHealth;
-        gameWorld.SpearmenCountAtBattleStart = spearmenCount;
-        gameWorld.PlayerHealthHistory.Clear();
-        gameWorld.PlayerAttackHistory.Clear();
-        gameWorld.EnemyHealthHistory.Clear();
-        gameWorld.EnemyAttackHistory.Clear();
-        gameWorld.LastBattleWon = false;
-        gameWorld.HasPendingPostBattleResolution = false;
-        gameWorld.State = GameState.Battle;
-    }
-
-    public void ResolveBattleTick(GameWorld gameWorld)
+    public void Execute(GameWorld gameWorld)
     {
         var previousEnemyHealth = gameWorld.CurrentWaveTotalHealth;
         var previousPlayerHealth = gameWorld.PlayerTotalHealth;
@@ -43,6 +12,7 @@ public class BattleService
         var previousEnemyAttack = gameWorld.CurrentWaveTotalAttack;
         gameWorld.CurrentWaveTotalHealth = Math.Max(0, gameWorld.CurrentWaveTotalHealth - gameWorld.PlayerTotalAttack);
         gameWorld.PlayerTotalHealth = Math.Max(0, gameWorld.PlayerTotalHealth - gameWorld.CurrentWaveTotalAttack);
+
         if (gameWorld.CurrentWaveTotalHealth < previousEnemyHealth)
         {
             gameWorld.EnemyHealthHistory.Add(previousEnemyHealth);
@@ -73,20 +43,6 @@ public class BattleService
         gameWorld.LastBattleWon = gameWorld.CurrentWaveTotalHealth == 0;
         gameWorld.HasPendingPostBattleResolution = true;
         gameWorld.State = GameState.PostBattle;
-    }
-
-    public void ResetCurrentWave(GameWorld gameWorld)
-    {
-        gameWorld.PlayerHealthAtBattleStart = 0;
-        gameWorld.SpearmenCountAtBattleStart = 0;
-        gameWorld.LastBattleWon = false;
-        gameWorld.HasPendingPostBattleResolution = false;
-        gameWorld.PlayerHealthHistory.Clear();
-        gameWorld.PlayerAttackHistory.Clear();
-        gameWorld.EnemyHealthHistory.Clear();
-        gameWorld.EnemyAttackHistory.Clear();
-        gameWorld.State = GameState.Village;
-        gameWorldStatsService.Refresh(gameWorld);
     }
 
     private static int CalculateCurrentPlayerAttack(GameWorld gameWorld)

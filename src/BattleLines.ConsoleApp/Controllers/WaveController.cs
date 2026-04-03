@@ -1,33 +1,15 @@
-using BattleLines.ConsoleApp.Models;
-using BattleLines.ConsoleApp.Services;
+using BattleLines.ConsoleApp.Commands;
 
 namespace BattleLines.ConsoleApp.Controllers;
 
-public class WaveController : IGameStateController
+public class WaveController : GameStateControllerBase
 {
-    private readonly BattleService battleService;
-
-    public WaveController(BattleService battleService)
+    public WaveController()
+        : base(new ResolveBattleTickCommand())
     {
-        this.battleService = battleService;
     }
 
-    public IReadOnlyList<string> GetCommandOptions()
-    {
-        return BuildCommandOptions();
-    }
-
-    public bool HandleCommand(GameWorld gameWorld, int selectedCommandIndex)
-    {
-        return selectedCommandIndex == 0;
-    }
-
-    public void Tick(GameWorld gameWorld)
-    {
-        battleService.ResolveBattleTick(gameWorld);
-    }
-
-    private static IReadOnlyList<string> BuildCommandOptions()
+    protected override IReadOnlyList<IGameCommand> CreateCommands()
     {
         return [];
     }

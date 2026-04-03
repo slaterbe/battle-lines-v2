@@ -1,16 +1,19 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Services;
 
-namespace BattleLines.ConsoleApp.Services;
+namespace BattleLines.ConsoleApp.Commands;
 
-public class PostBattleService
+public class ExitPostBattleCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
-    public void ExitBattleScreen(GameWorld gameWorld)
+    public string Label => "Continue";
+
+    public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.PostBattle || !gameWorld.HasPendingPostBattleResolution)
         {
-            return;
+            return false;
         }
 
         if (gameWorld.LastBattleWon)
@@ -35,6 +38,7 @@ public class PostBattleService
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+        return false;
     }
 
     private static void ApplyPlayerBattleLosses(GameWorld gameWorld)

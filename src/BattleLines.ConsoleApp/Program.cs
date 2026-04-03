@@ -9,14 +9,11 @@ public static class Program
 
     public static void Main()
     {
-        var battleService = new BattleService();
-        var postBattleService = new PostBattleService();
-        var preparationService = new PreparationService();
         var controllerFactory = new GameStateControllerFactory(
-            new VillageController(preparationService, battleService),
-            new PreWaveController(battleService, preparationService),
-            new WaveController(battleService),
-            new PostBattleController(postBattleService));
+            new VillageController(),
+            new PreWaveController(),
+            new WaveController(),
+            new PostBattleController());
         var gameWorldFactory = new GameWorldFactory();
         var renderService = new RenderService();
         var gameWorld = gameWorldFactory.Create();
