@@ -34,6 +34,7 @@ public class PostBattleService
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
+        gameWorld.EnemyAttackHistory.Clear();
     }
 
     private static void ApplyPlayerBattleLosses(GameWorld gameWorld)

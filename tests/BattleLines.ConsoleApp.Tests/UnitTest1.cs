@@ -168,6 +168,27 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void ResolveBattleTick_RecalculatesPlayerAndWaveAttackEachTick()
+    {
+        var battleService = new BattleService();
+        var gameWorldFactory = new GameWorldFactory();
+        var gameWorld = gameWorldFactory.Create();
+        gameWorld.EnemyWaveList[0].Enemies[0].Count = 10;
+        new GameWorldStatsService().Refresh(gameWorld);
+
+        battleService.StartBattle(gameWorld);
+        battleService.BeginBattle(gameWorld);
+        battleService.ResolveBattleTick(gameWorld);
+
+        Assert.Equal(55, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(40, gameWorld.PlayerTotalHealth);
+        Assert.Equal(15, gameWorld.PlayerTotalAttack);
+        Assert.Equal(21, gameWorld.CurrentWaveTotalAttack);
+        Assert.Equal([25], gameWorld.PlayerAttackHistory);
+        Assert.Equal([30], gameWorld.EnemyAttackHistory);
+    }
+
+    [Fact]
     public void ResolveBattleTick_WhenBattleEnds_MovesToPostBattleStateWithoutAdvancingWave()
     {
         var battleService = new BattleService();

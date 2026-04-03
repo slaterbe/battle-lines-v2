@@ -43,4 +43,6 @@ public class GameWorld
     public List<int> PlayerAttackHistory { get; set; } = [];
 
     public List<int> EnemyHealthHistory { get; set; } = [];
+
+    public List<int> EnemyAttackHistory { get; set; } = [];
 }

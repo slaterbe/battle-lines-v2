@@ -29,6 +29,7 @@ public class BattleService
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
+        gameWorld.EnemyAttackHistory.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.State = GameState.Battle;
@@ -39,6 +40,7 @@ public class BattleService
         var previousEnemyHealth = gameWorld.CurrentWaveTotalHealth;
         var previousPlayerHealth = gameWorld.PlayerTotalHealth;
         var previousPlayerAttack = gameWorld.PlayerTotalAttack;
+        var previousEnemyAttack = gameWorld.CurrentWaveTotalAttack;
         gameWorld.CurrentWaveTotalHealth = Math.Max(0, gameWorld.CurrentWaveTotalHealth - gameWorld.PlayerTotalAttack);
         gameWorld.PlayerTotalHealth = Math.Max(0, gameWorld.PlayerTotalHealth - gameWorld.CurrentWaveTotalAttack);
         if (gameWorld.CurrentWaveTotalHealth < previousEnemyHealth)
@@ -55,6 +57,12 @@ public class BattleService
         if (gameWorld.PlayerTotalAttack < previousPlayerAttack)
         {
             gameWorld.PlayerAttackHistory.Add(previousPlayerAttack);
+        }
+
+        gameWorld.CurrentWaveTotalAttack = CalculateCurrentWaveAttack(gameWorld);
+        if (gameWorld.CurrentWaveTotalAttack < previousEnemyAttack)
+        {
+            gameWorld.EnemyAttackHistory.Add(previousEnemyAttack);
         }
 
         if (gameWorld.CurrentWaveTotalHealth > 0 && gameWorld.PlayerTotalHealth > 0)
@@ -76,6 +84,7 @@ public class BattleService
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
+        gameWorld.EnemyAttackHistory.Clear();
         gameWorld.State = GameState.Village;
         gameWorldStatsService.Refresh(gameWorld);
     }
@@ -91,5 +100,31 @@ public class BattleService
         var spearmenLost = Math.Min(gameWorld.SpearmenCountAtBattleStart, healthLost / spearmanModel.Health);
         var survivingSpearmen = Math.Max(0, gameWorld.SpearmenCountAtBattleStart - spearmenLost);
         return survivingSpearmen * spearmanModel.Attack;
+    }
+
+    private static int CalculateCurrentWaveAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyWaveList.Count == 0)
+        {
+            return 0;
+        }
+
+        var currentWave = gameWorld.EnemyWaveList[0];
+        if (currentWave.Enemies.Count != 1)
+        {
+            return gameWorld.CurrentWaveTotalAttack;
+        }
+
+        var enemy = currentWave.Enemies[0];
+        if (!UnitCatalog.DefaultUnits.TryGetValue(enemy.EnemyType, out var enemyModel) || enemyModel.Health <= 0)
+        {
+            return gameWorld.CurrentWaveTotalAttack;
+        }
+
+        var waveHealthAtStart = enemy.Count * enemyModel.Health;
+        var healthLost = Math.Max(0, waveHealthAtStart - gameWorld.CurrentWaveTotalHealth);
+        var enemiesLost = Math.Min(enemy.Count, healthLost / enemyModel.Health);
+        var survivingEnemies = Math.Max(0, enemy.Count - enemiesLost);
+        return survivingEnemies * enemyModel.Attack;
     }
 }

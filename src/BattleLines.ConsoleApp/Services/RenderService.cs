@@ -93,7 +93,7 @@ public class RenderService
         }
 
         WriteLineWithColor($"Total Health: {RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
-        WriteLineWithColor($"Total Attack: {gameWorld.CurrentWaveTotalAttack}", ConsoleColor.Red);
+        WriteLineWithColor($"Total Attack: {RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
     }
 
     private static void RenderWaveProgress(GameWorld gameWorld)
@@ -145,6 +145,17 @@ public class RenderService
 
         var history = gameWorld.EnemyHealthHistory.Select(health => health.ToString());
         return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalHealth}";
+    }
+
+    private static string RenderEnemyAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyAttackHistory.Count == 0)
+        {
+            return gameWorld.CurrentWaveTotalAttack.ToString();
+        }
+
+        var history = gameWorld.EnemyAttackHistory.Select(attack => attack.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalAttack}";
     }
 
     private static string RenderPlayerAttack(GameWorld gameWorld)

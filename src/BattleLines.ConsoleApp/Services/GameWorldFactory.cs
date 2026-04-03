@@ -12,7 +12,7 @@ public class GameWorldFactory
         var enemyWaves = enemyWaveFactory.CreateGiantRatWaves(5);
         var gameWorld = new GameWorld
         {
-            Commoners = 10,
+            Commoners = 5,
             Spears = 5,
             CommonerProduction = 2,
             SpearProduction = 1,
