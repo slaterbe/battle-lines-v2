@@ -1,9 +1,13 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Services;
 
 namespace BattleLines.ConsoleApp.Commands;
 
 public class ResolveBattleTickCommand : IGameTickCommand
 {
+    private readonly GameWorldStatsService gameWorldStatsService = new();
+    private readonly VillageTransitionService villageTransitionService = new();
+
     public void Execute(GameWorld gameWorld)
     {
         var previousEnemyHealth = gameWorld.CurrentWaveTotalHealth;
@@ -41,6 +45,13 @@ public class ResolveBattleTickCommand : IGameTickCommand
         }
 
         gameWorld.LastBattleWon = gameWorld.CurrentWaveTotalHealth == 0;
+        if (!gameWorld.LastBattleWon)
+        {
+            ApplyPlayerBattleLosses(gameWorld);
+            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true);
+            return;
+        }
+
         gameWorld.HasPendingPostBattleResolution = true;
         gameWorld.State = gameWorld.EnemyWaveList.Count > 1
             ? GameState.PostWave
@@ -84,5 +95,23 @@ public class ResolveBattleTickCommand : IGameTickCommand
         var enemiesLost = Math.Min(enemy.Count, healthLost / enemyModel.Health);
         var survivingEnemies = Math.Max(0, enemy.Count - enemiesLost);
         return survivingEnemies * enemyModel.Attack;
+    }
+
+    private static void ApplyPlayerBattleLosses(GameWorld gameWorld)
+    {
+        var healthLost = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - gameWorld.PlayerTotalHealth);
+        if (healthLost == 0)
+        {
+            return;
+        }
+
+        if (!UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel) || spearmanModel.Health <= 0)
+        {
+            return;
+        }
+
+        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmenCount);
+        var spearmenLost = healthLost / spearmanModel.Health;
+        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = Math.Max(0, spearmenCount - spearmenLost);
     }
 }

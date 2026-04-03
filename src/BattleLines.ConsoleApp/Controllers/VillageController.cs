@@ -6,6 +6,13 @@ public class VillageController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands()
     {
-        return [new StartBattleCommand(), new AddSpearmanCommand()];
+        return
+        [
+            new StartBattleCommand(),
+            new AddSpearmanCommand(),
+            new IncreaseCommonerProductionCommand(),
+            new IncreaseSpearProductionCommand(),
+            new IncreaseSpearmenCapacityCommand()
+        ];
     }
 }

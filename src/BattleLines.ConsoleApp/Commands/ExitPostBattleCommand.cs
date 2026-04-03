@@ -6,6 +6,7 @@ namespace BattleLines.ConsoleApp.Commands;
 public class ExitPostBattleCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
+    private readonly VillageTransitionService villageTransitionService = new();
 
     public string Label => "Continue";
     public string HelpText => "Apply battle results, collect rewards, and move on.";
@@ -41,12 +42,19 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorld.SpearmenCountAtBattleStart = 0;
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
-        gameWorld.State = nextState;
-        gameWorldStatsService.Refresh(gameWorld);
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+
+        if (nextState == GameState.Village)
+        {
+            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true);
+            return false;
+        }
+
+        gameWorld.State = nextState;
+        gameWorldStatsService.Refresh(gameWorld);
         return false;
     }
 

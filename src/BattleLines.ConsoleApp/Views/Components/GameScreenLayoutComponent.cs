@@ -16,15 +16,32 @@ public class GameScreenLayoutComponent
         string statusMessage,
         ConsoleColor statusColor,
         IReadOnlyList<GameCommandOption> commandOptions,
-        int selectedCommandIndex)
+        int selectedCommandIndex,
+        string? supplementalDetails = null,
+        bool showWaveOverview = true,
+        bool showCurrentWave = true)
     {
         gameHeaderComponent.Render(gameWorld, statusMessage, statusColor);
 
         Console.WriteLine();
-        waveOverviewComponent.Render(gameWorld);
-        Console.WriteLine();
-        currentWaveComponent.Render(gameWorld);
-        Console.WriteLine();
+        if (!string.IsNullOrWhiteSpace(supplementalDetails))
+        {
+            ConsoleTextComponent.WriteLine(supplementalDetails, ConsoleColor.Cyan);
+            Console.WriteLine();
+        }
+
+        if (showWaveOverview)
+        {
+            waveOverviewComponent.Render(gameWorld);
+            Console.WriteLine();
+        }
+
+        if (showCurrentWave)
+        {
+            currentWaveComponent.Render(gameWorld);
+            Console.WriteLine();
+        }
+
         Console.WriteLine();
         Console.WriteLine();
         ConsoleTextComponent.WriteLine(playerUnitsComponent.Render(gameWorld), ConsoleColor.Blue);
