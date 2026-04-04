@@ -10,10 +10,10 @@ public class VillageView : IGameView
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        var supplementalDetails =
-            $"Villager Production: +{gameWorld.VillagerProduction}\n" +
-            $"Spear Production: +{gameWorld.SpearProduction}\n" +
-            $"Max Spearmen Capacity: {gameWorld.MaxSpearmenPositions}";
+        var selectedCommandLabel =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Label
+                : string.Empty;
 
         Layout.Render(
             gameWorld,
@@ -21,8 +21,32 @@ public class VillageView : IGameView
             ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex,
-            supplementalDetails,
+            supplementalDetailsRenderer: () => RenderSupplementalDetails(gameWorld, selectedCommandLabel),
             showWaveOverview: false,
             showCurrentWave: false);
+    }
+
+    private static void RenderSupplementalDetails(GameWorld gameWorld, string selectedCommandLabel)
+    {
+        WriteVillageDetailLine("Villager Production", $"+{gameWorld.VillagerProduction}", selectedCommandLabel == "Boost Villagers");
+        WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
+        WriteVillageDetailLine("Max Spearmen Capacity", gameWorld.MaxSpearmenPositions.ToString(), selectedCommandLabel == "Boost Capacity");
+    }
+
+    private static void WriteVillageDetailLine(string label, string value, bool showIncrease)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.Write($"{label}: {value}");
+
+        if (showIncrease)
+        {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(" [+1]");
+            Console.ForegroundColor = originalColor;
+        }
+
+        Console.WriteLine();
+        Console.ResetColor();
     }
 }

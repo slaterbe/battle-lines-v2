@@ -18,6 +18,7 @@ public class GameScreenLayoutComponent
         IReadOnlyList<GameCommandOption> commandOptions,
         int selectedCommandIndex,
         string? supplementalDetails = null,
+        Action? supplementalDetailsRenderer = null,
         bool showWaveOverview = true,
         bool showCurrentWave = true)
     {
@@ -29,7 +30,12 @@ public class GameScreenLayoutComponent
         gameHeaderComponent.Render(gameWorld, statusMessage, statusColor, selectedCommandCost);
 
         Console.WriteLine();
-        if (!string.IsNullOrWhiteSpace(supplementalDetails))
+        if (supplementalDetailsRenderer is not null)
+        {
+            supplementalDetailsRenderer();
+            Console.WriteLine();
+        }
+        else if (!string.IsNullOrWhiteSpace(supplementalDetails))
         {
             ConsoleTextComponent.WriteLine(supplementalDetails, ConsoleColor.Cyan);
             Console.WriteLine();
