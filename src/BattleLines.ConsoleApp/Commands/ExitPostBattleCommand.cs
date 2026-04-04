@@ -6,6 +6,7 @@ namespace BattleLines.ConsoleApp.Commands;
 public class ExitPostBattleCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
+    private readonly PlayerArmyBattleService playerArmyBattleService = new();
     private readonly VillageTransitionService villageTransitionService = new();
 
     public GameCommandCategory Category => GameCommandCategory.Battle;
@@ -32,7 +33,7 @@ public class ExitPostBattleCommand : IGameCommand
             ApplyWaveReward(gameWorld);
         }
 
-        ApplyPlayerBattleLosses(gameWorld);
+        playerArmyBattleService.ApplyPlayerBattleLosses(gameWorld);
 
         if (gameWorld.EnemyWaveList.Count > 0)
         {
@@ -40,7 +41,7 @@ public class ExitPostBattleCommand : IGameCommand
         }
 
         gameWorld.PlayerHealthAtBattleStart = 0;
-        gameWorld.SpearmenCountAtBattleStart = 0;
+        gameWorld.PlayerUnitsAtBattleStart.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.PlayerHealthHistory.Clear();
@@ -58,25 +59,6 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorldStatsService.Refresh(gameWorld);
         return false;
     }
-
-    private static void ApplyPlayerBattleLosses(GameWorld gameWorld)
-    {
-        var healthLost = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - gameWorld.PlayerTotalHealth);
-        if (healthLost == 0)
-        {
-            return;
-        }
-
-        if (!UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel) || spearmanModel.Health <= 0)
-        {
-            return;
-        }
-
-        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmenCount);
-        var spearmenLost = healthLost / spearmanModel.Health;
-        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = Math.Max(0, spearmenCount - spearmenLost);
-    }
-
     private static void ApplyWaveReward(GameWorld gameWorld)
     {
         if (gameWorld.EnemyWaveList.Count == 0)

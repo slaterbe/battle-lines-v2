@@ -6,6 +6,6 @@ public class PreWaveController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands()
     {
-        return [new BeginBattleCommand(), new AddSpearmanCommand(), new ReturnToVillageCommand()];
+        return [new BeginBattleCommand(), new AddFighterCommand(), new AddSpearmanCommand(), new ReturnToVillageCommand()];
     }
 }

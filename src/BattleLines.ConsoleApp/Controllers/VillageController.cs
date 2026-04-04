@@ -9,6 +9,7 @@ public class VillageController : GameStateControllerBase
         return
         [
             new StartBattleCommand(),
+            new AddFighterCommand(),
             new AddSpearmanCommand(),
             new IncreaseVillagerProductionCommand(),
             new IncreaseSpearProductionCommand(),

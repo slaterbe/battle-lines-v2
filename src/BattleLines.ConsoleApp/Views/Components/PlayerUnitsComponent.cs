@@ -4,6 +4,12 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class PlayerUnitsComponent
 {
+    private static readonly IReadOnlyDictionary<string, UnitType> CommandUnitPreviews = new Dictionary<string, UnitType>
+    {
+        ["Add Spearmen"] = UnitType.SpearmenLvl1,
+        ["Add Fighter"] = UnitType.Fighter
+    };
+
     public void Render(GameWorld gameWorld, string selectedCommandLabel = "")
     {
         if (gameWorld.PlayerUnits.Count == 0)
@@ -21,11 +27,10 @@ public class PlayerUnitsComponent
 
         var healthIncrease = 0;
         var attackIncrease = 0;
-        if (selectedCommandLabel == "Add Spearmen" &&
-            UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel))
+        if (TryGetPreviewUnitModel(selectedCommandLabel, out var previewUnitModel))
         {
-            healthIncrease = spearmanModel.Health;
-            attackIncrease = spearmanModel.Attack;
+            healthIncrease = previewUnitModel.Health;
+            attackIncrease = previewUnitModel.Attack;
         }
 
         WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), healthIncrease);
@@ -47,5 +52,18 @@ public class PlayerUnitsComponent
 
         Console.WriteLine();
         Console.ResetColor();
+    }
+
+    private static bool TryGetPreviewUnitModel(string selectedCommandLabel, out UnitModel unitModel)
+    {
+        if (CommandUnitPreviews.TryGetValue(selectedCommandLabel, out var unitType) &&
+            UnitCatalog.DefaultUnits.TryGetValue(unitType, out var previewUnitModel))
+        {
+            unitModel = previewUnitModel;
+            return true;
+        }
+
+        unitModel = new UnitModel();
+        return false;
     }
 }

@@ -14,6 +14,11 @@ public static class UnitCatalog
             {
                 Health = 14,
                 Attack = 5
+            },
+            [UnitType.Fighter] = new()
+            {
+                Health = 10,
+                Attack = 3
             }
         };
 }

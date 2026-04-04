@@ -31,10 +31,11 @@ public static class UnitDisplayComponent
             return $"{new string('|', displayedCount)}{new string('O', clampedMaxPositions - displayedCount)}";
         }
 
+        gameWorld.PlayerUnitsAtBattleStart.TryGetValue(UnitType.SpearmenLvl1, out var spearmenAtBattleStart);
         var healthLost = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - gameWorld.PlayerTotalHealth);
-        var spearmenLost = Math.Min(gameWorld.SpearmenCountAtBattleStart, healthLost / spearmanModel.Health);
-        var survivingSpearmen = Math.Max(0, gameWorld.SpearmenCountAtBattleStart - spearmenLost);
-        var emptyPositions = Math.Max(0, clampedMaxPositions - gameWorld.SpearmenCountAtBattleStart);
+        var spearmenLost = Math.Min(spearmenAtBattleStart, healthLost / spearmanModel.Health);
+        var survivingSpearmen = Math.Max(0, spearmenAtBattleStart - spearmenLost);
+        var emptyPositions = Math.Max(0, clampedMaxPositions - spearmenAtBattleStart);
 
         return $"{new string('|', survivingSpearmen)}{new string('X', spearmenLost)}{new string('O', emptyPositions)}";
     }

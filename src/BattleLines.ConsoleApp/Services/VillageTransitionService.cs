@@ -16,7 +16,7 @@ public class VillageTransitionService
         }
 
         gameWorld.PlayerHealthAtBattleStart = 0;
-        gameWorld.SpearmenCountAtBattleStart = 0;
+        gameWorld.PlayerUnitsAtBattleStart.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.PlayerHealthHistory.Clear();

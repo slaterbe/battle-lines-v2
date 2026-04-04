@@ -36,7 +36,7 @@ public class GameWorld
 
     public int PlayerHealthAtBattleStart { get; set; }
 
-    public int SpearmenCountAtBattleStart { get; set; }
+    public Dictionary<UnitType, int> PlayerUnitsAtBattleStart { get; set; } = [];
 
     public List<int> PlayerHealthHistory { get; set; } = [];
 

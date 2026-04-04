@@ -1,9 +1,12 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Services;
 
 namespace BattleLines.ConsoleApp.Commands;
 
 public class BeginBattleCommand : IGameCommand
 {
+    private readonly PlayerArmyBattleService playerArmyBattleService = new();
+
     public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Fight Wave";
     public string HelpText => "Lock in your army and begin the current wave.";
@@ -15,9 +18,7 @@ public class BeginBattleCommand : IGameCommand
             return false;
         }
 
-        gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmenCount);
-        gameWorld.PlayerHealthAtBattleStart = gameWorld.PlayerTotalHealth;
-        gameWorld.SpearmenCountAtBattleStart = spearmenCount;
+        playerArmyBattleService.CaptureBattleStart(gameWorld);
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
