@@ -17,6 +17,7 @@ public abstract class GameStateControllerBase : IGameStateController
     {
         return Commands
             .Select(command => new GameCommandOption(
+                command.Category,
                 command.Label,
                 command.HelpText.ReplaceLineEndings(" "),
                 command.GetCost()))
@@ -40,5 +41,7 @@ public abstract class GameStateControllerBase : IGameStateController
 
     protected abstract IReadOnlyList<IGameCommand> CreateCommands();
 
-    private IReadOnlyList<IGameCommand> Commands => commands ??= CreateCommands();
+    private IReadOnlyList<IGameCommand> Commands => commands ??= CreateCommands()
+        .OrderBy(command => command.Category)
+        .ToArray();
 }

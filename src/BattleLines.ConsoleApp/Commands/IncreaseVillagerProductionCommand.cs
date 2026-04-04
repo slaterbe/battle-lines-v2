@@ -6,6 +6,7 @@ public class IncreaseVillagerProductionCommand : IGameCommand
 {
     private const int GoldCost = 5;
 
+    public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Boost Villagers";
     public string HelpText => $"Spend {GoldCost} gold to increase villager production by 1.";
 

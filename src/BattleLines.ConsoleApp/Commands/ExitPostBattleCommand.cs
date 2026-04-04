@@ -8,6 +8,7 @@ public class ExitPostBattleCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
     private readonly VillageTransitionService villageTransitionService = new();
 
+    public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Continue";
     public string HelpText => "Apply battle results, collect rewards, and move on.";
 

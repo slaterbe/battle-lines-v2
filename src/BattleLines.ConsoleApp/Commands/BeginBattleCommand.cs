@@ -4,6 +4,7 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class BeginBattleCommand : IGameCommand
 {
+    public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Fight Wave";
     public string HelpText => "Lock in your army and begin the current wave.";
 

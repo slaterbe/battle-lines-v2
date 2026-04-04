@@ -4,6 +4,7 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class ExitGameCommand : IGameCommand
 {
+    public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Exit";
     public string HelpText => "Close the game.";
 

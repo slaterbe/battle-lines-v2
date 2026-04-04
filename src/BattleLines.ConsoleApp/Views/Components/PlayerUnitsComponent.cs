@@ -1,27 +1,51 @@
 using BattleLines.ConsoleApp.Models;
-using System.Text;
 
 namespace BattleLines.ConsoleApp.Views.Components;
 
 public class PlayerUnitsComponent
 {
-    public string Render(GameWorld gameWorld)
+    public void Render(GameWorld gameWorld, string selectedCommandLabel = "")
     {
         if (gameWorld.PlayerUnits.Count == 0)
         {
-            return "No player units.";
+            ConsoleTextComponent.WriteLine("No player units.", ConsoleColor.Blue);
+            return;
         }
-
-        var builder = new StringBuilder();
 
         foreach (var playerUnit in gameWorld.PlayerUnits)
         {
-            builder.AppendLine($"{playerUnit.Key}: {UnitDisplayComponent.RenderUnitCount(gameWorld, playerUnit.Key, playerUnit.Value)}");
+            ConsoleTextComponent.WriteLine(
+                $"{playerUnit.Key}: {UnitDisplayComponent.RenderUnitCount(gameWorld, playerUnit.Key, playerUnit.Value)}",
+                ConsoleColor.Blue);
         }
 
-        builder.AppendLine($"Total Health: {BattleHistoryComponent.RenderPlayerHealth(gameWorld)}");
-        builder.AppendLine($"Total Attack: {BattleHistoryComponent.RenderPlayerAttack(gameWorld)}");
+        var healthIncrease = 0;
+        var attackIncrease = 0;
+        if (selectedCommandLabel == "Add Spearmen" &&
+            UnitCatalog.DefaultUnits.TryGetValue(UnitType.SpearmenLvl1, out var spearmanModel))
+        {
+            healthIncrease = spearmanModel.Health;
+            attackIncrease = spearmanModel.Attack;
+        }
 
-        return builder.ToString().TrimEnd();
+        WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), healthIncrease);
+        WritePlayerStatLine("Attack", BattleHistoryComponent.RenderPlayerAttack(gameWorld), attackIncrease);
+    }
+
+    private static void WritePlayerStatLine(string label, string value, int increase)
+    {
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"{label}: {value}");
+
+        if (increase > 0)
+        {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($" [+{increase}]");
+            Console.ForegroundColor = originalColor;
+        }
+
+        Console.WriteLine();
+        Console.ResetColor();
     }
 }

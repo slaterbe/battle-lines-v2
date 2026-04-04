@@ -7,6 +7,7 @@ public class AddSpearmanCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
+    public GameCommandCategory Category => GameCommandCategory.Army;
     public string Label => "Add Spearmen";
     public string HelpText => "Spend 1 villager and 1 spear to recruit a spearman.";
 

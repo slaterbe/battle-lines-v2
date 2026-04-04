@@ -8,13 +8,21 @@ public class CommandMenuComponent
     {
         ConsoleTextComponent.WriteLine("Commands");
 
+        GameCommandCategory? currentCategory = null;
         for (var optionIndex = 0; optionIndex < commandOptions.Count; optionIndex++)
         {
+            var commandOption = commandOptions[optionIndex];
+            if (currentCategory != commandOption.Category)
+            {
+                currentCategory = commandOption.Category;
+                ConsoleTextComponent.WriteLine($"  [{currentCategory}]", ConsoleColor.DarkCyan);
+            }
+
             var isSelected = optionIndex == selectedCommandIndex;
-            var prefix = isSelected ? "> " : "  ";
+            var prefix = isSelected ? "    > " : "      ";
             var color = isSelected ? ConsoleColor.Yellow : ConsoleColor.Gray;
 
-            ConsoleTextComponent.WriteLine($"{prefix}{commandOptions[optionIndex].Label}", color);
+            ConsoleTextComponent.WriteLine($"{prefix}{commandOption.Label}", color);
         }
 
         Console.WriteLine();

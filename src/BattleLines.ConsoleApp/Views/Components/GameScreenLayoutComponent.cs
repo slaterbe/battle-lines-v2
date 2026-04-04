@@ -19,9 +19,15 @@ public class GameScreenLayoutComponent
         int selectedCommandIndex,
         string? supplementalDetails = null,
         Action? supplementalDetailsRenderer = null,
+        Action? playerUnitsRenderer = null,
         bool showWaveOverview = true,
         bool showCurrentWave = true)
     {
+        var selectedCommandLabel =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Label
+                : string.Empty;
+
         var selectedCommandCost =
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Cost
@@ -55,7 +61,15 @@ public class GameScreenLayoutComponent
 
         Console.WriteLine();
         Console.WriteLine();
-        ConsoleTextComponent.WriteLine(playerUnitsComponent.Render(gameWorld), ConsoleColor.Blue);
+        if (playerUnitsRenderer is not null)
+        {
+            playerUnitsRenderer();
+        }
+        else
+        {
+            playerUnitsComponent.Render(gameWorld, selectedCommandLabel);
+        }
+
         Console.WriteLine();
         commandMenuComponent.Render(commandOptions, selectedCommandIndex);
     }

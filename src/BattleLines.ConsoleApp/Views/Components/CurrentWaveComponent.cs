@@ -21,7 +21,7 @@ public class CurrentWaveComponent
                 ConsoleColor.Red);
         }
 
-        ConsoleTextComponent.WriteLine($"Total Health: {BattleHistoryComponent.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
-        ConsoleTextComponent.WriteLine($"Total Attack: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
+        ConsoleTextComponent.WriteLine($"Health: {BattleHistoryComponent.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
+        ConsoleTextComponent.WriteLine($"Attack: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
     }
 }

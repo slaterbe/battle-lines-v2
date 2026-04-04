@@ -7,6 +7,7 @@ public class ReturnToVillageCommand : IGameCommand
 {
     private readonly VillageTransitionService villageTransitionService = new();
 
+    public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Back to Village";
     public string HelpText => "Leave battle prep and return to the village screen.";
 
