@@ -9,6 +9,8 @@ public class IncreaseSpearmenCapacityCommand : IGameCommand
     public string Label => "Boost Capacity";
     public string HelpText => $"Spend {GoldCost} gold to increase spearmen capacity by 1.";
 
+    public GameCommandCost GetCost() => new(Gold: GoldCost);
+
     public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)

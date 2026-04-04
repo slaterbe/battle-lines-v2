@@ -21,7 +21,12 @@ public class GameScreenLayoutComponent
         bool showWaveOverview = true,
         bool showCurrentWave = true)
     {
-        gameHeaderComponent.Render(gameWorld, statusMessage, statusColor);
+        var selectedCommandCost =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Cost
+                : null;
+
+        gameHeaderComponent.Render(gameWorld, statusMessage, statusColor, selectedCommandCost);
 
         Console.WriteLine();
         if (!string.IsNullOrWhiteSpace(supplementalDetails))

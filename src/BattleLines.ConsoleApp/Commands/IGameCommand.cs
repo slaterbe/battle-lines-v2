@@ -8,5 +8,10 @@ public interface IGameCommand
 
     string HelpText { get; }
 
+    GameCommandCost? GetCost()
+    {
+        return null;
+    }
+
     bool Execute(GameWorld gameWorld);
 }

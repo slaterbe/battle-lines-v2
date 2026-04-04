@@ -1,3 +1,3 @@
 namespace BattleLines.ConsoleApp.Commands;
 
-public sealed record GameCommandOption(string Label, string HelpText);
+public sealed record GameCommandOption(string Label, string HelpText, GameCommandCost? Cost);

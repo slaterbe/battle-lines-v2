@@ -9,6 +9,8 @@ public class IncreaseSpearProductionCommand : IGameCommand
     public string Label => "Boost Spears";
     public string HelpText => $"Spend {GoldCost} gold to increase spear production by 1.";
 
+    public GameCommandCost GetCost() => new(Gold: GoldCost);
+
     public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)

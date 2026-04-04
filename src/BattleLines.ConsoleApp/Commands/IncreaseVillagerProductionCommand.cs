@@ -9,6 +9,8 @@ public class IncreaseVillagerProductionCommand : IGameCommand
     public string Label => "Boost Villagers";
     public string HelpText => $"Spend {GoldCost} gold to increase villager production by 1.";
 
+    public GameCommandCost GetCost() => new(Gold: GoldCost);
+
     public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)

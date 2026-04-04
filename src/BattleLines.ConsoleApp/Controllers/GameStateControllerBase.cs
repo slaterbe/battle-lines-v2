@@ -16,7 +16,10 @@ public abstract class GameStateControllerBase : IGameStateController
     public IReadOnlyList<GameCommandOption> GetCommandOptions()
     {
         return Commands
-            .Select(command => new GameCommandOption(command.Label, command.HelpText.ReplaceLineEndings(" ")))
+            .Select(command => new GameCommandOption(
+                command.Label,
+                command.HelpText.ReplaceLineEndings(" "),
+                command.GetCost()))
             .ToArray();
     }
 
