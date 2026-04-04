@@ -30,7 +30,7 @@ public class VillageView : IGameView
     {
         WriteVillageDetailLine("Villager Production", $"+{gameWorld.VillagerProduction}", selectedCommandLabel == "Boost Villagers");
         WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
-        WriteVillageDetailLine("Max Spearmen Capacity", gameWorld.MaxSpearmenPositions.ToString(), selectedCommandLabel == "Boost Capacity");
+        WriteVillageDetailLine("Max Army Size", gameWorld.MaxArmySize.ToString(), selectedCommandLabel == "Boost Army Size");
     }
 
     private static void WriteVillageDetailLine(string label, string value, bool showIncrease)

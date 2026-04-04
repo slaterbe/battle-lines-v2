@@ -7,7 +7,7 @@ public class AddSpearmanCommand : IGameCommand
 {
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
-    public string Label => "Add to Spearmen";
+    public string Label => "Add Spearmen";
     public string HelpText => "Spend 1 villager and 1 spear to recruit a spearman.";
 
     public GameCommandCost GetCost() => new(Villagers: 1, Spears: 1);
@@ -25,7 +25,7 @@ public class AddSpearmanCommand : IGameCommand
         }
 
         gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var currentCount);
-        if (currentCount >= gameWorld.MaxSpearmenPositions)
+        if (currentCount >= gameWorld.MaxArmySize)
         {
             return false;
         }

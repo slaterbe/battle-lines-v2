@@ -53,7 +53,7 @@ public class GameFlowTests
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
 
-        Assert.Equal(8, gameWorld.MaxSpearmenPositions);
+        Assert.Equal(8, gameWorld.MaxArmySize);
     }
 
     [Fact]
@@ -95,14 +95,14 @@ public class GameFlowTests
         var preparationService = new PreparationService();
         var gameWorldFactory = new GameWorldFactory();
         var gameWorld = gameWorldFactory.Create();
-        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxSpearmenPositions;
+        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxArmySize;
         gameWorld.Villagers = 10;
         gameWorld.Spears = 10;
         new GameWorldStatsService().Refresh(gameWorld);
 
         preparationService.AddSpearman(gameWorld);
 
-        Assert.Equal(gameWorld.MaxSpearmenPositions, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(gameWorld.MaxArmySize, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(10, gameWorld.Villagers);
         Assert.Equal(10, gameWorld.Spears);
     }

@@ -16,7 +16,7 @@ public static class UnitDisplayComponent
 
     private static string RenderSpearmenPositions(GameWorld gameWorld, int count)
     {
-        var clampedMaxPositions = Math.Max(0, gameWorld.MaxSpearmenPositions);
+        var clampedMaxPositions = Math.Max(0, gameWorld.MaxArmySize);
         var displayedCount = Math.Clamp(count, 0, clampedMaxPositions);
 
         if (gameWorld.State != GameState.Battle &&

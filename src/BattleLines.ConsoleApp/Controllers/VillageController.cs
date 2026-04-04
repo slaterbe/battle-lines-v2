@@ -12,7 +12,7 @@ public class VillageController : GameStateControllerBase
             new AddSpearmanCommand(),
             new IncreaseVillagerProductionCommand(),
             new IncreaseSpearProductionCommand(),
-            new IncreaseSpearmenCapacityCommand()
+            new IncreaseArmySizeCommand()
         ];
     }
 }
