@@ -1,10 +1,55 @@
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Services;
+using BattleLines.ConsoleApp.Views.Components;
 
 namespace BattleLines.ConsoleApp.Tests;
 
 public class GameFlowTests
 {
+    [Fact]
+    public void RenderUnitCount_ForSpearmen_DisplaysCombinedArmyTotal()
+    {
+        var gameWorld = new GameWorld
+        {
+            MaxArmySize = 8,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.SpearmenLvl1] = 3,
+                [UnitType.Fighter] = 2
+            }
+        };
+
+        var renderedCount = UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.SpearmenLvl1, 3);
+
+        Assert.Equal("|||||OOO", renderedCount);
+    }
+
+    [Fact]
+    public void RenderUnitCount_ForSpearmen_InBattleDisplaysCombinedArmyLosses()
+    {
+        var gameWorld = new GameWorld
+        {
+            MaxArmySize = 8,
+            State = GameState.Battle,
+            PlayerTotalHealth = 48,
+            PlayerHealthAtBattleStart = 62,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.SpearmenLvl1] = 3,
+                [UnitType.Fighter] = 2
+            },
+            PlayerUnitsAtBattleStart = new Dictionary<UnitType, int>
+            {
+                [UnitType.SpearmenLvl1] = 3,
+                [UnitType.Fighter] = 2
+            }
+        };
+
+        var renderedCount = UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.SpearmenLvl1, 3);
+
+        Assert.Equal("||||XOOO", renderedCount);
+    }
+
     [Fact]
     public void Create_StartsPlayerWithFiveSpearmenLvl1()
     {

@@ -20,6 +20,11 @@ public class PlayerUnitsComponent
 
         foreach (var playerUnit in gameWorld.PlayerUnits)
         {
+            if (playerUnit.Key == UnitType.Fighter)
+            {
+                continue;
+            }
+
             ConsoleTextComponent.WriteLine(
                 $"{playerUnit.Key}: {UnitDisplayComponent.RenderUnitCount(gameWorld, playerUnit.Key, playerUnit.Value)}",
                 ConsoleColor.Blue);

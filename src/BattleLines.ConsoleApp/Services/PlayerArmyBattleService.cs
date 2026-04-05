@@ -43,7 +43,7 @@ public class PlayerArmyBattleService
         }
     }
 
-    private IReadOnlyDictionary<UnitType, int> CalculateSurvivingUnits(GameWorld gameWorld)
+    public IReadOnlyDictionary<UnitType, int> CalculateSurvivingUnits(GameWorld gameWorld)
     {
         if (gameWorld.PlayerUnitsAtBattleStart.Count == 0 || gameWorld.PlayerHealthAtBattleStart <= 0)
         {
