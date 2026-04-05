@@ -7,6 +7,11 @@ public static class UnitDisplayComponent
 {
     private static readonly PlayerArmyBattleService PlayerArmyBattleService = new();
 
+    public static string RenderArmyCount(GameWorld gameWorld)
+    {
+        return RenderArmyPositions(gameWorld);
+    }
+
     public static string RenderUnitCount(GameWorld gameWorld, UnitType unitType, int count)
     {
         return unitType switch

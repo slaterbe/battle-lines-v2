@@ -13,7 +13,7 @@ public class WaveOverviewComponent
     private static void RenderWaveProgress(GameWorld gameWorld)
     {
         var totalWaveCount = Math.Max(0, gameWorld.TotalWaveCount);
-        var remainingWaveCount = Math.Max(0, gameWorld.EnemyWaveList.Count);
+        var remainingWaveCount = Math.Max(0, gameWorld.EnemyWaves.Waves.Count);
         var defeatedWaveCount = Math.Max(0, totalWaveCount - remainingWaveCount);
         const int progressBarWidth = 20;
 
@@ -30,12 +30,25 @@ public class WaveOverviewComponent
 
     private static void RenderWaveReward(GameWorld gameWorld)
     {
-        if (gameWorld.EnemyWaveList.Count == 0)
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
+            if (gameWorld.EnemyWaves.FinalRewardAmount > 0)
+            {
+                ConsoleTextComponent.WriteLine(
+                    $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}",
+                    ConsoleColor.Yellow);
+            }
+
             return;
         }
 
-        var currentWave = gameWorld.EnemyWaveList[0];
+        var currentWave = gameWorld.EnemyWaves.Waves[0];
         ConsoleTextComponent.WriteLine($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
+        if (gameWorld.EnemyWaves.FinalRewardAmount > 0)
+        {
+            ConsoleTextComponent.WriteLine(
+                $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}",
+                ConsoleColor.Yellow);
+        }
     }
 }

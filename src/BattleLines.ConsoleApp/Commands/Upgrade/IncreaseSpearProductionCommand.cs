@@ -8,7 +8,7 @@ public class IncreaseSpearProductionCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Boost Spears";
-    public string HelpText => $"Spend {GoldCost} gold to increase spear production by 1.";
+    public string HelpText => $"Spend {GoldCost} gold to increase spear production by 1 and gain 1 spear.";
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
 
@@ -21,6 +21,7 @@ public class IncreaseSpearProductionCommand : IGameCommand
 
         gameWorld.Gold -= GoldCost;
         gameWorld.SpearProduction += 1;
+        gameWorld.Spears += 1;
         return false;
     }
 }

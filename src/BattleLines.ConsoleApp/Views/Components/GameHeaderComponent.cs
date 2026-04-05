@@ -5,29 +5,42 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class GameHeaderComponent
 {
-    public void Render(GameWorld gameWorld, string statusMessage, ConsoleColor statusColor, GameCommandCost? selectedCommandCost)
+    public void Render(
+        GameWorld gameWorld,
+        string statusMessage,
+        ConsoleColor statusColor,
+        GameCommandCost? selectedCommandCost,
+        string selectedCommandLabel)
     {
         Console.Clear();
         Console.SetCursorPosition(0, 0);
 
         ConsoleTextComponent.WriteLine("Battle Lines", ConsoleColor.White);
-        RenderResourceLine(gameWorld, selectedCommandCost);
+        RenderResourceLine(gameWorld, selectedCommandCost, selectedCommandLabel);
         ConsoleTextComponent.WriteLine(new string('=', 80));
         ConsoleTextComponent.WriteLine(statusMessage, statusColor);
     }
 
-    private static void RenderResourceLine(GameWorld gameWorld, GameCommandCost? selectedCommandCost)
+    private static void RenderResourceLine(GameWorld gameWorld, GameCommandCost? selectedCommandCost, string selectedCommandLabel)
     {
-        WriteResource("Villagers", gameWorld.Villagers, selectedCommandCost?.Villagers ?? 0);
+        WriteResource(
+            "Villagers",
+            gameWorld.Villagers,
+            selectedCommandCost?.Villagers ?? 0,
+            selectedCommandLabel == "Boost Villagers" ? 1 : 0);
         Console.Write("    ");
-        WriteResource("Spears", gameWorld.Spears, selectedCommandCost?.Spears ?? 0);
+        WriteResource(
+            "Spears",
+            gameWorld.Spears,
+            selectedCommandCost?.Spears ?? 0,
+            selectedCommandLabel == "Boost Spears" ? 1 : 0);
         Console.Write("    ");
-        WriteResource("Gold", gameWorld.Gold, selectedCommandCost?.Gold ?? 0);
+        WriteResource("Gold", gameWorld.Gold, selectedCommandCost?.Gold ?? 0, 0);
         Console.Write($"    State: {gameWorld.State}        ");
         Console.WriteLine();
     }
 
-    private static void WriteResource(string label, int amount, int cost)
+    private static void WriteResource(string label, int amount, int cost, int increase)
     {
         Console.Write($"{label}: {amount}");
         if (cost > 0)
@@ -35,6 +48,14 @@ public class GameHeaderComponent
             var originalColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write($" [-{cost}]");
+            Console.ForegroundColor = originalColor;
+        }
+
+        if (increase > 0)
+        {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($" [+{increase}]");
             Console.ForegroundColor = originalColor;
         }
     }

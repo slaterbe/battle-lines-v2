@@ -13,7 +13,7 @@ public class StartBattleCommand : IGameCommand
         if (gameWorld.State == GameState.Battle ||
             gameWorld.State == GameState.PostWave ||
             gameWorld.State == GameState.PostBattle ||
-            gameWorld.EnemyWaveList.Count == 0)
+            gameWorld.EnemyWaves.Waves.Count == 0)
         {
             return false;
         }

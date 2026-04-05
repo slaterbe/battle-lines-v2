@@ -33,7 +33,7 @@ public class GameScreenLayoutComponent
                 ? commandOptions[selectedCommandIndex].Cost
                 : null;
 
-        gameHeaderComponent.Render(gameWorld, statusMessage, statusColor, selectedCommandCost);
+        gameHeaderComponent.Render(gameWorld, statusMessage, statusColor, selectedCommandCost, selectedCommandLabel);
 
         Console.WriteLine();
         if (supplementalDetailsRenderer is not null)

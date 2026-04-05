@@ -8,7 +8,7 @@ public class IncreaseVillagerProductionCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Boost Villagers";
-    public string HelpText => $"Spend {GoldCost} gold to increase villager production by 1.";
+    public string HelpText => $"Spend {GoldCost} gold to increase villager production by 1 and gain 1 villager.";
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
 
@@ -21,6 +21,7 @@ public class IncreaseVillagerProductionCommand : IGameCommand
 
         gameWorld.Gold -= GoldCost;
         gameWorld.VillagerProduction += 1;
+        gameWorld.Villagers += 1;
         return false;
     }
 }

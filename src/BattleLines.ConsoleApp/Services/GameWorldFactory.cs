@@ -21,8 +21,8 @@ public class GameWorldFactory
             {
                 [UnitType.SpearmenLvl1] = 5
             },
-            EnemyWaveList = enemyWaves,
-            TotalWaveCount = enemyWaves.Count,
+            EnemyWaves = enemyWaves,
+            TotalWaveCount = enemyWaves.Waves.Count,
             MaxArmySize = 8
         };
 

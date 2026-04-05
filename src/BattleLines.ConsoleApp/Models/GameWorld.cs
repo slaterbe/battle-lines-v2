@@ -16,7 +16,7 @@ public class GameWorld
 
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];
 
-    public List<EnemyWaveModel> EnemyWaveList { get; set; } = [];
+    public EnemyWaveSetModel EnemyWaves { get; set; } = new();
 
     public int TotalWaveCount { get; set; }
 

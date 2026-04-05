@@ -48,14 +48,14 @@ public class GameWorldStatsService
 
     private static int CalculateCurrentWaveTotalHealth(GameWorld gameWorld)
     {
-        if (gameWorld.EnemyWaveList.Count == 0)
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
             return 0;
         }
 
         var totalHealth = 0;
 
-        foreach (var enemy in gameWorld.EnemyWaveList[0].Enemies)
+        foreach (var enemy in gameWorld.EnemyWaves.Waves[0].Enemies)
         {
             if (!UnitCatalog.DefaultUnits.TryGetValue(enemy.EnemyType, out var unitModel))
             {
@@ -70,14 +70,14 @@ public class GameWorldStatsService
 
     private static int CalculateCurrentWaveTotalAttack(GameWorld gameWorld)
     {
-        if (gameWorld.EnemyWaveList.Count == 0)
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
             return 0;
         }
 
         var totalAttack = 0;
 
-        foreach (var enemy in gameWorld.EnemyWaveList[0].Enemies)
+        foreach (var enemy in gameWorld.EnemyWaves.Waves[0].Enemies)
         {
             if (!UnitCatalog.DefaultUnits.TryGetValue(enemy.EnemyType, out var unitModel))
             {

@@ -30,14 +30,19 @@ public class ExitPostBattleCommand : IGameCommand
 
         if (gameWorld.LastBattleWon)
         {
-            ApplyWaveReward(gameWorld);
+            ApplyReward(gameWorld.EnemyWaves.Waves[0].RewardType, gameWorld.EnemyWaves.Waves[0].RewardAmount, gameWorld);
         }
 
         playerArmyBattleService.ApplyPlayerBattleLosses(gameWorld);
 
-        if (gameWorld.EnemyWaveList.Count > 0)
+        if (gameWorld.EnemyWaves.Waves.Count > 0)
         {
-            gameWorld.EnemyWaveList.RemoveAt(0);
+            gameWorld.EnemyWaves.Waves.RemoveAt(0);
+        }
+
+        if (gameWorld.LastBattleWon && gameWorld.EnemyWaves.Waves.Count == 0)
+        {
+            ApplyReward(gameWorld.EnemyWaves.FinalRewardType, gameWorld.EnemyWaves.FinalRewardAmount, gameWorld);
         }
 
         gameWorld.PlayerHealthAtBattleStart = 0;
@@ -59,25 +64,23 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorldStatsService.Refresh(gameWorld);
         return false;
     }
-    private static void ApplyWaveReward(GameWorld gameWorld)
+    private static void ApplyReward(EnemyWaveRewardType rewardType, int rewardAmount, GameWorld gameWorld)
     {
-        if (gameWorld.EnemyWaveList.Count == 0)
+        if (rewardAmount <= 0)
         {
             return;
         }
 
-        var reward = gameWorld.EnemyWaveList[0];
-
-        switch (reward.RewardType)
+        switch (rewardType)
         {
             case EnemyWaveRewardType.Spears:
-                gameWorld.Spears += reward.RewardAmount;
+                gameWorld.Spears += rewardAmount;
                 break;
             case EnemyWaveRewardType.Villagers:
-                gameWorld.Villagers += reward.RewardAmount;
+                gameWorld.Villagers += rewardAmount;
                 break;
             case EnemyWaveRewardType.Gold:
-                gameWorld.Gold += reward.RewardAmount;
+                gameWorld.Gold += rewardAmount;
                 break;
         }
     }

@@ -54,19 +54,19 @@ public class ResolveBattleTickCommand : IGameTickCommand
         }
 
         gameWorld.HasPendingPostBattleResolution = true;
-        gameWorld.State = gameWorld.EnemyWaveList.Count > 1
+        gameWorld.State = gameWorld.EnemyWaves.Waves.Count > 1
             ? GameState.PostWave
             : GameState.PostBattle;
     }
 
     private static int CalculateCurrentWaveAttack(GameWorld gameWorld)
     {
-        if (gameWorld.EnemyWaveList.Count == 0)
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
             return 0;
         }
 
-        var currentWave = gameWorld.EnemyWaveList[0];
+        var currentWave = gameWorld.EnemyWaves.Waves[0];
         if (currentWave.Enemies.Count != 1)
         {
             return gameWorld.CurrentWaveTotalAttack;

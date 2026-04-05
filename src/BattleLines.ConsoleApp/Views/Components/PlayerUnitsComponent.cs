@@ -4,6 +4,12 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class PlayerUnitsComponent
 {
+    private static readonly UnitType[] UnitDisplayOrder =
+    [
+        UnitType.Fighter,
+        UnitType.SpearmenLvl1
+    ];
+
     private static readonly IReadOnlyDictionary<string, UnitType> CommandUnitPreviews = new Dictionary<string, UnitType>
     {
         ["Add Spearmen"] = UnitType.SpearmenLvl1,
@@ -18,17 +24,16 @@ public class PlayerUnitsComponent
             return;
         }
 
-        foreach (var playerUnit in gameWorld.PlayerUnits)
-        {
-            if (playerUnit.Key == UnitType.Fighter)
-            {
-                continue;
-            }
+        ConsoleTextComponent.WriteLine(
+            $"Army: {UnitDisplayComponent.RenderArmyCount(gameWorld)}",
+            ConsoleColor.Blue);
 
-            ConsoleTextComponent.WriteLine(
-                $"{playerUnit.Key}: {UnitDisplayComponent.RenderUnitCount(gameWorld, playerUnit.Key, playerUnit.Value)}",
-                ConsoleColor.Blue);
+        foreach (var unitType in UnitDisplayOrder)
+        {
+            WriteUnitCountLine(gameWorld, unitType);
         }
+
+        ConsoleTextComponent.WriteLine("---", ConsoleColor.Blue);
 
         var healthIncrease = 0;
         var attackIncrease = 0;
@@ -57,6 +62,19 @@ public class PlayerUnitsComponent
 
         Console.WriteLine();
         Console.ResetColor();
+    }
+
+    private static void WriteUnitCountLine(GameWorld gameWorld, UnitType unitType)
+    {
+        gameWorld.PlayerUnits.TryGetValue(unitType, out var count);
+        if (count <= 0)
+        {
+            return;
+        }
+
+        ConsoleTextComponent.WriteLine(
+            $"{UnitTypeDisplayNames.Get(unitType)}: {count}",
+            ConsoleColor.Blue);
     }
 
     private static bool TryGetPreviewUnitModel(string selectedCommandLabel, out UnitModel unitModel)
