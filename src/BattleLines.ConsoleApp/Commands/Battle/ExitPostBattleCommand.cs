@@ -45,6 +45,8 @@ public class ExitPostBattleCommand : IGameCommand
             ApplyReward(gameWorld.EnemyWaves.FinalRewardType, gameWorld.EnemyWaves.FinalRewardAmount, gameWorld);
         }
 
+        gameWorld.WavePosition = GetCurrentWavePosition(gameWorld);
+
         gameWorld.PlayerHealthAtBattleStart = 0;
         gameWorld.PlayerUnitsAtBattleStart.Clear();
         gameWorld.LastBattleWon = false;
@@ -83,5 +85,17 @@ public class ExitPostBattleCommand : IGameCommand
                 gameWorld.Gold += rewardAmount;
                 break;
         }
+    }
+
+    private static int GetCurrentWavePosition(GameWorld gameWorld)
+    {
+        var remainingWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        if (remainingWaveCount <= 0)
+        {
+            return 0;
+        }
+
+        var defeatedWaveCount = Math.Max(0, gameWorld.TotalWaveCount - remainingWaveCount);
+        return defeatedWaveCount + 1;
     }
 }

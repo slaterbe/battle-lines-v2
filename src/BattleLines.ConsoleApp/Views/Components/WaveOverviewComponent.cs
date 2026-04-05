@@ -14,7 +14,10 @@ public class WaveOverviewComponent
     {
         var totalWaveCount = Math.Max(0, gameWorld.TotalWaveCount);
         var remainingWaveCount = Math.Max(0, gameWorld.EnemyWaves.Waves.Count);
-        var defeatedWaveCount = Math.Max(0, totalWaveCount - remainingWaveCount);
+        var currentWavePosition = Math.Clamp(gameWorld.WavePosition, 0, totalWaveCount);
+        var defeatedWaveCount = currentWavePosition == 0
+            ? 0
+            : Math.Max(0, currentWavePosition - 1);
         const int progressBarWidth = 20;
 
         var filledSegments = totalWaveCount == 0

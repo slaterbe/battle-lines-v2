@@ -23,6 +23,8 @@ public class GameWorldFactory
             },
             EnemyWaves = enemyWaves,
             TotalWaveCount = enemyWaves.Waves.Count,
+            WavePosition = 0,
+            BattlePosition = 0,
             MaxArmySize = 8
         };
 

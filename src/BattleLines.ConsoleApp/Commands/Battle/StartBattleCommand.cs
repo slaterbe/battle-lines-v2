@@ -18,7 +18,20 @@ public class StartBattleCommand : IGameCommand
             return false;
         }
 
+        gameWorld.WavePosition = GetCurrentWavePosition(gameWorld);
         gameWorld.State = GameState.PreBattle;
         return false;
+    }
+
+    private static int GetCurrentWavePosition(GameWorld gameWorld)
+    {
+        var remainingWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        if (remainingWaveCount <= 0)
+        {
+            return 0;
+        }
+
+        var defeatedWaveCount = Math.Max(0, gameWorld.TotalWaveCount - remainingWaveCount);
+        return defeatedWaveCount + 1;
     }
 }

@@ -25,6 +25,8 @@ public class VillageTransitionService
         gameWorld.EnemyAttackHistory.Clear();
         gameWorld.EnemyWaves = enemyWaveFactory.CreateGiantRatWaves();
         gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        gameWorld.WavePosition = 0;
+        gameWorld.BattlePosition = 0;
         gameWorld.State = GameState.Village;
         gameWorldStatsService.Refresh(gameWorld);
     }

@@ -20,6 +20,10 @@ public class GameWorld
 
     public int TotalWaveCount { get; set; }
 
+    public int WavePosition { get; set; }
+
+    public int BattlePosition { get; set; }
+
     public int MaxArmySize { get; set; }
 
     public int PlayerTotalHealth { get; set; }
