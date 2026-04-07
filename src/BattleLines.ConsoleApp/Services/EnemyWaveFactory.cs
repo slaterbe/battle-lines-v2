@@ -4,275 +4,68 @@ namespace BattleLines.ConsoleApp.Services;
 
 public class EnemyWaveFactory
 {
-    public EnemyWaveSetModel CreateGiantRatWaves()
+    public EnemyWaveSetModel CreateBattle(int battlePosition)
+    {
+        return battlePosition switch
+        {
+            1 => CreateBattleOneWaves(),
+            2 => CreateBattleTwoWaves(),
+            _ => new EnemyWaveSetModel()
+        };
+    }
+
+    public bool HasBattle(int battlePosition)
+    {
+        return battlePosition is 1 or 2;
+    }
+
+    private static EnemyWaveSetModel CreateBattleOneWaves()
     {
         return new EnemyWaveSetModel
         {
-            FinalRewardType = EnemyWaveRewardType.Gold,
-            FinalRewardAmount = 100,
             Waves =
             [
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 3
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 2
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 5
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 5
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 7
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 4
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 9
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 7
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 11
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 5
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 13
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 10
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 15
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 7
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 18
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 8
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 21
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 13
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 24
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 9
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 27
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 10
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 30
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 17
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 34
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 11
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 38
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 12
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 42
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 23
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 46
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 13
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 50
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 15
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 55
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 30
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 66
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Spears,
-                    RewardAmount = 18
-                },
-                new EnemyWaveModel
-                {
-                    Enemies =
-                    [
-                        new EnemyWaveUnitModel
-                        {
-                            EnemyType = UnitType.GiantRat,
-                            Count = 72
-                        }
-                    ],
-                    RewardType = EnemyWaveRewardType.Gold,
-                    RewardAmount = 39
-                }
+                CreateWave(3, EnemyWaveRewardType.Gold, 5),
+                CreateWave(5, EnemyWaveRewardType.Gold, 10),
+                CreateWave(7, EnemyWaveRewardType.Gold, 15),
+                CreateWave(9, EnemyWaveRewardType.Gold, 20),
+                CreateWave(11, EnemyWaveRewardType.Gold, 25)
             ]
+        };
+    }
+
+    private static EnemyWaveSetModel CreateBattleTwoWaves()
+    {
+        return new EnemyWaveSetModel
+        {
+            Waves =
+            [
+                CreateWave(6, EnemyWaveRewardType.Gold, 10),
+                CreateWave(8, EnemyWaveRewardType.Spears, 2),
+                CreateWave(10, EnemyWaveRewardType.Gold, 15),
+                CreateWave(12, EnemyWaveRewardType.Spears, 3),
+                CreateWave(14, EnemyWaveRewardType.Gold, 20),
+                CreateWave(16, EnemyWaveRewardType.Spears, 4),
+                CreateWave(18, EnemyWaveRewardType.Gold, 25),
+                CreateWave(20, EnemyWaveRewardType.Spears, 5)
+            ]
+        };
+    }
+
+    private static EnemyWaveModel CreateWave(int enemyCount, EnemyWaveRewardType rewardType, int rewardAmount)
+    {
+        return new EnemyWaveModel
+        {
+            Enemies =
+            [
+                new EnemyWaveUnitModel
+                {
+                    EnemyType = UnitType.GiantRat,
+                    Count = enemyCount
+                }
+            ],
+            RewardType = rewardType,
+            RewardAmount = rewardAmount
         };
     }
 }

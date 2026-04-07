@@ -63,10 +63,8 @@ public class GameScreenLayoutComponent
         if (showCurrentWave)
         {
             currentWaveComponent.Render(gameWorld);
-            Console.WriteLine();
         }
 
-        Console.WriteLine();
         Console.WriteLine();
         if (playerUnitsRenderer is not null)
         {

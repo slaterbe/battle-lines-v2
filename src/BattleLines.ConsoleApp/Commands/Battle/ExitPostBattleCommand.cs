@@ -15,6 +15,7 @@ public class ExitPostBattleCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
+        var battleWon = gameWorld.LastBattleWon;
         var nextState = gameWorld.State switch
         {
             GameState.PostWave => GameState.PreBattle,
@@ -28,7 +29,7 @@ public class ExitPostBattleCommand : IGameCommand
             return false;
         }
 
-        if (gameWorld.LastBattleWon)
+        if (battleWon)
         {
             ApplyReward(gameWorld.EnemyWaves.Waves[0].RewardType, gameWorld.EnemyWaves.Waves[0].RewardAmount, gameWorld);
         }
@@ -40,7 +41,7 @@ public class ExitPostBattleCommand : IGameCommand
             gameWorld.EnemyWaves.Waves.RemoveAt(0);
         }
 
-        if (gameWorld.LastBattleWon && gameWorld.EnemyWaves.Waves.Count == 0)
+        if (battleWon && gameWorld.EnemyWaves.Waves.Count == 0)
         {
             ApplyReward(gameWorld.EnemyWaves.FinalRewardType, gameWorld.EnemyWaves.FinalRewardAmount, gameWorld);
         }
@@ -58,7 +59,7 @@ public class ExitPostBattleCommand : IGameCommand
 
         if (nextState == GameState.Village)
         {
-            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true);
+            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true, advanceBattle: battleWon);
             return false;
         }
 

@@ -15,6 +15,10 @@ public class VillageView : IGameView
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Label
                 : string.Empty;
+        var selectedCommandCost =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Cost
+                : null;
 
         Layout.Render(
             gameWorld,
@@ -22,38 +26,100 @@ public class VillageView : IGameView
             ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex,
-            supplementalDetailsRenderer: () => RenderSupplementalDetails(gameWorld, selectedCommandLabel),
+            supplementalDetailsRenderer: () => RenderSupplementalDetails(gameWorld, selectedCommandLabel, selectedCommandCost),
             playerUnitsRenderer: () => PlayerUnits.Render(gameWorld, selectedCommandLabel),
+            showResources: false,
             showWaveOverview: false,
             showCurrentWave: false);
     }
 
-    private static void RenderSupplementalDetails(GameWorld gameWorld, string selectedCommandLabel)
+    private static void RenderSupplementalDetails(
+        GameWorld gameWorld,
+        string selectedCommandLabel,
+        GameCommandCost? selectedCommandCost)
     {
-        WriteVillageDetailLine("Villager Production", $"+{gameWorld.VillagerProduction}", selectedCommandLabel == "Boost Villagers");
+        ConsoleTextComponent.WriteLine("-------------------------------------", ConsoleColor.DarkGray);
+        ConsoleTextComponent.WriteLine("Resource   | Storage         Production", ConsoleColor.DarkYellow);
+        ConsoleTextComponent.WriteLine("---------------------------------------", ConsoleColor.DarkGray);
+
+        WriteVillageResourceRow(
+            "Villagers",
+            gameWorld.Villagers,
+            selectedCommandCost?.Villagers ?? 0,
+            gameWorld.VillagerProduction,
+            selectedCommandLabel == "Boost Villagers");
 
         if (gameWorld.IsSpearControlsVisible)
         {
-            WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
+            WriteVillageResourceRow(
+                "Spears",
+                gameWorld.Spears,
+                selectedCommandCost?.Spears ?? 0,
+                gameWorld.SpearProduction,
+                selectedCommandLabel == "Boost Spears");
         }
 
-        WriteVillageDetailLine("Max Army Size", gameWorld.MaxArmySize.ToString(), selectedCommandLabel == "Boost Army Size");
-    }
-
-    private static void WriteVillageDetailLine(string label, string value, bool showIncrease)
-    {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.Write($"{label}: {value}");
-
-        if (showIncrease)
+        if (gameWorld.IsUpgradesVisible)
         {
-            var originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(" [+1]");
-            Console.ForegroundColor = originalColor;
+            WriteVillageResourceRow(
+                "Gold",
+                gameWorld.Gold,
+                selectedCommandCost?.Gold ?? 0,
+                null,
+                false);
         }
 
         Console.WriteLine();
-        Console.ResetColor();
+        WriteVillageStatLine("Max Army Size", gameWorld.MaxArmySize.ToString(), selectedCommandLabel == "Boost Army Size");
+    }
+
+    private static void WriteVillageResourceRow(
+        string label,
+        int storedAmount,
+        int storageCost,
+        int? productionAmount,
+        bool showProductionIncrease)
+    {
+        ConsoleTextComponent.Write($"{label,-10} | ", ConsoleColor.Cyan);
+        ConsoleTextComponent.Write($"{storedAmount,3}", ConsoleColor.Gray);
+
+        if (storageCost > 0)
+        {
+            ConsoleTextComponent.Write($" [-{storageCost}]", ConsoleColor.Red);
+        }
+        else
+        {
+            ConsoleTextComponent.Write("      ");
+        }
+
+        ConsoleTextComponent.Write("     ");
+
+        if (productionAmount.HasValue)
+        {
+            ConsoleTextComponent.Write($"{("+" + productionAmount.Value),5}", ConsoleColor.Green);
+        }
+        else
+        {
+            ConsoleTextComponent.Write($"{ "--",5}", ConsoleColor.DarkGray);
+        }
+
+        if (showProductionIncrease)
+        {
+            ConsoleTextComponent.Write(" [+1]", ConsoleColor.Green);
+        }
+
+        Console.WriteLine();
+    }
+
+    private static void WriteVillageStatLine(string label, string value, bool showIncrease)
+    {
+        ConsoleTextComponent.Write($"{label}: {value}", ConsoleColor.Cyan);
+
+        if (showIncrease)
+        {
+            ConsoleTextComponent.Write(" [+1]", ConsoleColor.Green);
+        }
+
+        Console.WriteLine();
     }
 }

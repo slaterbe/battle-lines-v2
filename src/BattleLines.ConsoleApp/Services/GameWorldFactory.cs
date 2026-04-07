@@ -9,7 +9,8 @@ public class GameWorldFactory
 
     public GameWorld Create(bool skipIntroduction = false)
     {
-        var enemyWaves = enemyWaveFactory.CreateGiantRatWaves();
+        const int startingBattlePosition = 1;
+        var enemyWaves = enemyWaveFactory.CreateBattle(startingBattlePosition);
         var gameWorld = new GameWorld
         {
             IsSkipIntroduction = skipIntroduction,
@@ -30,7 +31,7 @@ public class GameWorldFactory
             EnemyWaves = enemyWaves,
             TotalWaveCount = enemyWaves.Waves.Count,
             WavePosition = 0,
-            BattlePosition = 0,
+            BattlePosition = startingBattlePosition,
             MaxArmySize = 8
         };
 
