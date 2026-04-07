@@ -5,7 +5,7 @@ namespace BattleLines.ConsoleApp.Controllers;
 
 public interface IGameStateController
 {
-    IReadOnlyList<GameCommandOption> GetCommandOptions();
+    IReadOnlyList<GameCommandOption> GetCommandOptions(GameWorld gameWorld);
 
     bool HandleCommand(GameWorld gameWorld, int selectedCommandIndex);
 

@@ -45,6 +45,7 @@ public class ResolveBattleTickCommand : IGameTickCommand
             return;
         }
 
+        gameWorld.AreUpgradesAvailable = true;
         gameWorld.LastBattleWon = gameWorld.CurrentWaveTotalHealth == 0;
         if (!gameWorld.LastBattleWon)
         {

@@ -18,11 +18,8 @@ public class PlayerUnitsComponent
 
     public void Render(GameWorld gameWorld, string selectedCommandLabel = "")
     {
-        if (gameWorld.PlayerUnits.Count == 0)
-        {
-            ConsoleTextComponent.WriteLine("No player units.", ConsoleColor.Blue);
-            return;
-        }
+        TryGetPreviewUnitModel(selectedCommandLabel, out var previewUnitModel);
+        var previewUnitType = GetPreviewUnitType(selectedCommandLabel);
 
         ConsoleTextComponent.WriteLine(
             $"Army: {UnitDisplayComponent.RenderArmyCount(gameWorld)}",
@@ -30,21 +27,13 @@ public class PlayerUnitsComponent
 
         foreach (var unitType in UnitDisplayOrder)
         {
-            WriteUnitCountLine(gameWorld, unitType);
+            WriteUnitCountLine(gameWorld, unitType, previewUnitType == unitType ? 1 : 0);
         }
 
         ConsoleTextComponent.WriteLine("---", ConsoleColor.Blue);
 
-        var healthIncrease = 0;
-        var attackIncrease = 0;
-        if (TryGetPreviewUnitModel(selectedCommandLabel, out var previewUnitModel))
-        {
-            healthIncrease = previewUnitModel.Health;
-            attackIncrease = previewUnitModel.Attack;
-        }
-
-        WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), healthIncrease);
-        WritePlayerStatLine("Attack", BattleHistoryComponent.RenderPlayerAttack(gameWorld), attackIncrease);
+        WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), previewUnitModel.Health);
+        WritePlayerStatLine("Attack", BattleHistoryComponent.RenderPlayerAttack(gameWorld), previewUnitModel.Attack);
     }
 
     private static void WritePlayerStatLine(string label, string value, int increase)
@@ -64,17 +53,27 @@ public class PlayerUnitsComponent
         Console.ResetColor();
     }
 
-    private static void WriteUnitCountLine(GameWorld gameWorld, UnitType unitType)
+    private static void WriteUnitCountLine(GameWorld gameWorld, UnitType unitType, int increase)
     {
         gameWorld.PlayerUnits.TryGetValue(unitType, out var count);
-        if (count <= 0)
+        if (count <= 0 && increase <= 0)
         {
             return;
         }
 
-        ConsoleTextComponent.WriteLine(
-            $"{UnitTypeDisplayNames.Get(unitType)}: {count}",
-            ConsoleColor.Blue);
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.Write($"{UnitTypeDisplayNames.Get(unitType)}: {count}");
+
+        if (increase > 0)
+        {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($" [+{increase}]");
+            Console.ForegroundColor = originalColor;
+        }
+
+        Console.WriteLine();
+        Console.ResetColor();
     }
 
     private static bool TryGetPreviewUnitModel(string selectedCommandLabel, out UnitModel unitModel)
@@ -88,5 +87,12 @@ public class PlayerUnitsComponent
 
         unitModel = new UnitModel();
         return false;
+    }
+
+    private static UnitType? GetPreviewUnitType(string selectedCommandLabel)
+    {
+        return CommandUnitPreviews.TryGetValue(selectedCommandLabel, out var unitType)
+            ? unitType
+            : null;
     }
 }

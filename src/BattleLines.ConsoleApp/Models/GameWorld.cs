@@ -38,6 +38,8 @@ public class GameWorld
 
     public bool HasPendingPostBattleResolution { get; set; }
 
+    public bool AreUpgradesAvailable { get; set; }
+
     public int PlayerHealthAtBattleStart { get; set; }
 
     public Dictionary<UnitType, int> PlayerUnitsAtBattleStart { get; set; } = [];

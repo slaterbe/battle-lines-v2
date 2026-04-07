@@ -5,7 +5,6 @@ namespace BattleLines.ConsoleApp.Controllers;
 
 public abstract class GameStateControllerBase : IGameStateController
 {
-    private IReadOnlyList<IGameCommand>? commands;
     private readonly IGameTickCommand? tickCommand;
 
     protected GameStateControllerBase(IGameTickCommand? tickCommand = null)
@@ -13,9 +12,9 @@ public abstract class GameStateControllerBase : IGameStateController
         this.tickCommand = tickCommand;
     }
 
-    public IReadOnlyList<GameCommandOption> GetCommandOptions()
+    public IReadOnlyList<GameCommandOption> GetCommandOptions(GameWorld gameWorld)
     {
-        return Commands
+        return GetCommands(gameWorld)
             .Select(command => new GameCommandOption(
                 command.Category,
                 command.Label,
@@ -26,12 +25,13 @@ public abstract class GameStateControllerBase : IGameStateController
 
     public bool HandleCommand(GameWorld gameWorld, int selectedCommandIndex)
     {
-        if (selectedCommandIndex < 0 || selectedCommandIndex >= Commands.Count)
+        var commands = GetCommands(gameWorld);
+        if (selectedCommandIndex < 0 || selectedCommandIndex >= commands.Count)
         {
             return false;
         }
 
-        return Commands[selectedCommandIndex].Execute(gameWorld);
+        return commands[selectedCommandIndex].Execute(gameWorld);
     }
 
     public void Tick(GameWorld gameWorld)
@@ -39,9 +39,9 @@ public abstract class GameStateControllerBase : IGameStateController
         tickCommand?.Execute(gameWorld);
     }
 
-    protected abstract IReadOnlyList<IGameCommand> CreateCommands();
+    protected abstract IReadOnlyList<IGameCommand> CreateCommands(GameWorld gameWorld);
 
-    private IReadOnlyList<IGameCommand> Commands => commands ??= CreateCommands()
+    private IReadOnlyList<IGameCommand> GetCommands(GameWorld gameWorld) => CreateCommands(gameWorld)
         .OrderBy(command => command.Category)
         .ToArray();
 }

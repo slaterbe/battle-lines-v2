@@ -33,7 +33,7 @@ public static class Program
                 {
                     var key = Console.ReadKey(intercept: true).Key;
                     var activeController = controllerFactory.GetController(gameWorld.State);
-                    var availableCommands = activeController.GetCommandOptions();
+                    var availableCommands = activeController.GetCommandOptions(gameWorld);
 
                     switch (key)
                     {
@@ -70,7 +70,7 @@ public static class Program
                     previousGameState = gameWorld.State;
                 }
 
-                var commandOptions = controllerFactory.GetController(gameWorld.State).GetCommandOptions();
+                var commandOptions = controllerFactory.GetController(gameWorld.State).GetCommandOptions(gameWorld);
                 if (commandOptions.Count == 0)
                 {
                     selectedCommandIndex = 0;

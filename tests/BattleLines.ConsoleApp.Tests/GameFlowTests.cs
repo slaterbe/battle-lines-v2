@@ -1,3 +1,4 @@
+using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Services;
 using BattleLines.ConsoleApp.Views.Components;
@@ -53,9 +54,7 @@ public class GameFlowTests
     [Fact]
     public void Create_StartsPlayerWithFiveSpearmenLvl1()
     {
-        var gameWorldFactory = new GameWorldFactory();
-
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
         Assert.True(gameWorld.PlayerUnits.TryGetValue(UnitType.SpearmenLvl1, out var count));
         Assert.Equal(5, count);
@@ -64,9 +63,7 @@ public class GameFlowTests
     [Fact]
     public void Create_PopulatesAggregatedCombatStats()
     {
-        var gameWorldFactory = new GameWorldFactory();
-
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
         Assert.Equal(25, gameWorld.PlayerTotalAttack);
@@ -75,41 +72,20 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void Tick_DoesNotIncrementResources_InVillageState()
+    public void Create_StartsWithEightArmyPositions()
     {
-        var preparationService = new PreparationService();
-        var gameWorld = new GameWorld
-        {
-            Villagers = 10,
-            Spears = 5,
-            VillagerProduction = 2,
-            SpearProduction = 1
-        };
-
-        preparationService.Tick(gameWorld);
-
-        Assert.Equal(10, gameWorld.Villagers);
-        Assert.Equal(5, gameWorld.Spears);
-    }
-
-    [Fact]
-    public void Create_StartsWithEightSpearmenPositions()
-    {
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
         Assert.Equal(8, gameWorld.MaxArmySize);
     }
 
     [Fact]
-    public void AddSpearman_DoesNothing_OutsideVillageState()
+    public void AddSpearman_DoesNothing_OutsideVillageAndPreBattle()
     {
-        var preparationService = new PreparationService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
         gameWorld.State = GameState.Battle;
 
-        preparationService.AddSpearman(gameWorld);
+        new AddSpearmanCommand().Execute(gameWorld);
 
         Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
@@ -119,13 +95,11 @@ public class GameFlowTests
     [Fact]
     public void AddSpearman_DoesNothing_WhenPlayerCannotPayCost()
     {
-        var preparationService = new PreparationService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
         gameWorld.Villagers = 0;
         gameWorld.Spears = 0;
 
-        preparationService.AddSpearman(gameWorld);
+        new AddSpearmanCommand().Execute(gameWorld);
 
         Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(0, gameWorld.Villagers);
@@ -135,17 +109,15 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void AddSpearman_DoesNothing_WhenSpearmenPositionsAreFull()
+    public void AddSpearman_DoesNothing_WhenArmyIsFull()
     {
-        var preparationService = new PreparationService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxArmySize;
         gameWorld.Villagers = 10;
         gameWorld.Spears = 10;
         new GameWorldStatsService().Refresh(gameWorld);
 
-        preparationService.AddSpearman(gameWorld);
+        new AddSpearmanCommand().Execute(gameWorld);
 
         Assert.Equal(gameWorld.MaxArmySize, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(10, gameWorld.Villagers);
@@ -155,11 +127,9 @@ public class GameFlowTests
     [Fact]
     public void StartBattle_SetsGameStateToPreBattle()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
-        battleService.StartBattle(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.PreBattle, gameWorld.State);
     }
@@ -167,28 +137,24 @@ public class GameFlowTests
     [Fact]
     public void BeginBattle_SetsGameStateToBattle()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
-        battleService.StartBattle(gameWorld);
-        battleService.BeginBattle(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Battle, gameWorld.State);
         Assert.Equal(70, gameWorld.PlayerHealthAtBattleStart);
     }
 
     [Fact]
-    public void ResetCurrentWave_ReturnsToVillageAndRestoresWaveStats()
+    public void ReturnToVillage_ReturnsToVillageAndRestoresWaveStats()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
-        battleService.StartBattle(gameWorld);
-        battleService.BeginBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
-        battleService.ResetCurrentWave(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
+        new ReturnToVillageCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
         Assert.Equal(24, gameWorld.CurrentWaveTotalHealth);
@@ -201,12 +167,11 @@ public class GameFlowTests
     [Fact]
     public void ResolveBattleTick_InBattleState_DealsDamageToBothSides()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
-        battleService.StartBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
 
         Assert.Equal(61, gameWorld.PlayerTotalHealth);
         Assert.Equal(0, gameWorld.CurrentWaveTotalHealth);
@@ -215,15 +180,13 @@ public class GameFlowTests
     [Fact]
     public void ResolveBattleTick_RecalculatesPlayerAndWaveAttackEachTick()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
-        gameWorld.EnemyWaveList[0].Enemies[0].Count = 10;
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.EnemyWaves.Waves[0].Enemies[0].Count = 10;
         new GameWorldStatsService().Refresh(gameWorld);
 
-        battleService.StartBattle(gameWorld);
-        battleService.BeginBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
 
         Assert.Equal(55, gameWorld.CurrentWaveTotalHealth);
         Assert.Equal(40, gameWorld.PlayerTotalHealth);
@@ -234,93 +197,88 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void ResolveBattleTick_WhenBattleEnds_MovesToPostBattleStateWithoutAdvancingWave()
+    public void ResolveBattleTick_WhenFinalBattleEnds_MovesToPostBattleStateWithoutAdvancingWave()
     {
-        var battleService = new BattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.EnemyWaves.Waves.RemoveRange(1, gameWorld.EnemyWaves.Waves.Count - 1);
+        gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
 
-        battleService.StartBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.PostBattle, gameWorld.State);
         Assert.True(gameWorld.LastBattleWon);
         Assert.True(gameWorld.HasPendingPostBattleResolution);
-        Assert.Equal(5, gameWorld.EnemyWaveList.Count);
+        Assert.Single(gameWorld.EnemyWaves.Waves);
         Assert.Equal(0, gameWorld.CurrentWaveTotalHealth);
     }
 
     [Fact]
-    public void ExitBattleScreen_AppliesRewardAndAdvancesToNextWave()
+    public void ExitPostBattle_AppliesRewardAndReturnsToVillage()
     {
-        var battleService = new BattleService();
-        var postBattleService = new PostBattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.EnemyWaves.Waves.RemoveRange(1, gameWorld.EnemyWaves.Waves.Count - 1);
+        gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
 
-        battleService.StartBattle(gameWorld);
-        battleService.BeginBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
-        postBattleService.ExitBattleScreen(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Equal(4, gameWorld.EnemyWaveList.Count);
-        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Empty(gameWorld.EnemyWaves.Waves);
         Assert.Equal(10, gameWorld.Spears);
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
         Assert.Equal(25, gameWorld.PlayerTotalAttack);
-        Assert.Equal(40, gameWorld.CurrentWaveTotalHealth);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 
     [Fact]
-    public void ExitBattleScreen_DoesNothing_IfBattleScreenIsStillActive()
+    public void ExitPostBattle_DoesNothing_OutsidePostBattleStates()
     {
-        var postBattleService = new PostBattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
 
-        postBattleService.ExitBattleScreen(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Equal(5, gameWorld.EnemyWaveList.Count);
+        Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
     }
 
     [Fact]
-    public void ExitBattleScreen_RunsOnlyOnceAfterBattle()
+    public void ExitPostBattle_RunsOnlyOnceAfterBattle()
     {
-        var battleService = new BattleService();
-        var postBattleService = new PostBattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.EnemyWaves.Waves.RemoveRange(1, gameWorld.EnemyWaves.Waves.Count - 1);
+        gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
+        new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
 
-        battleService.StartBattle(gameWorld);
-        battleService.BeginBattle(gameWorld);
-        battleService.ResolveBattleTick(gameWorld);
-        postBattleService.ExitBattleScreen(gameWorld);
-        postBattleService.ExitBattleScreen(gameWorld);
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+        new ResolveBattleTickCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(10, gameWorld.Spears);
-        Assert.Equal(4, gameWorld.EnemyWaveList.Count);
-        Assert.Equal(5, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Empty(gameWorld.EnemyWaves.Waves);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 
     [Fact]
-    public void ExitBattleScreen_ReducesSpearmenByWholeUnitsLostFromHealthLost()
+    public void ExitPostBattle_ReducesSpearmenByWholeUnitsLostFromHealthLost()
     {
-        var postBattleService = new PostBattleService();
-        var gameWorldFactory = new GameWorldFactory();
-        var gameWorld = gameWorldFactory.Create();
+        var gameWorld = new GameWorldFactory().Create();
         gameWorld.State = GameState.PostBattle;
         gameWorld.HasPendingPostBattleResolution = true;
         gameWorld.PlayerHealthAtBattleStart = 70;
         gameWorld.PlayerTotalHealth = 42;
 
-        postBattleService.ExitBattleScreen(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(3, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
     }

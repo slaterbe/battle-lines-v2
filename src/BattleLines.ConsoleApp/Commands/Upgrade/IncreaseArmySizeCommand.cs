@@ -14,7 +14,7 @@ public class IncreaseArmySizeCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)
+        if (!gameWorld.AreUpgradesAvailable || gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)
         {
             return false;
         }
