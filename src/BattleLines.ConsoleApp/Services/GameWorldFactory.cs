@@ -15,12 +15,13 @@ public class GameWorldFactory
             IsSkipIntroduction = false,
             IsSpearControlsVisible = false,
             IsUpgradesVisible = false,
+            IsIntroductionTextFullyRevealed = false,
             FightersCreated = 0,
             Villagers = 5,
             Spears = 0,
             VillagerProduction = 2,
             SpearProduction = 1,
-            State = GameState.Village,
+            State = GameState.Introduction,
             PlayerUnits = new Dictionary<UnitType, int>
             {
                 [UnitType.Fighter] = 1,
@@ -32,6 +33,11 @@ public class GameWorldFactory
             BattlePosition = 0,
             MaxArmySize = 8
         };
+
+        if (gameWorld.IsSkipIntroduction)
+        {
+            gameWorld.State = GameState.Village;
+        }
 
         gameWorldStatsService.Refresh(gameWorld);
 

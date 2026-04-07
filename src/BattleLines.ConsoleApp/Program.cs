@@ -10,6 +10,7 @@ public static class Program
     public static void Main()
     {
         var controllerFactory = new GameStateControllerFactory(
+            new IntroductionController(),
             new VillageController(),
             new PreWaveController(),
             new WaveController(),

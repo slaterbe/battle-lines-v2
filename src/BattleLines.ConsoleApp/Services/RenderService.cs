@@ -12,6 +12,7 @@ public class RenderService
     {
         views = new Dictionary<GameState, IGameView>
         {
+            [GameState.Introduction] = new IntroductionView(),
             [GameState.Village] = new VillageView(),
             [GameState.PreBattle] = new PreWaveView(),
             [GameState.Battle] = new WaveView(),

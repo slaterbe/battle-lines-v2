@@ -20,6 +20,7 @@ public class GameScreenLayoutComponent
         string? supplementalDetails = null,
         Action? supplementalDetailsRenderer = null,
         Action? playerUnitsRenderer = null,
+        bool showResources = true,
         bool showWaveOverview = true,
         bool showCurrentWave = true)
     {
@@ -33,7 +34,13 @@ public class GameScreenLayoutComponent
                 ? commandOptions[selectedCommandIndex].Cost
                 : null;
 
-        gameHeaderComponent.Render(gameWorld, statusMessage, statusColor, selectedCommandCost, selectedCommandLabel);
+        gameHeaderComponent.Render(
+            gameWorld,
+            statusMessage,
+            statusColor,
+            selectedCommandCost,
+            selectedCommandLabel,
+            showResources);
 
         Console.WriteLine();
         if (supplementalDetailsRenderer is not null)

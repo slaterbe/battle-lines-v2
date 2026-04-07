@@ -10,13 +10,19 @@ public class GameHeaderComponent
         string statusMessage,
         ConsoleColor statusColor,
         GameCommandCost? selectedCommandCost,
-        string selectedCommandLabel)
+        string selectedCommandLabel,
+        bool showResources = true)
     {
         Console.Clear();
         Console.SetCursorPosition(0, 0);
 
         ConsoleTextComponent.WriteLine("Battle Lines", ConsoleColor.White);
-        RenderResourceLine(gameWorld, selectedCommandCost, selectedCommandLabel);
+
+        if (showResources)
+        {
+            RenderResourceLine(gameWorld, selectedCommandCost, selectedCommandLabel);
+        }
+
         ConsoleTextComponent.WriteLine(new string('=', 80));
         ConsoleTextComponent.WriteLine(statusMessage, statusColor);
     }
@@ -39,9 +45,12 @@ public class GameHeaderComponent
                 selectedCommandLabel == "Boost Spears" ? 1 : 0);
         }
 
-        Console.Write("    ");
-        WriteResource("Gold", gameWorld.Gold, selectedCommandCost?.Gold ?? 0, 0);
-        Console.Write($"    State: {gameWorld.State}        ");
+        if (gameWorld.IsUpgradesVisible)
+        {
+            Console.Write("    ");
+            WriteResource("Gold", gameWorld.Gold, selectedCommandCost?.Gold ?? 0, 0);
+        }
+
         Console.WriteLine();
     }
 
