@@ -31,7 +31,12 @@ public class VillageView : IGameView
     private static void RenderSupplementalDetails(GameWorld gameWorld, string selectedCommandLabel)
     {
         WriteVillageDetailLine("Villager Production", $"+{gameWorld.VillagerProduction}", selectedCommandLabel == "Boost Villagers");
-        WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
+
+        if (gameWorld.AreSpearControlsVisible)
+        {
+            WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
+        }
+
         WriteVillageDetailLine("Max Army Size", gameWorld.MaxArmySize.ToString(), selectedCommandLabel == "Boost Army Size");
     }
 

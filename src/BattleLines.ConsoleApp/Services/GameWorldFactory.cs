@@ -13,13 +13,16 @@ public class GameWorldFactory
         var gameWorld = new GameWorld
         {
             Villagers = 5,
-            Spears = 5,
+            Spears = 0,
             VillagerProduction = 2,
             SpearProduction = 1,
+            FightersCreated = 0,
+            AreSpearControlsVisible = false,
             State = GameState.Village,
             PlayerUnits = new Dictionary<UnitType, int>
             {
-                [UnitType.SpearmenLvl1] = 5
+                [UnitType.Fighter] = 1,
+                [UnitType.SpearmenLvl1] = 0
             },
             EnemyWaves = enemyWaves,
             TotalWaveCount = enemyWaves.Waves.Count,

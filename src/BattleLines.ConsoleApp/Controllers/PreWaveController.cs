@@ -7,6 +7,19 @@ public class PreWaveController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands(GameWorld gameWorld)
     {
-        return [new BeginBattleCommand(), new AddFighterCommand(), new AddSpearmanCommand(), new ReturnToVillageCommand()];
+        var commands = new List<IGameCommand>
+        {
+            new BeginBattleCommand(),
+            new AddFighterCommand()
+        };
+
+        if (gameWorld.AreSpearControlsVisible)
+        {
+            commands.Add(new AddSpearmanCommand());
+        }
+
+        commands.Add(new ReturnToVillageCommand());
+
+        return commands;
     }
 }

@@ -9,15 +9,28 @@ public class VillageController : GameStateControllerBase
     {
         var commands = new List<IGameCommand>
         {
-            new StartBattleCommand(),
-            new AddFighterCommand(),
-            new AddSpearmanCommand()
+            new AddFighterCommand()
         };
+
+        if (gameWorld.FightersCreated >= 5)
+        {
+            commands.Insert(0, new StartBattleCommand());
+        }
+
+        if (gameWorld.AreSpearControlsVisible)
+        {
+            commands.Add(new AddSpearmanCommand());
+        }
 
         if (gameWorld.AreUpgradesAvailable)
         {
             commands.Add(new IncreaseVillagerProductionCommand());
-            commands.Add(new IncreaseSpearProductionCommand());
+
+            if (gameWorld.AreSpearControlsVisible)
+            {
+                commands.Add(new IncreaseSpearProductionCommand());
+            }
+
             commands.Add(new IncreaseArmySizeCommand());
         }
 

@@ -231,8 +231,9 @@ public class GameFlowTests
         new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Empty(gameWorld.EnemyWaves.Waves);
-        Assert.Equal(10, gameWorld.Spears);
+        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(8, gameWorld.Spears);
+        Assert.Equal(100, gameWorld.Gold);
         Assert.Equal(70, gameWorld.PlayerTotalHealth);
         Assert.Equal(25, gameWorld.PlayerTotalAttack);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
@@ -246,7 +247,7 @@ public class GameFlowTests
         new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
     }
 
     [Fact]
@@ -264,8 +265,8 @@ public class GameFlowTests
         new ExitPostBattleCommand().Execute(gameWorld);
         new ExitPostBattleCommand().Execute(gameWorld);
 
-        Assert.Equal(10, gameWorld.Spears);
-        Assert.Empty(gameWorld.EnemyWaves.Waves);
+        Assert.Equal(8, gameWorld.Spears);
+        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 
@@ -277,6 +278,10 @@ public class GameFlowTests
         gameWorld.HasPendingPostBattleResolution = true;
         gameWorld.PlayerHealthAtBattleStart = 70;
         gameWorld.PlayerTotalHealth = 42;
+        gameWorld.PlayerUnitsAtBattleStart = new Dictionary<UnitType, int>
+        {
+            [UnitType.SpearmenLvl1] = 5
+        };
 
         new ExitPostBattleCommand().Execute(gameWorld);
 

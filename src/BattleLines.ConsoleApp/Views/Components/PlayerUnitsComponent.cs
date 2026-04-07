@@ -12,8 +12,8 @@ public class PlayerUnitsComponent
 
     private static readonly IReadOnlyDictionary<string, UnitType> CommandUnitPreviews = new Dictionary<string, UnitType>
     {
-        ["Add Spearmen"] = UnitType.SpearmenLvl1,
-        ["Add Fighter"] = UnitType.Fighter
+        ["Recruit Spearmen"] = UnitType.SpearmenLvl1,
+        ["Recruit Fighter"] = UnitType.Fighter
     };
 
     public void Render(GameWorld gameWorld, string selectedCommandLabel = "")

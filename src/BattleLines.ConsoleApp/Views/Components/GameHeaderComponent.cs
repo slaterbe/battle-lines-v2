@@ -28,12 +28,17 @@ public class GameHeaderComponent
             gameWorld.Villagers,
             selectedCommandCost?.Villagers ?? 0,
             selectedCommandLabel == "Boost Villagers" ? 1 : 0);
-        Console.Write("    ");
-        WriteResource(
-            "Spears",
-            gameWorld.Spears,
-            selectedCommandCost?.Spears ?? 0,
-            selectedCommandLabel == "Boost Spears" ? 1 : 0);
+
+        if (gameWorld.AreSpearControlsVisible)
+        {
+            Console.Write("    ");
+            WriteResource(
+                "Spears",
+                gameWorld.Spears,
+                selectedCommandCost?.Spears ?? 0,
+                selectedCommandLabel == "Boost Spears" ? 1 : 0);
+        }
+
         Console.Write("    ");
         WriteResource("Gold", gameWorld.Gold, selectedCommandCost?.Gold ?? 0, 0);
         Console.Write($"    State: {gameWorld.State}        ");

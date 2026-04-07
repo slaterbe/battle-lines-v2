@@ -2,6 +2,10 @@ namespace BattleLines.ConsoleApp.Models;
 
 public class GameWorld
 {
+    public int FightersCreated { get; set; }
+
+    public bool AreSpearControlsVisible { get; set; }
+
     public int Villagers { get; set; }
 
     public int Spears { get; set; }

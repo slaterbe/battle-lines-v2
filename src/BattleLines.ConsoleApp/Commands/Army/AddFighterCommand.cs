@@ -8,7 +8,7 @@ public class AddFighterCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
     public GameCommandCategory Category => GameCommandCategory.Army;
-    public string Label => "Add Fighter";
+    public string Label => "Recruit Fighter";
     public string HelpText => "Spend 1 villager to recruit a fighter.";
 
     public GameCommandCost GetCost() => new(Villagers: 1);
@@ -35,6 +35,7 @@ public class AddFighterCommand : IGameCommand
 
         gameWorld.Villagers -= 1;
         gameWorld.PlayerUnits[UnitType.Fighter] = currentCount + 1;
+        gameWorld.FightersCreated += 1;
         gameWorldStatsService.Refresh(gameWorld);
         return false;
     }
