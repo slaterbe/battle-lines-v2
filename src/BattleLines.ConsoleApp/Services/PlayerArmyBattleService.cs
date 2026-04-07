@@ -45,13 +45,18 @@ public class PlayerArmyBattleService
 
     public IReadOnlyDictionary<UnitType, int> CalculateSurvivingUnits(GameWorld gameWorld)
     {
+        return CalculateSurvivingUnits(gameWorld, gameWorld.PlayerTotalHealth);
+    }
+
+    public IReadOnlyDictionary<UnitType, int> CalculateSurvivingUnits(GameWorld gameWorld, int playerTotalHealth)
+    {
         if (gameWorld.PlayerUnitsAtBattleStart.Count == 0 || gameWorld.PlayerHealthAtBattleStart <= 0)
         {
             return gameWorld.PlayerUnits.ToDictionary(entry => entry.Key, entry => entry.Value);
         }
 
         var survivingUnits = gameWorld.PlayerUnitsAtBattleStart.ToDictionary(entry => entry.Key, entry => entry.Value);
-        var remainingHealthLoss = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - gameWorld.PlayerTotalHealth);
+        var remainingHealthLoss = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - playerTotalHealth);
 
         foreach (var unitType in gameWorld.PlayerUnitsAtBattleStart.Keys
                      .OrderBy(GetUnitHealth)

@@ -26,6 +26,7 @@ public class ResolveBattleTickCommand : IGameTickCommand
         if (gameWorld.PlayerTotalHealth < previousPlayerHealth)
         {
             gameWorld.PlayerHealthHistory.Add(previousPlayerHealth);
+            RecordPlayerUnitSnapshot(gameWorld);
         }
 
         gameWorld.PlayerTotalAttack = playerArmyBattleService.CalculateCurrentPlayerAttack(gameWorld);
@@ -84,6 +85,33 @@ public class ResolveBattleTickCommand : IGameTickCommand
         var enemiesLost = Math.Min(enemy.Count, healthLost / enemyModel.Health);
         var survivingEnemies = Math.Max(0, enemy.Count - enemiesLost);
         return survivingEnemies * enemyModel.Attack;
+    }
+
+    private void RecordPlayerUnitSnapshot(GameWorld gameWorld)
+    {
+        var survivingUnits = playerArmyBattleService.CalculateSurvivingUnits(gameWorld);
+
+        if (gameWorld.PlayerUnitHistory.Count == 0)
+        {
+            gameWorld.PlayerUnitHistory.Add(survivingUnits.ToDictionary(entry => entry.Key, entry => entry.Value));
+            return;
+        }
+
+        var latestSnapshot = gameWorld.PlayerUnitHistory[^1];
+        var unitTypes = survivingUnits.Keys.Concat(latestSnapshot.Keys).Distinct();
+        var hasChanged = unitTypes.Any(unitType =>
+        {
+            survivingUnits.TryGetValue(unitType, out var survivingCount);
+            latestSnapshot.TryGetValue(unitType, out var latestCount);
+            return survivingCount != latestCount;
+        });
+
+        if (!hasChanged)
+        {
+            return;
+        }
+
+        gameWorld.PlayerUnitHistory.Add(survivingUnits.ToDictionary(entry => entry.Key, entry => entry.Value));
     }
 
 }

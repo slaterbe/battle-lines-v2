@@ -17,12 +17,23 @@ From the repository root:
 dotnet run --project src/BattleLines.ConsoleApp
 ```
 
+To skip the introduction screen:
+
+```bash
+dotnet run --project src/BattleLines.ConsoleApp -- --skip-intro
+```
+
 Controls:
 
-- `P` toggles pause and resume
-- `Q` quits the game
+- `Up` / `Left` changes the selected command
+- `Down` / `Right` changes the selected command
+- `Enter` confirms the selected command
 
-While the game is running, `Villagers` and `Spears` increase by their production values once per tick.
+Game flow notes:
+
+- The game starts on an introduction screen by default
+- Passing `--skip-intro` starts directly in the village
+- Village production is applied when returning from battle preparation to the village
 
 ## Run the tests
 

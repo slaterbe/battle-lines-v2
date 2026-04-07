@@ -11,13 +11,13 @@ public class PostWaveView : IGameView
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         var message = gameWorld.LastBattleWon
-            ? "Wave Defeated: Claim your reward and prepare for the next wave"
+            ? "The enemy breaks against your line. Gather your strength for what comes next."
             : "Battle ended. Continue to the next wave.               ";
 
         Layout.Render(
             gameWorld,
             message,
-            ConsoleColor.Yellow,
+            ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex);
     }

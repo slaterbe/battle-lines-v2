@@ -19,6 +19,8 @@ public class BeginBattleCommand : IGameCommand
         }
 
         playerArmyBattleService.CaptureBattleStart(gameWorld);
+        gameWorld.PlayerUnitHistory.Clear();
+        gameWorld.PlayerUnitHistory.Add(gameWorld.PlayerUnitsAtBattleStart.ToDictionary(entry => entry.Key, entry => entry.Value));
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();

@@ -36,6 +36,7 @@ public class GameWorld
     // Battle snapshots and history
     public int PlayerHealthAtBattleStart { get; set; }
     public Dictionary<UnitType, int> PlayerUnitsAtBattleStart { get; set; } = [];
+    public List<Dictionary<UnitType, int>> PlayerUnitHistory { get; set; } = [];
     public List<int> PlayerHealthHistory { get; set; } = [];
     public List<int> PlayerAttackHistory { get; set; } = [];
     public List<int> EnemyHealthHistory { get; set; } = [];

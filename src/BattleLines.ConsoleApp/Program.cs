@@ -7,7 +7,7 @@ public static class Program
 {
     private static readonly TimeSpan TickRate = TimeSpan.FromSeconds(1);
 
-    public static void Main()
+    public static void Main(string[] args)
     {
         var controllerFactory = new GameStateControllerFactory(
             new IntroductionController(),
@@ -18,7 +18,8 @@ public static class Program
             new PostBattleController());
         var gameWorldFactory = new GameWorldFactory();
         var renderService = new RenderService();
-        var gameWorld = gameWorldFactory.Create();
+        var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
+        var gameWorld = gameWorldFactory.Create(skipIntroduction);
         var nextTickAt = DateTime.UtcNow.Add(TickRate);
         var shouldExit = false;
         var selectedCommandIndex = 0;

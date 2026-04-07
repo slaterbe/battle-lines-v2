@@ -7,12 +7,12 @@ public class GameWorldFactory
     private readonly EnemyWaveFactory enemyWaveFactory = new();
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
-    public GameWorld Create()
+    public GameWorld Create(bool skipIntroduction = false)
     {
         var enemyWaves = enemyWaveFactory.CreateGiantRatWaves();
         var gameWorld = new GameWorld
         {
-            IsSkipIntroduction = false,
+            IsSkipIntroduction = skipIntroduction,
             IsSpearControlsVisible = false,
             IsUpgradesVisible = false,
             IsIntroductionTextFullyRevealed = false,

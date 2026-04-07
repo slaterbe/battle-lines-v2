@@ -12,7 +12,7 @@ public class PreWaveView : IGameView
     {
         Layout.Render(
             gameWorld,
-            "Battle: Reinforce your army and start combat.",
+            "Steel your nerve. Rally your warriors and meet the enemy head-on.",
             ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex);

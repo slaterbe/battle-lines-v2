@@ -61,8 +61,10 @@ public class PlayerUnitsComponent
             return;
         }
 
+        var countDisplay = RenderUnitCountHistory(gameWorld, unitType, count);
+
         Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"{UnitTypeDisplayNames.Get(unitType)}: {count}");
+        Console.Write($"{UnitTypeDisplayNames.Get(unitType)}: {countDisplay}");
 
         if (increase > 0)
         {
@@ -74,6 +76,20 @@ public class PlayerUnitsComponent
 
         Console.WriteLine();
         Console.ResetColor();
+    }
+
+    private static string RenderUnitCountHistory(GameWorld gameWorld, UnitType unitType, int currentCount)
+    {
+        if (gameWorld.PlayerUnitHistory.Count == 0)
+        {
+            return currentCount.ToString();
+        }
+
+        var unitCounts = gameWorld.PlayerUnitHistory
+            .Select(snapshot => snapshot.TryGetValue(unitType, out var count) ? count : 0)
+            .ToArray();
+
+        return string.Join(" -> ", unitCounts);
     }
 
     private static bool TryGetPreviewUnitModel(string selectedCommandLabel, out UnitModel unitModel)

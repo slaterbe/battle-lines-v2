@@ -17,7 +17,7 @@ public static class UnitDisplayComponent
         return unitType switch
         {
             UnitType.SpearmenLvl1 => RenderArmyPositions(gameWorld),
-            UnitType.GiantRat => new string('|', Math.Max(0, count)),
+            UnitType.GiantRat => RenderEnemyPositions(gameWorld, unitType, count),
             _ => count.ToString()
         };
     }
@@ -42,5 +42,28 @@ public static class UnitDisplayComponent
         var emptyPositions = Math.Max(0, clampedMaxPositions - armySizeAtBattleStart);
 
         return $"{new string('|', survivingUnits)}{new string('X', unitsLost)}{new string('O', emptyPositions)}";
+    }
+
+    private static string RenderEnemyPositions(GameWorld gameWorld, UnitType unitType, int count)
+    {
+        var displayedCount = Math.Max(0, count);
+
+        if (gameWorld.State != GameState.Battle &&
+            !((gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle) &&
+              gameWorld.HasPendingPostBattleResolution))
+        {
+            return new string('|', displayedCount);
+        }
+
+        if (!UnitCatalog.DefaultUnits.TryGetValue(unitType, out var unitModel) || unitModel.Health <= 0)
+        {
+            return new string('|', displayedCount);
+        }
+
+        var healthLost = Math.Max(0, displayedCount * unitModel.Health - gameWorld.CurrentWaveTotalHealth);
+        var unitsLost = Math.Min(displayedCount, healthLost / unitModel.Health);
+        var survivingUnits = Math.Max(0, displayedCount - unitsLost);
+
+        return $"{new string('|', survivingUnits)}{new string('X', unitsLost)}";
     }
 }

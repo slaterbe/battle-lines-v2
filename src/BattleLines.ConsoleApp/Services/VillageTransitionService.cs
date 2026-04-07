@@ -17,6 +17,7 @@ public class VillageTransitionService
 
         gameWorld.PlayerHealthAtBattleStart = 0;
         gameWorld.PlayerUnitsAtBattleStart.Clear();
+        gameWorld.PlayerUnitHistory.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.PlayerHealthHistory.Clear();

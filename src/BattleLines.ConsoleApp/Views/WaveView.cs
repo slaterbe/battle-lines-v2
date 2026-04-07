@@ -12,8 +12,8 @@ public class WaveView : IGameView
     {
         Layout.Render(
             gameWorld,
-            "Battle is active. Both sides deal damage each tick.     ",
-            ConsoleColor.Yellow,
+            "The clash is joined. Hold the line as steel and fury collide.",
+            ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex);
     }
