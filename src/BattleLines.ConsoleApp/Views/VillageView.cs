@@ -32,7 +32,7 @@ public class VillageView : IGameView
     {
         WriteVillageDetailLine("Villager Production", $"+{gameWorld.VillagerProduction}", selectedCommandLabel == "Boost Villagers");
 
-        if (gameWorld.AreSpearControlsVisible)
+        if (gameWorld.IsSpearControlsVisible)
         {
             WriteVillageDetailLine("Spear Production", $"+{gameWorld.SpearProduction}", selectedCommandLabel == "Boost Spears");
         }

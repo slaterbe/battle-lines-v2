@@ -14,7 +14,7 @@ public class IncreaseVillagerProductionCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (!gameWorld.AreUpgradesAvailable || gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)
+        if (!gameWorld.IsUpgradesVisible || gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)
         {
             return false;
         }

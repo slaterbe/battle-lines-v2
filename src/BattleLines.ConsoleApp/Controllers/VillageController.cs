@@ -17,16 +17,16 @@ public class VillageController : GameStateControllerBase
             commands.Insert(0, new StartBattleCommand());
         }
 
-        if (gameWorld.AreSpearControlsVisible)
+        if (gameWorld.IsSpearControlsVisible)
         {
             commands.Add(new AddSpearmanCommand());
         }
 
-        if (gameWorld.AreUpgradesAvailable)
+        if (gameWorld.IsUpgradesVisible)
         {
             commands.Add(new IncreaseVillagerProductionCommand());
 
-            if (gameWorld.AreSpearControlsVisible)
+            if (gameWorld.IsSpearControlsVisible)
             {
                 commands.Add(new IncreaseSpearProductionCommand());
             }

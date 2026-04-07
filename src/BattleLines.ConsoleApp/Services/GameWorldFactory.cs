@@ -12,12 +12,14 @@ public class GameWorldFactory
         var enemyWaves = enemyWaveFactory.CreateGiantRatWaves();
         var gameWorld = new GameWorld
         {
+            IsSkipIntroduction = false,
+            IsSpearControlsVisible = false,
+            IsUpgradesVisible = false,
+            FightersCreated = 0,
             Villagers = 5,
             Spears = 0,
             VillagerProduction = 2,
             SpearProduction = 1,
-            FightersCreated = 0,
-            AreSpearControlsVisible = false,
             State = GameState.Village,
             PlayerUnits = new Dictionary<UnitType, int>
             {

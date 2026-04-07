@@ -29,7 +29,7 @@ public class GameHeaderComponent
             selectedCommandCost?.Villagers ?? 0,
             selectedCommandLabel == "Boost Villagers" ? 1 : 0);
 
-        if (gameWorld.AreSpearControlsVisible)
+        if (gameWorld.IsSpearControlsVisible)
         {
             Console.Write("    ");
             WriteResource(

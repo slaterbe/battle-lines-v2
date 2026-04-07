@@ -30,7 +30,7 @@ public class UpgradeAvailabilityTests
 
         new ResolveBattleTickCommand().Execute(gameWorld);
 
-        Assert.True(gameWorld.AreUpgradesAvailable);
+        Assert.True(gameWorld.IsUpgradesVisible);
     }
 
     [Fact]

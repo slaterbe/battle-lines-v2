@@ -14,8 +14,8 @@ public class IncreaseSpearProductionCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (!gameWorld.AreSpearControlsVisible
-            || !gameWorld.AreUpgradesAvailable
+        if (!gameWorld.IsSpearControlsVisible
+            || !gameWorld.IsUpgradesVisible
             || gameWorld.State != GameState.Village
             || gameWorld.Gold < GoldCost)
         {

@@ -13,7 +13,7 @@ public class PreWaveController : GameStateControllerBase
             new AddFighterCommand()
         };
 
-        if (gameWorld.AreSpearControlsVisible)
+        if (gameWorld.IsSpearControlsVisible)
         {
             commands.Add(new AddSpearmanCommand());
         }
