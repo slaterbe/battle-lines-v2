@@ -5,6 +5,8 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class GameHeaderComponent
 {
+    private readonly GameTitleComponent gameTitleComponent = new();
+
     public void Render(
         GameWorld gameWorld,
         string statusMessage,
@@ -16,14 +18,14 @@ public class GameHeaderComponent
         Console.Clear();
         Console.SetCursorPosition(0, 0);
 
-        ConsoleTextComponent.WriteLine("Battle Lines", ConsoleColor.White);
+        gameTitleComponent.Render();
 
         if (showResources)
         {
             RenderResourceLine(gameWorld, selectedCommandCost, selectedCommandLabel);
+            ConsoleTextComponent.WriteLine(new string('=', 80));
         }
 
-        ConsoleTextComponent.WriteLine(new string('=', 80));
         ConsoleTextComponent.WriteLine(statusMessage, statusColor);
     }
 

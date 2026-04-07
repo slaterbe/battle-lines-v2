@@ -18,7 +18,7 @@ public class VillageView : IGameView
 
         Layout.Render(
             gameWorld,
-            "Village: Choose upgrades or start a battle",
+            "The village waits for your command. Prepare the defenses.",
             ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex,

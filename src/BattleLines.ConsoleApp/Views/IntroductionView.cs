@@ -6,27 +6,27 @@ namespace BattleLines.ConsoleApp.Views;
 
 public class IntroductionView : IGameView
 {
-    private static readonly GameScreenLayoutComponent Layout = new();
+    private static readonly GameTitleComponent GameTitle = new();
+    private static readonly CommandMenuComponent CommandMenu = new();
     private static readonly string[] IntroductionLines =
     [
-        "Scouts have spotted giant rats massing beyond the fields.",
-        "You have only a handful of villagers and little time to prepare.",
-        "Recruit fighters, strengthen the village, and hold the line."
+        "The village is moments from collapse.\n",
+        "Scouts report giant rats surging out of the fields in growing numbers.",
+        "You have only a few villagers, almost no weapons, and barely any time.",
+        "Recruit fighters, rally the village, and hold the line before everything is lost."
     ];
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        Layout.Render(
-            gameWorld,
-            "The village braces for the coming attack.",
-            ConsoleColor.Green,
-            commandOptions,
-            selectedCommandIndex,
-            supplementalDetailsRenderer: () => RenderIntroductionText(gameWorld),
-            playerUnitsRenderer: () => { },
-            showResources: false,
-            showWaveOverview: false,
-            showCurrentWave: false);
+        Console.Clear();
+        Console.SetCursorPosition(0, 0);
+        GameTitle.Render();
+
+        Console.WriteLine();
+        RenderIntroductionText(gameWorld);
+        Console.WriteLine();
+        Console.WriteLine();
+        CommandMenu.Render(commandOptions, selectedCommandIndex);
     }
 
     private static void RenderIntroductionText(GameWorld gameWorld)
