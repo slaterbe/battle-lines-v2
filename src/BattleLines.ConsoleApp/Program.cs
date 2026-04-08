@@ -1,5 +1,6 @@
 using BattleLines.ConsoleApp.Controllers;
 using BattleLines.ConsoleApp.Services;
+using BattleLines.ConsoleApp.Views.Components;
 
 namespace BattleLines.ConsoleApp;
 
@@ -24,8 +25,14 @@ public static class Program
         var shouldExit = false;
         var selectedCommandIndex = 0;
         var previousGameState = gameWorld.State;
+        ConsoleCancelEventHandler cancelHandler = (_, eventArgs) =>
+        {
+            eventArgs.Cancel = true;
+            shouldExit = true;
+        };
 
         Console.CursorVisible = false;
+        Console.CancelKeyPress += cancelHandler;
 
         try
         {
@@ -88,8 +95,9 @@ public static class Program
         }
         finally
         {
+            Console.CancelKeyPress -= cancelHandler;
+            ConsoleTextComponent.RestoreConsoleAfterExit();
             Console.CursorVisible = true;
-            Console.Clear();
         }
     }
 

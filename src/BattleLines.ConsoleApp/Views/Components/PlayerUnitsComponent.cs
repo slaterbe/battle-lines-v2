@@ -38,19 +38,14 @@ public class PlayerUnitsComponent
 
     private static void WritePlayerStatLine(string label, string value, int increase)
     {
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"{label}: {value}");
+        ConsoleTextComponent.Write($"{label}: {value}", ConsoleColor.Blue);
 
         if (increase > 0)
         {
-            var originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($" [+{increase}]");
-            Console.ForegroundColor = originalColor;
+            ConsoleTextComponent.Write($" [+{increase}]", ConsoleColor.Green);
         }
 
-        Console.WriteLine();
-        Console.ResetColor();
+        ConsoleTextComponent.NewLine();
     }
 
     private static void WriteUnitCountLine(GameWorld gameWorld, UnitType unitType, int increase)
@@ -63,19 +58,14 @@ public class PlayerUnitsComponent
 
         var countDisplay = RenderUnitCountHistory(gameWorld, unitType, count);
 
-        Console.ForegroundColor = ConsoleColor.Blue;
-        Console.Write($"{UnitTypeDisplayNames.Get(unitType)}: {countDisplay}");
+        ConsoleTextComponent.Write($"{UnitTypeDisplayNames.Get(unitType)}: {countDisplay}", ConsoleColor.Blue);
 
         if (increase > 0)
         {
-            var originalColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write($" [+{increase}]");
-            Console.ForegroundColor = originalColor;
+            ConsoleTextComponent.Write($" [+{increase}]", ConsoleColor.Green);
         }
 
-        Console.WriteLine();
-        Console.ResetColor();
+        ConsoleTextComponent.NewLine();
     }
 
     private static string RenderUnitCountHistory(GameWorld gameWorld, UnitType unitType, int currentCount)

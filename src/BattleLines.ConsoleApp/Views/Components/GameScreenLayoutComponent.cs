@@ -6,6 +6,7 @@ namespace BattleLines.ConsoleApp.Views.Components;
 public class GameScreenLayoutComponent
 {
     private readonly GameHeaderComponent gameHeaderComponent = new();
+    private readonly ResourcePanelComponent resourcePanelComponent = new();
     private readonly WaveOverviewComponent waveOverviewComponent = new();
     private readonly CurrentWaveComponent currentWaveComponent = new();
     private readonly PlayerUnitsComponent playerUnitsComponent = new();
@@ -28,36 +29,36 @@ public class GameScreenLayoutComponent
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Label
                 : string.Empty;
-
         var selectedCommandCost =
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Cost
                 : null;
 
-        gameHeaderComponent.Render(
-            gameWorld,
-            statusMessage,
-            statusColor,
-            selectedCommandCost,
-            selectedCommandLabel,
-            showResources);
+        gameHeaderComponent.Render(statusMessage, statusColor);
 
-        Console.WriteLine();
+        var leftColumnTop = ConsoleTextComponent.CursorTop;
+        if (showResources)
+        {
+            resourcePanelComponent.Render(gameWorld, selectedCommandCost, selectedCommandLabel);
+            ConsoleTextComponent.SetCursorPosition(0, leftColumnTop);
+        }
+
+        ConsoleTextComponent.NewLine();
         if (supplementalDetailsRenderer is not null)
         {
             supplementalDetailsRenderer();
-            Console.WriteLine();
+            ConsoleTextComponent.NewLine();
         }
         else if (!string.IsNullOrWhiteSpace(supplementalDetails))
         {
             ConsoleTextComponent.WriteLine(supplementalDetails, ConsoleColor.Cyan);
-            Console.WriteLine();
+            ConsoleTextComponent.NewLine();
         }
 
         if (showWaveOverview)
         {
             waveOverviewComponent.Render(gameWorld);
-            Console.WriteLine();
+            ConsoleTextComponent.NewLine();
         }
 
         if (showCurrentWave)
@@ -65,7 +66,7 @@ public class GameScreenLayoutComponent
             currentWaveComponent.Render(gameWorld);
         }
 
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
         if (playerUnitsRenderer is not null)
         {
             playerUnitsRenderer();
@@ -75,7 +76,7 @@ public class GameScreenLayoutComponent
             playerUnitsComponent.Render(gameWorld, selectedCommandLabel);
         }
 
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
         commandMenuComponent.Render(commandOptions, selectedCommandIndex);
     }
 }

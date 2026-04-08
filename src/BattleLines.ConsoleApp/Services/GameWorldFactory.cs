@@ -21,7 +21,7 @@ public class GameWorldFactory
             Villagers = 5,
             Spears = 0,
             VillagerProduction = 2,
-            SpearProduction = 1,
+            SpearProduction = 0,
             State = GameState.Introduction,
             PlayerUnits = new Dictionary<UnitType, int>
             {

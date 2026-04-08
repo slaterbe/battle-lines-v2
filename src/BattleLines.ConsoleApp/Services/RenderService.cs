@@ -1,6 +1,7 @@
 using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views;
+using BattleLines.ConsoleApp.Views.Components;
 
 namespace BattleLines.ConsoleApp.Services;
 
@@ -28,6 +29,8 @@ public class RenderService
             view = views[GameState.Village];
         }
 
+        ConsoleTextComponent.BeginFrame();
         view.Render(gameWorld, commandOptions, selectedCommandIndex);
+        ConsoleTextComponent.FlushFrame();
     }
 }

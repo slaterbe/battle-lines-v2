@@ -4,7 +4,10 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class CommandMenuComponent
 {
-    public void Render(IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
+    public void Render(
+        IReadOnlyList<GameCommandOption> commandOptions,
+        int selectedCommandIndex,
+        bool showAnimatedEnterPrompt = false)
     {
         ConsoleTextComponent.WriteLine("Commands", ConsoleColor.White);
 
@@ -24,22 +27,39 @@ public class CommandMenuComponent
                 ConsoleTextComponent.Write("    ");
                 ConsoleTextComponent.WriteHighlighted(" > ", ConsoleColor.Black, ConsoleColor.DarkYellow);
                 ConsoleTextComponent.Write(" ");
-                ConsoleTextComponent.WriteLine(commandOption.Label, ConsoleColor.Yellow);
+                ConsoleTextComponent.Write(commandOption.Label, ConsoleColor.Yellow);
+
+                if (showAnimatedEnterPrompt)
+                {
+                    ConsoleTextComponent.Write(" ");
+                    RenderAnimatedEnterPrompt();
+                }
+
+                ConsoleTextComponent.NewLine();
                 continue;
             }
 
             ConsoleTextComponent.WriteLine($"      {commandOption.Label}", ConsoleColor.Gray);
         }
 
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
         if (commandOptions.Count > 0 && selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count)
         {
             ConsoleTextComponent.WriteLine("Hint", ConsoleColor.DarkYellow);
             ConsoleTextComponent.WriteLine($"  {commandOptions[selectedCommandIndex].HelpText}", ConsoleColor.Green);
-            Console.WriteLine();
+            ConsoleTextComponent.NewLine();
         }
 
         RenderControls();
+    }
+
+    private static void RenderAnimatedEnterPrompt()
+    {
+        var totalMilliseconds = Environment.TickCount64;
+        var isBrightPhase = (totalMilliseconds / 700) % 2 == 0;
+        var foregroundColor = isBrightPhase ? ConsoleColor.Black : ConsoleColor.DarkGray;
+        var backgroundColor = isBrightPhase ? ConsoleColor.Green : ConsoleColor.DarkGreen;
+        WriteKeycap("ENTER", foregroundColor, backgroundColor);
     }
 
     private static void RenderControls()

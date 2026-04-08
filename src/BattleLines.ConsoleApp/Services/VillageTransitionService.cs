@@ -29,7 +29,14 @@ public class VillageTransitionService
             : gameWorld.BattlePosition;
 
         gameWorld.BattlePosition = targetBattlePosition;
+        var unlockSpears = !gameWorld.IsSpearControlsVisible && gameWorld.BattlePosition > 1;
         gameWorld.IsSpearControlsVisible = gameWorld.IsSpearControlsVisible || gameWorld.BattlePosition > 1;
+        if (unlockSpears)
+        {
+            gameWorld.Spears += 1;
+            gameWorld.SpearProduction += 1;
+        }
+
         gameWorld.EnemyWaves = enemyWaveFactory.HasBattle(gameWorld.BattlePosition)
             ? enemyWaveFactory.CreateBattle(gameWorld.BattlePosition)
             : new EnemyWaveSetModel();

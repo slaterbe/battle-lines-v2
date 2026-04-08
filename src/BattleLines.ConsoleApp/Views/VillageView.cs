@@ -15,10 +15,6 @@ public class VillageView : IGameView
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Label
                 : string.Empty;
-        var selectedCommandCost =
-            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
-                ? commandOptions[selectedCommandIndex].Cost
-                : null;
 
         Layout.Render(
             gameWorld,
@@ -26,89 +22,19 @@ public class VillageView : IGameView
             ConsoleColor.Green,
             commandOptions,
             selectedCommandIndex,
-            supplementalDetailsRenderer: () => RenderSupplementalDetails(gameWorld, selectedCommandLabel, selectedCommandCost),
+            supplementalDetailsRenderer: () => RenderSupplementalDetails(selectedCommandLabel),
             playerUnitsRenderer: () => PlayerUnits.Render(gameWorld, selectedCommandLabel),
-            showResources: false,
+            showResources: true,
             showWaveOverview: false,
             showCurrentWave: false);
     }
 
     private static void RenderSupplementalDetails(
-        GameWorld gameWorld,
-        string selectedCommandLabel,
-        GameCommandCost? selectedCommandCost)
+        string selectedCommandLabel)
     {
-        ConsoleTextComponent.WriteLine("-------------------------------------", ConsoleColor.DarkGray);
-        ConsoleTextComponent.WriteLine("Resource   | Storage         Production", ConsoleColor.DarkYellow);
-        ConsoleTextComponent.WriteLine("---------------------------------------", ConsoleColor.DarkGray);
-
-        WriteVillageResourceRow(
-            "Villagers",
-            gameWorld.Villagers,
-            selectedCommandCost?.Villagers ?? 0,
-            gameWorld.VillagerProduction,
-            selectedCommandLabel == "Boost Villagers");
-
-        if (gameWorld.IsSpearControlsVisible)
-        {
-            WriteVillageResourceRow(
-                "Spears",
-                gameWorld.Spears,
-                selectedCommandCost?.Spears ?? 0,
-                gameWorld.SpearProduction,
-                selectedCommandLabel == "Boost Spears");
-        }
-
-        if (gameWorld.IsUpgradesVisible)
-        {
-            WriteVillageResourceRow(
-                "Gold",
-                gameWorld.Gold,
-                selectedCommandCost?.Gold ?? 0,
-                null,
-                false);
-        }
-
-        Console.WriteLine();
-        WriteVillageStatLine("Max Army Size", gameWorld.MaxArmySize.ToString(), selectedCommandLabel == "Boost Army Size");
-    }
-
-    private static void WriteVillageResourceRow(
-        string label,
-        int storedAmount,
-        int storageCost,
-        int? productionAmount,
-        bool showProductionIncrease)
-    {
-        ConsoleTextComponent.Write($"{label,-10} | ", ConsoleColor.Cyan);
-        ConsoleTextComponent.Write($"{storedAmount,3}", ConsoleColor.Gray);
-
-        if (storageCost > 0)
-        {
-            ConsoleTextComponent.Write($" [-{storageCost}]", ConsoleColor.Red);
-        }
-        else
-        {
-            ConsoleTextComponent.Write("      ");
-        }
-
-        ConsoleTextComponent.Write("     ");
-
-        if (productionAmount.HasValue)
-        {
-            ConsoleTextComponent.Write($"{("+" + productionAmount.Value),5}", ConsoleColor.Green);
-        }
-        else
-        {
-            ConsoleTextComponent.Write($"{ "--",5}", ConsoleColor.DarkGray);
-        }
-
-        if (showProductionIncrease)
-        {
-            ConsoleTextComponent.Write(" [+1]", ConsoleColor.Green);
-        }
-
-        Console.WriteLine();
+        ConsoleTextComponent.WriteLine("Village Status", ConsoleColor.DarkYellow);
+        ConsoleTextComponent.NewLine();
+        WriteVillageStatLine("Selection", GetSelectionPreview(selectedCommandLabel), false);
     }
 
     private static void WriteVillageStatLine(string label, string value, bool showIncrease)
@@ -120,6 +46,19 @@ public class VillageView : IGameView
             ConsoleTextComponent.Write(" [+1]", ConsoleColor.Green);
         }
 
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
+    }
+
+    private static string GetSelectionPreview(string selectedCommandLabel)
+    {
+        return selectedCommandLabel switch
+        {
+            "Boost Army Size" => "Raise army capacity by 1",
+            "Boost Villagers" => "Increase villager production by 1",
+            "Boost Spears" => "Increase spear production by 1",
+            "Recruit Fighter" => "Train 1 fighter for the next battle",
+            "Recruit Spearmen" => "Train 1 spearman for the next battle",
+            _ => "Review the army, then choose the next order."
+        };
     }
 }

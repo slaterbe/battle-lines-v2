@@ -18,14 +18,13 @@ public class IntroductionView : IGameView
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        Console.Clear();
-        Console.SetCursorPosition(0, 0);
+        ConsoleTextComponent.SetCursorPosition(0, 0);
         GameTitle.Render();
 
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
         RenderIntroductionText(gameWorld);
-        Console.WriteLine();
-        Console.WriteLine();
+        ConsoleTextComponent.NewLine();
+        ConsoleTextComponent.NewLine();
         CommandMenu.Render(commandOptions, selectedCommandIndex);
     }
 
