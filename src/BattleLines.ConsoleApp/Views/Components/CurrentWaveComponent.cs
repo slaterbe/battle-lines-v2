@@ -26,8 +26,13 @@ public class CurrentWaveComponent
                 ConsoleColor.Red);
         }
 
+        var attackLabel = gameWorld.IsSpearControlsVisible ? "Min Attack" : "Attack";
         ConsoleTextComponent.WriteLine($"Health: {BattleHistoryComponent.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
-        ConsoleTextComponent.WriteLine($"Attack: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
+        ConsoleTextComponent.WriteLine($"{attackLabel}: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
+        if (gameWorld.IsSpearControlsVisible)
+        {
+            ConsoleTextComponent.WriteLine($"Max Attack: {BattleHistoryComponent.RenderEnemyMaxAttack(gameWorld)}", ConsoleColor.Red);
+        }
     }
 
     private static string RenderEnemyCountHistory(GameWorld gameWorld, UnitType enemyType, int startingCount)

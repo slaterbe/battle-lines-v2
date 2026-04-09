@@ -68,8 +68,10 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorld.PlayerUnitsAtBattleStart.Clear();
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
+        gameWorld.PlayerMaxAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+        gameWorld.EnemyMaxAttackHistory.Clear();
 
         if (gameWorld.State == GameState.PostWave && battleWon && gameWorld.EnemyWaves.Waves.Count == 0)
         {

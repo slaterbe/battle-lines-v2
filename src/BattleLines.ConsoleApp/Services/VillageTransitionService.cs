@@ -22,8 +22,10 @@ public class VillageTransitionService
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
+        gameWorld.PlayerMaxAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+        gameWorld.EnemyMaxAttackHistory.Clear();
         var targetBattlePosition = advanceBattle
             ? gameWorld.BattlePosition + 1
             : gameWorld.BattlePosition;

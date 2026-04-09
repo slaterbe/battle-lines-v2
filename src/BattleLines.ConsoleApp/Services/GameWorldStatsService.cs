@@ -8,8 +8,10 @@ public class GameWorldStatsService
     {
         gameWorld.PlayerTotalHealth = CalculatePlayerTotalHealth(gameWorld);
         gameWorld.PlayerTotalAttack = CalculatePlayerTotalAttack(gameWorld);
+        gameWorld.PlayerTotalMaxAttack = CalculatePlayerTotalMaxAttack(gameWorld);
         gameWorld.CurrentWaveTotalHealth = CalculateCurrentWaveTotalHealth(gameWorld);
         gameWorld.CurrentWaveTotalAttack = CalculateCurrentWaveTotalAttack(gameWorld);
+        gameWorld.CurrentWaveTotalMaxAttack = CalculateCurrentWaveTotalMaxAttack(gameWorld);
     }
 
     private static int CalculatePlayerTotalHealth(GameWorld gameWorld)
@@ -88,5 +90,44 @@ public class GameWorldStatsService
         }
 
         return totalAttack;
+    }
+
+    private static int CalculatePlayerTotalMaxAttack(GameWorld gameWorld)
+    {
+        var totalMaxAttack = 0;
+
+        foreach (var playerUnit in gameWorld.PlayerUnits)
+        {
+            if (!UnitCatalog.DefaultUnits.TryGetValue(playerUnit.Key, out var unitModel))
+            {
+                continue;
+            }
+
+            totalMaxAttack += (unitModel.Attack + unitModel.MaxAttack) * playerUnit.Value;
+        }
+
+        return totalMaxAttack;
+    }
+
+    private static int CalculateCurrentWaveTotalMaxAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
+        {
+            return 0;
+        }
+
+        var totalMaxAttack = 0;
+
+        foreach (var enemy in gameWorld.EnemyWaves.Waves[0].Enemies)
+        {
+            if (!UnitCatalog.DefaultUnits.TryGetValue(enemy.EnemyType, out var unitModel))
+            {
+                continue;
+            }
+
+            totalMaxAttack += (unitModel.Attack + unitModel.MaxAttack) * enemy.Count;
+        }
+
+        return totalMaxAttack;
     }
 }

@@ -23,8 +23,10 @@ public class BeginBattleCommand : IGameCommand
         gameWorld.PlayerUnitHistory.Add(gameWorld.PlayerUnitsAtBattleStart.ToDictionary(entry => entry.Key, entry => entry.Value));
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
+        gameWorld.PlayerMaxAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+        gameWorld.EnemyMaxAttackHistory.Clear();
         gameWorld.LastBattleWon = false;
         gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.State = GameState.Battle;

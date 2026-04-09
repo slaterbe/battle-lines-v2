@@ -28,6 +28,24 @@ public class PlayerArmyBattleService
         return totalAttack;
     }
 
+    public int CalculateCurrentPlayerMaxAttack(GameWorld gameWorld)
+    {
+        var survivingUnits = CalculateSurvivingUnits(gameWorld);
+        var totalMaxAttack = 0;
+
+        foreach (var unit in survivingUnits)
+        {
+            if (!UnitCatalog.DefaultUnits.TryGetValue(unit.Key, out var unitModel))
+            {
+                continue;
+            }
+
+            totalMaxAttack += unit.Value * (unitModel.Attack + unitModel.MaxAttack);
+        }
+
+        return totalMaxAttack;
+    }
+
     public void ApplyPlayerBattleLosses(GameWorld gameWorld)
     {
         var survivingUnits = CalculateSurvivingUnits(gameWorld);

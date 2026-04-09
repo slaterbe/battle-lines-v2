@@ -26,7 +26,7 @@ public class EnemyWaveFactory
         {
             Waves =
             [
-                CreateWave(2, EnemyWaveRewardType.Gold, 3)
+                CreateWave(2, EnemyWaveRewardType.Gold, 5)
             ]
         };
     }

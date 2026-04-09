@@ -37,6 +37,17 @@ public static class BattleHistoryComponent
         return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalAttack}";
     }
 
+    public static string RenderEnemyMaxAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.EnemyMaxAttackHistory.Count == 0)
+        {
+            return gameWorld.CurrentWaveTotalMaxAttack.ToString();
+        }
+
+        var history = gameWorld.EnemyMaxAttackHistory.Select(attack => attack.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.CurrentWaveTotalMaxAttack}";
+    }
+
     public static string RenderPlayerAttack(GameWorld gameWorld)
     {
         if (gameWorld.PlayerAttackHistory.Count == 0)
@@ -46,5 +57,16 @@ public static class BattleHistoryComponent
 
         var history = gameWorld.PlayerAttackHistory.Select(attack => attack.ToString());
         return $"{string.Join(" -> ", history)} -> {gameWorld.PlayerTotalAttack}";
+    }
+
+    public static string RenderPlayerMaxAttack(GameWorld gameWorld)
+    {
+        if (gameWorld.PlayerMaxAttackHistory.Count == 0)
+        {
+            return gameWorld.PlayerTotalMaxAttack.ToString();
+        }
+
+        var history = gameWorld.PlayerMaxAttackHistory.Select(attack => attack.ToString());
+        return $"{string.Join(" -> ", history)} -> {gameWorld.PlayerTotalMaxAttack}";
     }
 }

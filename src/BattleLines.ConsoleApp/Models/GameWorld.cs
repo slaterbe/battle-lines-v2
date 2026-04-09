@@ -33,8 +33,10 @@ public class GameWorld
     public int MaxArmySize { get; set; }
     public int PlayerTotalHealth { get; set; }
     public int PlayerTotalAttack { get; set; }
+    public int PlayerTotalMaxAttack { get; set; }
     public int CurrentWaveTotalHealth { get; set; }
     public int CurrentWaveTotalAttack { get; set; }
+    public int CurrentWaveTotalMaxAttack { get; set; }
 
     // Battle snapshots and history
     public int PlayerHealthAtBattleStart { get; set; }
@@ -42,6 +44,8 @@ public class GameWorld
     public List<Dictionary<UnitType, int>> PlayerUnitHistory { get; set; } = [];
     public List<int> PlayerHealthHistory { get; set; } = [];
     public List<int> PlayerAttackHistory { get; set; } = [];
+    public List<int> PlayerMaxAttackHistory { get; set; } = [];
     public List<int> EnemyHealthHistory { get; set; } = [];
     public List<int> EnemyAttackHistory { get; set; } = [];
+    public List<int> EnemyMaxAttackHistory { get; set; } = [];
 }

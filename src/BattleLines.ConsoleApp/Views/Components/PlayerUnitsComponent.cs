@@ -32,8 +32,14 @@ public class PlayerUnitsComponent
 
         ConsoleTextComponent.WriteLine("---", ConsoleColor.Blue);
 
+        var attackLabel = gameWorld.IsSpearControlsVisible ? "Min Attack" : "Attack";
         WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), previewUnitModel.Health);
-        WritePlayerStatLine("Attack", BattleHistoryComponent.RenderPlayerAttack(gameWorld), previewUnitModel.Attack);
+        WritePlayerStatLine(attackLabel, BattleHistoryComponent.RenderPlayerAttack(gameWorld), previewUnitModel.Attack);
+        if (gameWorld.IsSpearControlsVisible)
+        {
+            var maxAttackIncrease = previewUnitModel.Attack + previewUnitModel.MaxAttack;
+            WritePlayerStatLine("Max Attack", BattleHistoryComponent.RenderPlayerMaxAttack(gameWorld), maxAttackIncrease);
+        }
     }
 
     private static void WritePlayerStatLine(string label, string value, int increase)
