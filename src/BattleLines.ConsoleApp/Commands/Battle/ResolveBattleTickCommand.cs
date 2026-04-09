@@ -56,9 +56,7 @@ public class ResolveBattleTickCommand : IGameTickCommand
         }
 
         gameWorld.HasPendingPostBattleResolution = true;
-        gameWorld.State = gameWorld.EnemyWaves.Waves.Count > 1
-            ? GameState.PostWave
-            : GameState.PostBattle;
+        gameWorld.State = GameState.PostWave;
     }
 
     private static int CalculateCurrentWaveAttack(GameWorld gameWorld)

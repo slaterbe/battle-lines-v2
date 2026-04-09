@@ -25,6 +25,11 @@ public class WaveOverviewComponent
             defeatedWaveCount = Math.Min(totalWaveCount, defeatedWaveCount + 1);
             remainingWaveCount = Math.Max(0, remainingWaveCount - 1);
         }
+        else if (gameWorld.State == GameState.PostBattle && gameWorld.LastBattleWon)
+        {
+            defeatedWaveCount = totalWaveCount;
+            remainingWaveCount = 0;
+        }
 
         const int progressBarWidth = 20;
 

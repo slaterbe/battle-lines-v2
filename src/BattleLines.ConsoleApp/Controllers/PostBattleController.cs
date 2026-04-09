@@ -7,6 +7,11 @@ public class PostBattleController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands(GameWorld gameWorld)
     {
-        return [new ExitPostBattleCommand()];
+        return
+        [
+            new ExitPostBattleCommand(
+                "Return to Village",
+                "Apply battle results and head back to the village.")
+        ];
     }
 }

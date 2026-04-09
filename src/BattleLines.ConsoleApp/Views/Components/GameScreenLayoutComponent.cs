@@ -24,7 +24,8 @@ public class GameScreenLayoutComponent
         Action? playerUnitsRenderer = null,
         bool showResources = true,
         bool showWaveOverview = true,
-        bool showCurrentWave = true)
+        bool showCurrentWave = true,
+        bool showPlayerUnits = true)
     {
         var selectedCommandLabel =
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
@@ -67,14 +68,17 @@ public class GameScreenLayoutComponent
             currentWaveComponent.Render(gameWorld);
         }
 
-        ConsoleTextComponent.NewLine();
-        if (playerUnitsRenderer is not null)
+        if (showPlayerUnits)
         {
-            playerUnitsRenderer();
-        }
-        else
-        {
-            playerUnitsComponent.Render(gameWorld, selectedCommandLabel);
+            ConsoleTextComponent.NewLine();
+            if (playerUnitsRenderer is not null)
+            {
+                playerUnitsRenderer();
+            }
+            else
+            {
+                playerUnitsComponent.Render(gameWorld, selectedCommandLabel);
+            }
         }
 
         ConsoleTextComponent.NewLine();

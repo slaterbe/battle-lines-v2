@@ -11,14 +11,19 @@ public class PostBattleView : IGameView
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         var message = gameWorld.LastBattleWon
-            ? "Battle Won: Claim your reward and review the final results"
+            ? "The last of the enemy scatters. The village stands, and your warriors breathe again."
             : "Battle Lost: Review the outcome and return to the village";
+        var messageColor = gameWorld.LastBattleWon
+            ? ConsoleColor.Green
+            : ConsoleColor.Yellow;
 
         Layout.Render(
             gameWorld,
             message,
-            ConsoleColor.Yellow,
+            messageColor,
             commandOptions,
-            selectedCommandIndex);
+            selectedCommandIndex,
+            showCurrentWave: false,
+            showPlayerUnits: false);
     }
 }

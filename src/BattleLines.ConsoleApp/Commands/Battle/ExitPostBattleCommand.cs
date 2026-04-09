@@ -8,13 +8,29 @@ public class ExitPostBattleCommand : IGameCommand
     private readonly GameWorldStatsService gameWorldStatsService = new();
     private readonly PlayerArmyBattleService playerArmyBattleService = new();
     private readonly VillageTransitionService villageTransitionService = new();
+    private readonly string label;
+    private readonly string helpText;
+
+    public ExitPostBattleCommand(
+        string label = "Continue",
+        string helpText = "Apply battle results, collect rewards, and move on.")
+    {
+        this.label = label;
+        this.helpText = helpText;
+    }
 
     public GameCommandCategory Category => GameCommandCategory.Battle;
-    public string Label => "Continue";
-    public string HelpText => "Apply battle results, collect rewards, and move on.";
+    public string Label => label;
+    public string HelpText => helpText;
 
     public bool Execute(GameWorld gameWorld)
     {
+        if (gameWorld.State == GameState.PostBattle && !gameWorld.HasPendingPostBattleResolution)
+        {
+            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true, advanceBattle: gameWorld.LastBattleWon);
+            return false;
+        }
+
         var battleWon = gameWorld.LastBattleWon;
         var nextState = gameWorld.State switch
         {
@@ -50,12 +66,21 @@ public class ExitPostBattleCommand : IGameCommand
 
         gameWorld.PlayerHealthAtBattleStart = 0;
         gameWorld.PlayerUnitsAtBattleStart.Clear();
-        gameWorld.LastBattleWon = false;
-        gameWorld.HasPendingPostBattleResolution = false;
         gameWorld.PlayerHealthHistory.Clear();
         gameWorld.PlayerAttackHistory.Clear();
         gameWorld.EnemyHealthHistory.Clear();
         gameWorld.EnemyAttackHistory.Clear();
+
+        if (gameWorld.State == GameState.PostWave && battleWon && gameWorld.EnemyWaves.Waves.Count == 0)
+        {
+            gameWorld.HasPendingPostBattleResolution = false;
+            gameWorld.State = GameState.PostBattle;
+            gameWorldStatsService.Refresh(gameWorld);
+            return false;
+        }
+
+        gameWorld.LastBattleWon = false;
+        gameWorld.HasPendingPostBattleResolution = false;
 
         if (nextState == GameState.Village)
         {
