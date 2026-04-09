@@ -13,7 +13,8 @@ public class ReturnToVillageCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        villageTransitionService.MoveToVillage(gameWorld, applyProduction: false);
+        var applyProduction = gameWorld.WavePosition > 1;
+        villageTransitionService.MoveToVillage(gameWorld, applyProduction: applyProduction);
         return false;
     }
 }
