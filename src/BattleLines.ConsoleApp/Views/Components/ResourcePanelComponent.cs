@@ -5,58 +5,57 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class ResourcePanelComponent
 {
-    private const int PanelWidth = 38;
+    private const int MinimumPanelWidth = 38;
     private const int MinimumLeftColumnWidth = 44;
-    private const int ContentWidth = PanelWidth - 4;
 
     public void Render(GameWorld gameWorld, GameCommandCost? selectedCommandCost, string selectedCommandLabel)
     {
-        if (!TryGetPanelOrigin(out var startX))
+        if (!TryGetLayout(out var layout))
         {
             return;
         }
 
         var top = 2;
         var rows = BuildRows(gameWorld, selectedCommandCost, selectedCommandLabel);
-        var innerWidth = PanelWidth - 2;
         var currentRow = top;
 
-        WriteAt(startX, currentRow++, $"+{new string('-', innerWidth)}+", ConsoleColor.DarkGray);
-        WriteBorderedLine(startX, currentRow++, "Resources", ContentWidth, ConsoleColor.White);
-        WriteAt(startX, currentRow++, $"| {new string('-', ContentWidth)} |", ConsoleColor.DarkGray);
-        WriteBorderedLine(startX, currentRow++, "Resource    Stock             Prod", ContentWidth, ConsoleColor.DarkYellow);
+        WriteAt(layout.StartX, currentRow++, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
+        WriteHeaderRow(layout.StartX, currentRow++, layout);
 
         foreach (var row in rows)
         {
-            WriteResourceRow(startX, currentRow++, row);
+            WriteResourceRow(layout.StartX, currentRow++, row, layout);
         }
 
-        WriteAt(startX, currentRow++, $"| {new string('-', ContentWidth)} |", ConsoleColor.DarkGray);
+        WriteAt(layout.StartX, currentRow++, $"| {new string('-', layout.ContentWidth)} |", ConsoleColor.DarkGray);
         WriteStatRow(
-            startX,
+            layout.StartX,
             currentRow++,
             "Army Cap",
             gameWorld.MaxArmySize.ToString(),
             "--",
             0,
             selectedCommandLabel == "Boost Army Size",
-            selectedCommandLabel == "Boost Army Size");
-        WriteAt(startX, currentRow, $"+{new string('-', innerWidth)}+", ConsoleColor.DarkGray);
+            selectedCommandLabel == "Boost Army Size",
+            layout);
+        WriteAt(layout.StartX, currentRow, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
     }
 
-    private static bool TryGetPanelOrigin(out int startX)
+    private static bool TryGetLayout(out ResourcePanelLayout layout)
     {
-        startX = 0;
+        layout = default;
 
         try
         {
             var windowWidth = ConsoleTextComponent.WindowWidth;
-            if (windowWidth < MinimumLeftColumnWidth + PanelWidth + 1)
+            var panelWidth = Math.Max(MinimumPanelWidth, windowWidth / 3);
+            if (windowWidth < MinimumLeftColumnWidth + panelWidth + 1)
             {
                 return false;
             }
 
-            startX = windowWidth - PanelWidth - 1;
+            var startX = windowWidth - panelWidth - 1;
+            layout = new ResourcePanelLayout(startX, panelWidth);
             return true;
         }
         catch
@@ -108,7 +107,7 @@ public class ResourcePanelComponent
         return rows;
     }
 
-    private static void WriteResourceRow(int startX, int row, ResourcePanelRow resourceRow)
+    private static void WriteResourceRow(int startX, int row, ResourcePanelRow resourceRow, ResourcePanelLayout layout)
     {
         WriteStatRow(
             startX,
@@ -118,7 +117,8 @@ public class ResourcePanelComponent
             resourceRow.ProductionDisplay,
             resourceRow.StockCost,
             resourceRow.ShowStockIncrease,
-            resourceRow.ShowProductionIncrease);
+            resourceRow.ShowProductionIncrease,
+            layout);
     }
 
     private static void WriteStatRow(
@@ -129,39 +129,63 @@ public class ResourcePanelComponent
         string trailingValue,
         int stockCost,
         bool showStockIncrease,
-        bool showProductionIncrease)
+        bool showProductionIncrease,
+        ResourcePanelLayout layout)
     {
         WriteAt(startX, row, "| ", ConsoleColor.DarkGray);
-        WriteAt(startX + 2, row, $"{label,-11} ", ConsoleColor.Gray);
+        WriteAt(startX + 2, row, label.PadRight(layout.LabelWidth) + " ", ConsoleColor.Gray);
 
-        var stockStartX = startX + 14;
-        WriteAt(stockStartX, row, value.PadLeft(5), ConsoleColor.Gray);
-
-        var currentX = stockStartX + 5;
+        var stockStartX = startX + 2 + layout.StockColumnStart;
+        var stockText = value;
         if (stockCost > 0)
         {
-            var costText = $"[-{stockCost}]";
-            WriteAt(currentX, row, costText, ConsoleColor.Red);
-            currentX += costText.Length;
+            stockText += $"[-{stockCost}]";
         }
 
         if (showStockIncrease)
         {
-            WriteAt(currentX, row, "[+1]", ConsoleColor.Green);
+            stockText += "[+1]";
         }
 
-        var trailingStartX = startX + 25;
-        var suffix = showProductionIncrease ? " [+1]" : string.Empty;
-        var leadingText = trailingValue.PadLeft(ContentWidth - 23 - suffix.Length);
-        WriteAt(trailingStartX, row, leadingText, ConsoleColor.Gray);
+        var paddedStockText = stockText.PadLeft(layout.StockWidth);
+        WriteAt(stockStartX, row, paddedStockText[..Math.Min(paddedStockText.Length, layout.StockWidth)], ConsoleColor.Gray);
+
+        if (stockCost > 0)
+        {
+            var costText = $"[-{stockCost}]";
+            WriteAt(stockStartX + paddedStockText.Length - costText.Length - (showStockIncrease ? 4 : 0), row, costText, ConsoleColor.Red);
+        }
+
+        if (showStockIncrease)
+        {
+            WriteAt(stockStartX + paddedStockText.Length - 4, row, "[+1]", ConsoleColor.Green);
+        }
+
+        var trailingStartX = startX + 2 + layout.ProductionColumnStart;
+        var suffix = showProductionIncrease ? "[+1]" : string.Empty;
+        var productionText = trailingValue + suffix;
+        var paddedProductionText = productionText.PadLeft(layout.ProductionWidth);
+        WriteAt(trailingStartX, row, paddedProductionText[..Math.Min(paddedProductionText.Length, layout.ProductionWidth)], ConsoleColor.Gray);
 
         if (showProductionIncrease)
         {
-            WriteAt(trailingStartX + leadingText.Length, row, suffix.Replace(" ", string.Empty), ConsoleColor.Green);
+            WriteAt(trailingStartX + paddedProductionText.Length - suffix.Length, row, suffix, ConsoleColor.Green);
         }
 
-        var rightBorderX = startX + 2 + ContentWidth;
+        var rightBorderX = startX + 2 + layout.ContentWidth;
         WriteAt(rightBorderX, row, " |", ConsoleColor.DarkGray);
+    }
+
+    private static void WriteHeaderRow(int startX, int row, ResourcePanelLayout layout)
+    {
+        var stockGapWidth = layout.ProductionColumnStart - layout.StockColumnStart - layout.StockWidth;
+        var content =
+            "Resource".PadRight(layout.LabelWidth) +
+            " " +
+            "Stock".PadLeft(layout.StockWidth) +
+            " ".PadRight(Math.Max(1, stockGapWidth)) +
+            "Prod".PadLeft(layout.ProductionWidth);
+        WriteBorderedLine(startX, row, content, layout.ContentWidth, ConsoleColor.DarkYellow);
     }
 
     private static void WriteBorderedLine(int startX, int row, string content, int contentWidth, ConsoleColor color)
@@ -178,6 +202,19 @@ public class ResourcePanelComponent
     {
         ConsoleTextComponent.SetCursorPosition(left, top);
         ConsoleTextComponent.Write(text, color);
+    }
+
+    private readonly record struct ResourcePanelLayout(int StartX, int PanelWidth)
+    {
+        public int InnerWidth => PanelWidth - 2;
+        public int ContentWidth => PanelWidth - 4;
+        public int LabelWidth => 11;
+        public int ColumnGap => 3;
+        public int AvailableDataWidth => Math.Max(12, ContentWidth - LabelWidth - 1 - ColumnGap);
+        public int StockWidth => AvailableDataWidth / 2;
+        public int StockColumnStart => LabelWidth + 1;
+        public int ProductionWidth => AvailableDataWidth - StockWidth;
+        public int ProductionColumnStart => StockColumnStart + StockWidth + ColumnGap;
     }
 
     private sealed record ResourcePanelRow(

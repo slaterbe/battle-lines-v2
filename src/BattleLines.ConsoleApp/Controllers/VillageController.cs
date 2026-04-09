@@ -12,7 +12,7 @@ public class VillageController : GameStateControllerBase
             new AddFighterCommand()
         };
 
-        if (gameWorld.FightersCreated >= 5)
+        if (gameWorld.BattlePosition == 0 || gameWorld.FightersCreated >= 5)
         {
             commands.Insert(0, new StartBattleCommand());
         }

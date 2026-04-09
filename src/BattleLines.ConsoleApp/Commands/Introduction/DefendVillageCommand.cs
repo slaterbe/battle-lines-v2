@@ -6,7 +6,7 @@ public class DefendVillageCommand : IGameCommand
 {
     public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Defend the village!!!";
-    public string HelpText => "Continue into the village and prepare your defenses.";
+    public string HelpText => "Move straight into the opening defense.";
 
     public bool Execute(GameWorld gameWorld)
     {
@@ -15,7 +15,8 @@ public class DefendVillageCommand : IGameCommand
             return false;
         }
 
-        gameWorld.State = GameState.Village;
+        gameWorld.WavePosition = gameWorld.EnemyWaves.Waves.Count > 0 ? 1 : 0;
+        gameWorld.State = GameState.PreBattle;
         return false;
     }
 }

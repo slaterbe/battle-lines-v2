@@ -8,6 +8,7 @@ namespace BattleLines.ConsoleApp.Services;
 public class RenderService
 {
     private readonly IReadOnlyDictionary<GameState, IGameView> views;
+    private readonly DebugPanelComponent debugPanelComponent = new();
 
     public RenderService()
     {
@@ -31,6 +32,7 @@ public class RenderService
 
         ConsoleTextComponent.BeginFrame();
         view.Render(gameWorld, commandOptions, selectedCommandIndex);
+        debugPanelComponent.Render(gameWorld);
         ConsoleTextComponent.FlushFrame();
     }
 }

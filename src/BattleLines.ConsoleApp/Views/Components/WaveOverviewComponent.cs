@@ -18,6 +18,14 @@ public class WaveOverviewComponent
         var defeatedWaveCount = currentWavePosition == 0
             ? 0
             : Math.Max(0, currentWavePosition - 1);
+
+        if (gameWorld.HasPendingPostBattleResolution &&
+            (gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle))
+        {
+            defeatedWaveCount = Math.Min(totalWaveCount, defeatedWaveCount + 1);
+            remainingWaveCount = Math.Max(0, remainingWaveCount - 1);
+        }
+
         const int progressBarWidth = 20;
 
         var filledSegments = totalWaveCount == 0

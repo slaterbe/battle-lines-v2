@@ -8,17 +8,20 @@ public static class UnitCatalog
             [UnitType.GiantRat] = new()
             {
                 Health = 8,
-                Attack = 3
+                Attack = 3,
+                MaxAttack = 0
             },
             [UnitType.SpearmenLvl1] = new()
             {
                 Health = 14,
-                Attack = 5
+                Attack = 5,
+                MaxAttack = 0
             },
             [UnitType.Fighter] = new()
             {
                 Health = 10,
-                Attack = 3
+                Attack = 3,
+                MaxAttack = 0
             }
         };
 }

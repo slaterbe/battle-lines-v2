@@ -8,6 +8,7 @@ public class EnemyWaveFactory
     {
         return battlePosition switch
         {
+            0 => CreateOpeningBattleWaves(),
             1 => CreateBattleOneWaves(),
             2 => CreateBattleTwoWaves(),
             _ => new EnemyWaveSetModel()
@@ -16,7 +17,18 @@ public class EnemyWaveFactory
 
     public bool HasBattle(int battlePosition)
     {
-        return battlePosition is 1 or 2;
+        return battlePosition is 0 or 1 or 2;
+    }
+
+    private static EnemyWaveSetModel CreateOpeningBattleWaves()
+    {
+        return new EnemyWaveSetModel
+        {
+            Waves =
+            [
+                CreateWave(2, EnemyWaveRewardType.Gold, 3)
+            ]
+        };
     }
 
     private static EnemyWaveSetModel CreateBattleOneWaves()

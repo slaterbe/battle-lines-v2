@@ -24,6 +24,9 @@ public class GameWorld
     public int BattlePosition { get; set; }
     public bool LastBattleWon { get; set; }
     public bool HasPendingPostBattleResolution { get; set; }
+    public string GoalMessage => TotalWaveCount > 0
+        ? $"Goal: Defeat all {TotalWaveCount} enemy waves."
+        : "Goal: Defeat every enemy wave.";
 
     // Army state
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];

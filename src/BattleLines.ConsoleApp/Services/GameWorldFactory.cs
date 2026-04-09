@@ -9,7 +9,7 @@ public class GameWorldFactory
 
     public GameWorld Create(bool skipIntroduction = false)
     {
-        const int startingBattlePosition = 1;
+        const int startingBattlePosition = 0;
         var enemyWaves = enemyWaveFactory.CreateBattle(startingBattlePosition);
         var gameWorld = new GameWorld
         {
@@ -37,7 +37,8 @@ public class GameWorldFactory
 
         if (gameWorld.IsSkipIntroduction)
         {
-            gameWorld.State = GameState.Village;
+            gameWorld.WavePosition = 1;
+            gameWorld.State = GameState.PreBattle;
         }
 
         gameWorldStatsService.Refresh(gameWorld);

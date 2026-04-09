@@ -18,6 +18,7 @@ public class GameScreenLayoutComponent
         ConsoleColor statusColor,
         IReadOnlyList<GameCommandOption> commandOptions,
         int selectedCommandIndex,
+        string? goalMessage = null,
         string? supplementalDetails = null,
         Action? supplementalDetailsRenderer = null,
         Action? playerUnitsRenderer = null,
@@ -34,7 +35,7 @@ public class GameScreenLayoutComponent
                 ? commandOptions[selectedCommandIndex].Cost
                 : null;
 
-        gameHeaderComponent.Render(statusMessage, statusColor);
+        gameHeaderComponent.Render(statusMessage, statusColor, goalMessage);
 
         var leftColumnTop = ConsoleTextComponent.CursorTop;
         if (showResources)

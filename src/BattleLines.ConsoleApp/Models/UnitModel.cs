@@ -5,4 +5,6 @@ public class UnitModel
     public int Health { get; set; }
 
     public int Attack { get; set; }
+
+    public int MaxAttack { get; set; }
 }
