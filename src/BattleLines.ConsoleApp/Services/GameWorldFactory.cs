@@ -17,6 +17,7 @@ public class GameWorldFactory
             IsSpearControlsVisible = false,
             IsUpgradesVisible = false,
             IsIntroductionTextFullyRevealed = false,
+            IsFiveFightersCreated = false,
             FightersCreated = 0,
             Villagers = 5,
             Spears = 0,

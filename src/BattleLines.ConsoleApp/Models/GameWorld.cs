@@ -7,6 +7,7 @@ public class GameWorld
     public bool IsSpearControlsVisible { get; set; }
     public bool IsUpgradesVisible { get; set; }
     public bool IsIntroductionTextFullyRevealed { get; set; }
+    public bool IsFiveFightersCreated { get; set; }
     public int FightersCreated { get; set; }
 
     // Resources and production

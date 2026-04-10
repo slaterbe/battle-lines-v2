@@ -18,6 +18,9 @@ coverage/
 *.coverage
 *.coveragexml
 
+# Local debug output
+debug/game-state.latest.json
+
 # OS-generated files
 .DS_Store
 Thumbs.db

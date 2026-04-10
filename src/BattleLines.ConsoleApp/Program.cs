@@ -1,4 +1,5 @@
 using BattleLines.ConsoleApp.Controllers;
+using BattleLines.ConsoleApp.Debug;
 using BattleLines.ConsoleApp.Services;
 using BattleLines.ConsoleApp.Views.Components;
 
@@ -21,6 +22,7 @@ public static class Program
         var renderService = new RenderService();
         var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
         var gameWorld = gameWorldFactory.Create(skipIntroduction);
+        var stateDumper = new GameWorldStateDumper();
         var nextTickAt = DateTime.UtcNow.Add(TickRate);
         var shouldExit = false;
         var selectedCommandIndex = 0;
@@ -36,6 +38,8 @@ public static class Program
 
         try
         {
+            stateDumper.Dump(gameWorld);
+
             while (!shouldExit)
             {
                 while (Console.KeyAvailable)
@@ -56,6 +60,7 @@ public static class Program
                             break;
                         case ConsoleKey.Enter:
                             shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
+                            stateDumper.Dump(gameWorld);
                             break;
                     }
                 }
@@ -70,6 +75,7 @@ public static class Program
                 if (now >= nextTickAt)
                 {
                     controllerFactory.GetController(gameWorld.State).Tick(gameWorld);
+                    stateDumper.Dump(gameWorld);
                     nextTickAt = now.Add(TickRate);
                 }
 

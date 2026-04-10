@@ -5,6 +5,7 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class ResolveBattleTickCommand : IGameTickCommand
 {
+    private static readonly Random Random = new();
     private readonly GameWorldStatsService gameWorldStatsService = new();
     private readonly PlayerArmyBattleService playerArmyBattleService = new();
     private readonly VillageTransitionService villageTransitionService = new();
@@ -17,8 +18,10 @@ public class ResolveBattleTickCommand : IGameTickCommand
         var previousPlayerMaxAttack = gameWorld.PlayerTotalMaxAttack;
         var previousEnemyAttack = gameWorld.CurrentWaveTotalAttack;
         var previousEnemyMaxAttack = gameWorld.CurrentWaveTotalMaxAttack;
-        gameWorld.CurrentWaveTotalHealth = Math.Max(0, gameWorld.CurrentWaveTotalHealth - gameWorld.PlayerTotalAttack);
-        gameWorld.PlayerTotalHealth = Math.Max(0, gameWorld.PlayerTotalHealth - gameWorld.CurrentWaveTotalAttack);
+        var playerDamage = RollDamage(gameWorld.PlayerTotalAttack, gameWorld.PlayerTotalMaxAttack);
+        var enemyDamage = RollDamage(gameWorld.CurrentWaveTotalAttack, gameWorld.CurrentWaveTotalMaxAttack);
+        gameWorld.CurrentWaveTotalHealth = Math.Max(0, gameWorld.CurrentWaveTotalHealth - playerDamage);
+        gameWorld.PlayerTotalHealth = Math.Max(0, gameWorld.PlayerTotalHealth - enemyDamage);
 
         if (gameWorld.CurrentWaveTotalHealth < previousEnemyHealth)
         {
@@ -123,6 +126,19 @@ public class ResolveBattleTickCommand : IGameTickCommand
         var enemiesLost = Math.Min(enemy.Count, healthLost / enemyModel.Health);
         var survivingEnemies = Math.Max(0, enemy.Count - enemiesLost);
         return survivingEnemies * (enemyModel.Attack + enemyModel.MaxAttack);
+    }
+
+    private static int RollDamage(int minAttack, int maxAttack)
+    {
+        var lowerBound = Math.Min(minAttack, maxAttack);
+        var upperBound = Math.Max(minAttack, maxAttack);
+
+        if (upperBound <= lowerBound)
+        {
+            return lowerBound;
+        }
+
+        return Random.Next(lowerBound, upperBound + 1);
     }
 
     private void RecordPlayerUnitSnapshot(GameWorld gameWorld)

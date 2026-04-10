@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9A4EB6D5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleLines.ConsoleApp.Tests", "tests\BattleLines.ConsoleApp.Tests\BattleLines.ConsoleApp.Tests.csproj", "{DC5E15B3-0D52-42A0-BF68-22DE3231E7AF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{72D0CE38-2845-43DE-B790-21E90378CC7A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BattleLines.ConsoleApp", "src\BattleLines.ConsoleApp\BattleLines.ConsoleApp.csproj", "{57333DF6-B83E-4127-A632-DD0A5C515B4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{DC5E15B3-0D52-42A0-BF68-22DE3231E7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC5E15B3-0D52-42A0-BF68-22DE3231E7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC5E15B3-0D52-42A0-BF68-22DE3231E7AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57333DF6-B83E-4127-A632-DD0A5C515B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57333DF6-B83E-4127-A632-DD0A5C515B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57333DF6-B83E-4127-A632-DD0A5C515B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57333DF6-B83E-4127-A632-DD0A5C515B4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DC5E15B3-0D52-42A0-BF68-22DE3231E7AF} = {9A4EB6D5-643B-4A54-959F-D1E1F4FA2F64}
+		{57333DF6-B83E-4127-A632-DD0A5C515B4B} = {72D0CE38-2845-43DE-B790-21E90378CC7A}
 	EndGlobalSection
 EndGlobal

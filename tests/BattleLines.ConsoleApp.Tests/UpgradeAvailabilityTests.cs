@@ -20,6 +20,29 @@ public class UpgradeAvailabilityTests
     }
 
     [Fact]
+    public void VillageController_HidesStartBattleCommand_UntilFiveFightersCreated()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        var controller = new VillageController();
+
+        var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
+
+        Assert.DoesNotContain("Defend the village", commandLabels);
+    }
+
+    [Fact]
+    public void VillageController_ShowsStartBattleCommand_AfterFiveFightersCreated()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        var controller = new VillageController();
+        gameWorld.IsFiveFightersCreated = true;
+
+        var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
+
+        Assert.Contains("Defend the village", commandLabels);
+    }
+
+    [Fact]
     public void ResolveBattleTick_UnlocksUpgrades_AfterFirstCombat()
     {
         var gameWorld = new GameWorldFactory().Create();

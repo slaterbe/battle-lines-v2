@@ -16,7 +16,7 @@ public class DefendVillageCommand : IGameCommand
         }
 
         gameWorld.WavePosition = gameWorld.EnemyWaves.Waves.Count > 0 ? 1 : 0;
-        gameWorld.State = GameState.PreBattle;
+        gameWorld.State = GameState.Village;
         return false;
     }
 }

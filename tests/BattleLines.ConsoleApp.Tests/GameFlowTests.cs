@@ -1,4 +1,5 @@
 using BattleLines.ConsoleApp.Commands;
+using BattleLines.ConsoleApp.Debug;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Services;
 using BattleLines.ConsoleApp.Views.Components;
@@ -142,6 +143,17 @@ public class GameFlowTests
         new StartBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.PreBattle, gameWorld.State);
+    }
+
+    [Fact]
+    public void DefendVillage_FromIntroduction_MovesToVillageScreen()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+
+        new DefendVillageCommand().Execute(gameWorld);
+
+        Assert.Equal(GameState.Village, gameWorld.State);
+        Assert.Equal(1, gameWorld.WavePosition);
     }
 
     [Fact]
@@ -303,5 +315,42 @@ public class GameFlowTests
         new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(1, gameWorld.PlayerUnits[UnitType.Fighter]);
+    }
+
+    [Fact]
+    public void Dump_WritesLatestGameWorldStateToJsonFile()
+    {
+        var gameWorld = new GameWorld
+        {
+            State = GameState.Battle,
+            Villagers = 12,
+            Gold = 7,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.Fighter] = 3
+            }
+        };
+        var outputPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}-game-state.latest.json");
+        var dumper = new GameWorldStateDumper(outputPath);
+
+        try
+        {
+            dumper.Dump(gameWorld);
+
+            Assert.True(File.Exists(outputPath));
+
+            var json = File.ReadAllText(outputPath);
+
+            Assert.Contains("\"State\": \"Battle\"", json);
+            Assert.Contains("\"Villagers\": 12", json);
+            Assert.Contains("\"Gold\": 7", json);
+        }
+        finally
+        {
+            if (File.Exists(outputPath))
+            {
+                File.Delete(outputPath);
+            }
+        }
     }
 }
