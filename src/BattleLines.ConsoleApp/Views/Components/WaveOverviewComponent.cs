@@ -6,14 +6,12 @@ public class WaveOverviewComponent
 {
     public void Render(GameWorld gameWorld)
     {
-        RenderWaveProgress(gameWorld);
-        RenderWaveReward(gameWorld);
+        RenderWaveOverview(gameWorld);
     }
 
-    private static void RenderWaveProgress(GameWorld gameWorld)
+    private static void RenderWaveOverview(GameWorld gameWorld)
     {
         var totalWaveCount = Math.Max(0, gameWorld.TotalWaveCount);
-        var remainingWaveCount = Math.Max(0, gameWorld.EnemyWaves.Waves.Count);
         var currentWavePosition = Math.Clamp(gameWorld.WavePosition, 0, totalWaveCount);
         var defeatedWaveCount = currentWavePosition == 0
             ? 0
@@ -23,12 +21,10 @@ public class WaveOverviewComponent
             (gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle))
         {
             defeatedWaveCount = Math.Min(totalWaveCount, defeatedWaveCount + 1);
-            remainingWaveCount = Math.Max(0, remainingWaveCount - 1);
         }
         else if (gameWorld.State == GameState.PostBattle && gameWorld.LastBattleWon)
         {
             defeatedWaveCount = totalWaveCount;
-            remainingWaveCount = 0;
         }
 
         const int progressBarWidth = 20;
@@ -39,32 +35,34 @@ public class WaveOverviewComponent
         filledSegments = Math.Clamp(filledSegments, 0, progressBarWidth);
 
         var progressBar = $"[{new string('#', filledSegments)}{new string('-', progressBarWidth - filledSegments)}]";
-        ConsoleTextComponent.WriteLine(
-            $"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated, {remainingWaveCount} remaining",
-            ConsoleColor.Cyan);
+        ConsoleTextComponent.Write($"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated", ConsoleColor.Cyan);
+
+        var rewardText = BuildRewardText(gameWorld);
+        if (!string.IsNullOrWhiteSpace(rewardText))
+        {
+            ConsoleTextComponent.Write("  ", ConsoleColor.Cyan);
+            ConsoleTextComponent.Write(rewardText, ConsoleColor.Yellow);
+        }
+
+        ConsoleTextComponent.NewLine();
     }
 
-    private static void RenderWaveReward(GameWorld gameWorld)
+    private static string BuildRewardText(GameWorld gameWorld)
     {
         if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
-            if (gameWorld.EnemyWaves.FinalRewardAmount > 0)
-            {
-                ConsoleTextComponent.WriteLine(
-                    $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}",
-                    ConsoleColor.Yellow);
-            }
-
-            return;
+            return gameWorld.EnemyWaves.FinalRewardAmount > 0
+                ? $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}"
+                : string.Empty;
         }
 
         var currentWave = gameWorld.EnemyWaves.Waves[0];
-        ConsoleTextComponent.WriteLine($"Reward: {currentWave.RewardAmount} {currentWave.RewardType}", ConsoleColor.Yellow);
+        var rewardText = $"Reward: {currentWave.RewardAmount} {currentWave.RewardType}";
         if (gameWorld.EnemyWaves.FinalRewardAmount > 0)
         {
-            ConsoleTextComponent.WriteLine(
-                $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}",
-                ConsoleColor.Yellow);
+            rewardText += $"  Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}";
         }
+
+        return rewardText;
     }
 }

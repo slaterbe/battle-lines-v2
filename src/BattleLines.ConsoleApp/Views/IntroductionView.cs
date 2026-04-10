@@ -21,10 +21,16 @@ public class IntroductionView : IGameView
         ConsoleTextComponent.SetCursorPosition(0, 0);
         GameTitle.Render();
 
+        ConsoleTextComponent.WriteLine(gameWorld.GoalMessage, ConsoleColor.Yellow);
         ConsoleTextComponent.NewLine();
         RenderIntroductionText(gameWorld);
-        ConsoleTextComponent.NewLine();
-        ConsoleTextComponent.NewLine();
+
+        var commandMenuHeight = CommandMenu.MeasureHeight(commandOptions, selectedCommandIndex);
+        var commandTop = Math.Max(
+            ConsoleTextComponent.CursorTop + 2,
+            ConsoleTextComponent.WindowHeight - commandMenuHeight);
+
+        ConsoleTextComponent.SetCursorPosition(0, commandTop);
         CommandMenu.Render(commandOptions, selectedCommandIndex);
     }
 

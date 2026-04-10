@@ -74,10 +74,10 @@ public class GameFlowTests
     {
         var gameWorld = new GameWorldFactory().Create();
 
-        Assert.Equal(30, gameWorld.PlayerTotalHealth);
-        Assert.Equal(5, gameWorld.PlayerTotalAttack);
-        Assert.Equal(24, gameWorld.CurrentWaveTotalHealth);
-        Assert.Equal(9, gameWorld.CurrentWaveTotalAttack);
+        Assert.Equal(10, gameWorld.PlayerTotalHealth);
+        Assert.Equal(3, gameWorld.PlayerTotalAttack);
+        Assert.Equal(16, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(6, gameWorld.CurrentWaveTotalAttack);
     }
 
     [Fact]
@@ -97,8 +97,8 @@ public class GameFlowTests
         new AddSpearmanCommand().Execute(gameWorld);
 
         Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
-        Assert.Equal(30, gameWorld.PlayerTotalHealth);
-        Assert.Equal(5, gameWorld.PlayerTotalAttack);
+        Assert.Equal(10, gameWorld.PlayerTotalHealth);
+        Assert.Equal(3, gameWorld.PlayerTotalAttack);
     }
 
     [Fact]
@@ -114,8 +114,8 @@ public class GameFlowTests
         Assert.Equal(0, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(0, gameWorld.Villagers);
         Assert.Equal(0, gameWorld.Spears);
-        Assert.Equal(30, gameWorld.PlayerTotalHealth);
-        Assert.Equal(5, gameWorld.PlayerTotalAttack);
+        Assert.Equal(10, gameWorld.PlayerTotalHealth);
+        Assert.Equal(3, gameWorld.PlayerTotalAttack);
     }
 
     [Fact]
@@ -166,7 +166,7 @@ public class GameFlowTests
         new BeginBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Battle, gameWorld.State);
-        Assert.Equal(30, gameWorld.PlayerHealthAtBattleStart);
+        Assert.Equal(10, gameWorld.PlayerHealthAtBattleStart);
     }
 
     [Fact]
@@ -181,8 +181,8 @@ public class GameFlowTests
         new ReturnToVillageCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Equal(24, gameWorld.CurrentWaveTotalHealth);
-        Assert.Equal(9, gameWorld.CurrentWaveTotalAttack);
+        Assert.Equal(16, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(6, gameWorld.CurrentWaveTotalAttack);
         Assert.Empty(gameWorld.PlayerHealthHistory);
         Assert.Empty(gameWorld.PlayerAttackHistory);
         Assert.Empty(gameWorld.EnemyHealthHistory);
@@ -198,14 +198,15 @@ public class GameFlowTests
         new BeginBattleCommand().Execute(gameWorld);
         new ResolveBattleTickCommand().Execute(gameWorld);
 
-        Assert.Equal(21, gameWorld.PlayerTotalHealth);
-        Assert.Equal(19, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(4, gameWorld.PlayerTotalHealth);
+        Assert.Equal(13, gameWorld.CurrentWaveTotalHealth);
     }
 
     [Fact]
     public void ResolveBattleTick_RecalculatesPlayerAndWaveAttackEachTick()
     {
         var gameWorld = new GameWorldFactory().Create();
+        gameWorld.PlayerUnits[UnitType.Fighter] = 4;
         gameWorld.EnemyWaves.Waves[0].Enemies[0].Count = 10;
         new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.State = GameState.Village;
@@ -214,11 +215,11 @@ public class GameFlowTests
         new BeginBattleCommand().Execute(gameWorld);
         new ResolveBattleTickCommand().Execute(gameWorld);
 
-        Assert.Equal(85, gameWorld.CurrentWaveTotalHealth);
-        Assert.Equal(9, gameWorld.PlayerTotalHealth);
-        Assert.Equal(5, gameWorld.PlayerTotalAttack);
-        Assert.Equal(21, gameWorld.CurrentWaveTotalAttack);
-        Assert.Equal([5], gameWorld.PlayerAttackHistory);
+        Assert.Equal(68, gameWorld.CurrentWaveTotalHealth);
+        Assert.Equal(10, gameWorld.PlayerTotalHealth);
+        Assert.Equal(3, gameWorld.PlayerTotalAttack);
+        Assert.Equal(27, gameWorld.CurrentWaveTotalAttack);
+        Assert.Equal([12], gameWorld.PlayerAttackHistory);
         Assert.Equal([30], gameWorld.EnemyAttackHistory);
     }
 
@@ -230,13 +231,14 @@ public class GameFlowTests
         gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
         new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
+        gameWorld.PlayerTotalMaxAttack = 100;
         gameWorld.State = GameState.Village;
 
         new StartBattleCommand().Execute(gameWorld);
         new BeginBattleCommand().Execute(gameWorld);
         new ResolveBattleTickCommand().Execute(gameWorld);
 
-        Assert.Equal(GameState.PostBattle, gameWorld.State);
+        Assert.Equal(GameState.PostWave, gameWorld.State);
         Assert.True(gameWorld.LastBattleWon);
         Assert.True(gameWorld.HasPendingPostBattleResolution);
         Assert.Single(gameWorld.EnemyWaves.Waves);
@@ -251,19 +253,21 @@ public class GameFlowTests
         gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
         new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
+        gameWorld.PlayerTotalMaxAttack = 100;
         gameWorld.State = GameState.Village;
 
         new StartBattleCommand().Execute(gameWorld);
         new BeginBattleCommand().Execute(gameWorld);
         new ResolveBattleTickCommand().Execute(gameWorld);
         new ExitPostBattleCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Village, gameWorld.State);
-        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
-        Assert.Equal(8, gameWorld.Spears);
-        Assert.Equal(100, gameWorld.Gold);
-        Assert.Equal(30, gameWorld.PlayerTotalHealth);
-        Assert.Equal(5, gameWorld.PlayerTotalAttack);
+        Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(0, gameWorld.Spears);
+        Assert.Equal(5, gameWorld.Gold);
+        Assert.Equal(10, gameWorld.PlayerTotalHealth);
+        Assert.Equal(3, gameWorld.PlayerTotalAttack);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 
@@ -275,7 +279,7 @@ public class GameFlowTests
         new ExitPostBattleCommand().Execute(gameWorld);
 
         Assert.Equal(GameState.Introduction, gameWorld.State);
-        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Single(gameWorld.EnemyWaves.Waves);
     }
 
     [Fact]
@@ -286,6 +290,7 @@ public class GameFlowTests
         gameWorld.TotalWaveCount = gameWorld.EnemyWaves.Waves.Count;
         new GameWorldStatsService().Refresh(gameWorld);
         gameWorld.PlayerTotalAttack = 100;
+        gameWorld.PlayerTotalMaxAttack = 100;
         gameWorld.State = GameState.Village;
 
         new StartBattleCommand().Execute(gameWorld);
@@ -293,9 +298,11 @@ public class GameFlowTests
         new ResolveBattleTickCommand().Execute(gameWorld);
         new ExitPostBattleCommand().Execute(gameWorld);
         new ExitPostBattleCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
 
-        Assert.Equal(8, gameWorld.Spears);
-        Assert.Equal(20, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(0, gameWorld.Spears);
+        Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(5, gameWorld.Gold);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 

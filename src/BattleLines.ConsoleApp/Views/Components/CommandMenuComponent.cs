@@ -4,27 +4,41 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public class CommandMenuComponent
 {
+    private const int CategoryColumnWidth = 11;
+
+    public int MeasureHeight(IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
+    {
+        var height = commandOptions.Count;
+        height++;
+
+        var hasSelectedCommand = commandOptions.Count > 0 &&
+            selectedCommandIndex >= 0 &&
+            selectedCommandIndex < commandOptions.Count;
+
+        height += hasSelectedCommand ? 2 : 1;
+        return height;
+    }
+
     public void Render(
         IReadOnlyList<GameCommandOption> commandOptions,
         int selectedCommandIndex,
         bool showAnimatedEnterPrompt = false)
     {
-        ConsoleTextComponent.WriteLine("Commands", ConsoleColor.White);
-
         GameCommandCategory? currentCategory = null;
         for (var optionIndex = 0; optionIndex < commandOptions.Count; optionIndex++)
         {
             var commandOption = commandOptions[optionIndex];
-            if (currentCategory != commandOption.Category)
-            {
-                currentCategory = commandOption.Category;
-                ConsoleTextComponent.WriteLine($"  [{currentCategory}]", ConsoleColor.DarkCyan);
-            }
-
             var isSelected = optionIndex == selectedCommandIndex;
+            var categoryLabel = currentCategory != commandOption.Category
+                ? $"[{commandOption.Category}]".PadRight(CategoryColumnWidth)
+                : new string(' ', CategoryColumnWidth);
+
+            currentCategory = commandOption.Category;
+
+            ConsoleTextComponent.Write(categoryLabel, ConsoleColor.DarkCyan);
+
             if (isSelected)
             {
-                ConsoleTextComponent.Write("    ");
                 ConsoleTextComponent.WriteHighlighted(" > ", ConsoleColor.Black, ConsoleColor.DarkYellow);
                 ConsoleTextComponent.Write(" ");
                 ConsoleTextComponent.Write(commandOption.Label, ConsoleColor.Yellow);
@@ -39,18 +53,12 @@ public class CommandMenuComponent
                 continue;
             }
 
-            ConsoleTextComponent.WriteLine($"      {commandOption.Label}", ConsoleColor.Gray);
+            ConsoleTextComponent.Write("   ", ConsoleColor.Gray);
+            ConsoleTextComponent.WriteLine(commandOption.Label, ConsoleColor.Gray);
         }
 
         ConsoleTextComponent.NewLine();
-        if (commandOptions.Count > 0 && selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count)
-        {
-            ConsoleTextComponent.WriteLine("Hint", ConsoleColor.DarkYellow);
-            ConsoleTextComponent.WriteLine($"  {commandOptions[selectedCommandIndex].HelpText}", ConsoleColor.Green);
-            ConsoleTextComponent.NewLine();
-        }
-
-        RenderControls();
+        RenderFooter(commandOptions, selectedCommandIndex);
     }
 
     private static void RenderAnimatedEnterPrompt()
@@ -62,10 +70,21 @@ public class CommandMenuComponent
         WriteKeycap("ENTER", foregroundColor, backgroundColor);
     }
 
-    private static void RenderControls()
+    private static void RenderFooter(IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        ConsoleTextComponent.WriteLine("Controls", ConsoleColor.DarkYellow);
-        ConsoleTextComponent.Write("  ");
+        var hasSelectedCommand = commandOptions.Count > 0 &&
+            selectedCommandIndex >= 0 &&
+            selectedCommandIndex < commandOptions.Count;
+
+        if (hasSelectedCommand)
+        {
+            ConsoleTextComponent.Write("Hint", ConsoleColor.DarkYellow);
+            ConsoleTextComponent.Write(": ", ConsoleColor.DarkYellow);
+            ConsoleTextComponent.WriteLine(commandOptions[selectedCommandIndex].HelpText, ConsoleColor.Green);
+        }
+
+        ConsoleTextComponent.Write("Controls", ConsoleColor.DarkYellow);
+        ConsoleTextComponent.Write(": ", ConsoleColor.DarkYellow);
         WriteKeycap("Up", ConsoleColor.Black, ConsoleColor.Cyan);
         ConsoleTextComponent.Write(" ");
         WriteKeycap("Down", ConsoleColor.Black, ConsoleColor.Cyan);

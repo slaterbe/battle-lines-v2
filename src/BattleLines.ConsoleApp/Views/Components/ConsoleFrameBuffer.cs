@@ -27,6 +27,7 @@ public sealed class ConsoleFrameBuffer
     }
 
     public int Width => width;
+    public int Height => height;
 
     public int CursorTop => cursorTop;
 

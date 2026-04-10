@@ -19,6 +19,7 @@ public class PostWaveView : IGameView
             message,
             ConsoleColor.Green,
             commandOptions,
-            selectedCommandIndex);
+            selectedCommandIndex,
+            goalMessage: gameWorld.GoalMessage);
     }
 }

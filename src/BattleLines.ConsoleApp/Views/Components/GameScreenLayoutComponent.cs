@@ -81,7 +81,12 @@ public class GameScreenLayoutComponent
             }
         }
 
-        ConsoleTextComponent.NewLine();
+        var commandMenuHeight = commandMenuComponent.MeasureHeight(commandOptions, selectedCommandIndex);
+        var commandTop = Math.Max(
+            ConsoleTextComponent.CursorTop + 1,
+            ConsoleTextComponent.WindowHeight - commandMenuHeight);
+
+        ConsoleTextComponent.SetCursorPosition(0, commandTop);
         commandMenuComponent.Render(commandOptions, selectedCommandIndex);
     }
 }

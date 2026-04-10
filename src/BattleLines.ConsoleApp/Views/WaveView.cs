@@ -15,6 +15,7 @@ public class WaveView : IGameView
             "The clash is joined. Hold the line as steel and fury collide.",
             ConsoleColor.Green,
             commandOptions,
-            selectedCommandIndex);
+            selectedCommandIndex,
+            goalMessage: gameWorld.GoalMessage);
     }
 }

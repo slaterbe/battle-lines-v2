@@ -2,16 +2,21 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public static class ConsoleTextComponent
 {
+    private const int MaxRenderWidth = 100;
+    private const int MaxRenderHeight = 24;
     private static ConsoleFrameBuffer? activeFrameBuffer;
     private static ConsoleFrameBuffer? lastFrameBuffer;
 
-    public static int WindowWidth => activeFrameBuffer?.Width ?? Console.WindowWidth;
+    public static int WindowWidth => activeFrameBuffer?.Width ?? Math.Min(Console.WindowWidth, MaxRenderWidth);
+    public static int WindowHeight => activeFrameBuffer?.Height ?? Math.Min(Console.WindowHeight, MaxRenderHeight);
 
     public static int CursorTop => activeFrameBuffer?.CursorTop ?? Console.CursorTop;
 
     public static void BeginFrame()
     {
-        activeFrameBuffer = new ConsoleFrameBuffer(Console.WindowWidth, Console.WindowHeight);
+        activeFrameBuffer = new ConsoleFrameBuffer(
+            Math.Min(Console.WindowWidth, MaxRenderWidth),
+            Math.Min(Console.WindowHeight, MaxRenderHeight));
     }
 
     public static void FlushFrame()

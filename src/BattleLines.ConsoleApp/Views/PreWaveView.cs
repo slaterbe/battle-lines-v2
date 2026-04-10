@@ -15,6 +15,7 @@ public class PreWaveView : IGameView
             "Steel your nerve. Rally your warriors and meet the enemy head-on.",
             ConsoleColor.Green,
             commandOptions,
-            selectedCommandIndex);
+            selectedCommandIndex,
+            goalMessage: gameWorld.GoalMessage);
     }
 }

@@ -46,10 +46,12 @@ public class UpgradeAvailabilityTests
     public void ResolveBattleTick_UnlocksUpgrades_AfterFirstCombat()
     {
         var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = BattleLines.ConsoleApp.Models.GameState.Village;
 
         new StartBattleCommand().Execute(gameWorld);
         new BeginBattleCommand().Execute(gameWorld);
         gameWorld.PlayerTotalAttack = gameWorld.CurrentWaveTotalHealth;
+        gameWorld.PlayerTotalMaxAttack = gameWorld.CurrentWaveTotalHealth;
 
         new ResolveBattleTickCommand().Execute(gameWorld);
 

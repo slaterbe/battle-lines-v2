@@ -15,7 +15,7 @@ public class ResourcePanelComponent
             return;
         }
 
-        var top = 2;
+        var top = 1;
         var rows = BuildRows(gameWorld, selectedCommandCost, selectedCommandLabel);
         var currentRow = top;
 

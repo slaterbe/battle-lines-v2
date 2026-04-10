@@ -23,6 +23,7 @@ public class PostBattleView : IGameView
             messageColor,
             commandOptions,
             selectedCommandIndex,
+            goalMessage: gameWorld.GoalMessage,
             showCurrentWave: false,
             showPlayerUnits: false);
     }
