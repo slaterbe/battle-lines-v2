@@ -18,6 +18,7 @@ public static class Program
             new WaveController(),
             new PostWaveController(),
             new PostBattleController());
+        var gameEventService = new GameEventService();
         var gameWorldFactory = new GameWorldFactory();
         var renderService = new RenderService();
         var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
@@ -38,6 +39,7 @@ public static class Program
 
         try
         {
+            gameEventService.CheckEvents(gameWorld);
             stateDumper.Dump(gameWorld);
 
             while (!shouldExit)
@@ -60,6 +62,7 @@ public static class Program
                             break;
                         case ConsoleKey.Enter:
                             shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
+                            gameEventService.CheckEvents(gameWorld);
                             stateDumper.Dump(gameWorld);
                             break;
                     }
@@ -75,6 +78,7 @@ public static class Program
                 if (now >= nextTickAt)
                 {
                     controllerFactory.GetController(gameWorld.State).Tick(gameWorld);
+                    gameEventService.CheckEvents(gameWorld);
                     stateDumper.Dump(gameWorld);
                     nextTickAt = now.Add(TickRate);
                 }
