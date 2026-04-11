@@ -3,7 +3,7 @@ namespace BattleLines.ConsoleApp.Views.Components;
 public static class ConsoleTextComponent
 {
     private const int MaxRenderWidth = 100;
-    private const int MaxRenderHeight = 24;
+    private const int MaxRenderHeight = 28;
     private static ConsoleFrameBuffer? activeFrameBuffer;
     private static ConsoleFrameBuffer? lastFrameBuffer;
 

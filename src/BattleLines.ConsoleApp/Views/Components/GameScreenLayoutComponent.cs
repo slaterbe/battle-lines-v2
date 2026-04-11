@@ -80,15 +80,13 @@ public class GameScreenLayoutComponent
             currentWaveComponent.Render(gameWorld);
         }
 
-        if (showBattleLine && showCurrentWave && showPlayerUnits)
+        if (showBattleLine && showPlayerUnits)
         {
-            ConsoleTextComponent.NewLine();
             battleLineComponent.Render(gameWorld);
         }
 
         if (showPlayerUnits)
         {
-            ConsoleTextComponent.NewLine();
             if (playerUnitsRenderer is not null)
             {
                 playerUnitsRenderer();

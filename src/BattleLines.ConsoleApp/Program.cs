@@ -11,6 +11,8 @@ public static class Program
 
     public static void Main(string[] args)
     {
+        var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
+        var hideDebugPanel = args.Any(arg => arg.Equals("--hide-debug", StringComparison.OrdinalIgnoreCase));
         var controllerFactory = new GameStateControllerFactory(
             new IntroductionController(),
             new VillageController(),
@@ -21,8 +23,7 @@ public static class Program
         var gameEventService = new GameEventService();
         var gameWorldFactory = new GameWorldFactory();
         var renderDiagnostics = new RenderDiagnostics();
-        var renderService = new RenderService(renderDiagnostics);
-        var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
+        var renderService = new RenderService(renderDiagnostics, showDebugPanel: !hideDebugPanel);
         var gameWorld = gameWorldFactory.Create(skipIntroduction);
         var stateDumper = new GameWorldStateDumper();
         var nextTickAt = DateTime.UtcNow.Add(TickRate);

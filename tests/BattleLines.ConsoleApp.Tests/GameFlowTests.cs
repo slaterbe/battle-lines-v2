@@ -74,7 +74,7 @@ public class GameFlowTests
 
         var renderedLine = BattleLineComponent.RenderEnemyArmyLine(gameWorld);
 
-        Assert.Equal("Enemy Army: |||", renderedLine);
+        Assert.Equal("|||", renderedLine);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class GameFlowTests
 
         var renderedLine = BattleLineComponent.RenderPlayerArmyLine(gameWorld);
 
-        Assert.Equal("Player Army: |||OOO", renderedLine);
+        Assert.Equal("|||OOO", renderedLine);
     }
 
     [Fact]

@@ -31,7 +31,7 @@ public sealed class ConsoleFrameBuffer
 
     public int CursorTop => cursorTop;
 
-    public int LastWrittenRow => Math.Min(height - 1, maxRowWritten);
+    public int LastWrittenRow => GetLastVisibleRow();
 
     public void SetCursorPosition(int left, int top)
     {
@@ -84,7 +84,7 @@ public sealed class ConsoleFrameBuffer
         builder.Append("\u001b[H");
 
         ConsoleColor? currentForeground = null;
-        var lastRow = Math.Min(height - 1, maxRowWritten);
+        var lastRow = GetLastVisibleRow();
 
         for (var row = 0; row <= lastRow; row++)
         {
@@ -121,7 +121,7 @@ public sealed class ConsoleFrameBuffer
         }
 
         var builder = new StringBuilder();
-        var lastRow = Math.Max(maxRowWritten, previousFrame.maxRowWritten);
+        var lastRow = Math.Max(GetLastVisibleRow(), previousFrame.GetLastVisibleRow());
         ConsoleColor? currentForeground = null;
         var hasChanges = false;
 
@@ -201,6 +201,22 @@ public sealed class ConsoleFrameBuffer
             ConsoleColor.White => 97,
             _ => 37
         };
+    }
+
+    private int GetLastVisibleRow()
+    {
+        for (var row = height - 1; row >= 0; row--)
+        {
+            for (var column = 0; column < width; column++)
+            {
+                if (cells[row, column].Character != ' ')
+                {
+                    return row;
+                }
+            }
+        }
+
+        return 0;
     }
 
     private readonly record struct FrameCell(char Character, ConsoleColor ForegroundColor);

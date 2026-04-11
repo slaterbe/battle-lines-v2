@@ -17,6 +17,7 @@ public class DebugPanelComponent
         var snapshot = renderDiagnostics.GetSnapshot();
 
         ConsoleTextComponent.NewLine();
+        ConsoleTextComponent.NewLine();
         ConsoleTextComponent.WriteLine("--- Debug ---", ConsoleColor.DarkGray);
         ConsoleTextComponent.WriteLine($"View: {gameWorld.State}", ConsoleColor.DarkGray);
         ConsoleTextComponent.WriteLine(
@@ -24,9 +25,6 @@ public class DebugPanelComponent
             ConsoleColor.DarkGray);
         ConsoleTextComponent.WriteLine(
             $"Terminal writes/s: {snapshot.TerminalWritesPerSecond}",
-            ConsoleColor.DarkGray);
-        ConsoleTextComponent.WriteLine(
-            $"Terminal chars/s: {snapshot.TerminalCharactersPerSecond}",
             ConsoleColor.DarkGray);
     }
 }

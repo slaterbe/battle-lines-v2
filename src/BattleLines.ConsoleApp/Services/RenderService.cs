@@ -11,10 +11,12 @@ public class RenderService
     private readonly IReadOnlyDictionary<GameState, IGameView> views;
     private readonly DebugPanelComponent debugPanelComponent;
     private readonly RenderDiagnostics renderDiagnostics;
+    private readonly bool showDebugPanel;
 
-    public RenderService(RenderDiagnostics renderDiagnostics)
+    public RenderService(RenderDiagnostics renderDiagnostics, bool showDebugPanel = true)
     {
         this.renderDiagnostics = renderDiagnostics;
+        this.showDebugPanel = showDebugPanel;
         debugPanelComponent = new DebugPanelComponent(renderDiagnostics);
 
         views = new Dictionary<GameState, IGameView>
@@ -38,7 +40,12 @@ public class RenderService
         renderDiagnostics.RecordRenderAttempt();
         ConsoleTextComponent.BeginFrame();
         view.Render(gameWorld, commandOptions, selectedCommandIndex);
-        debugPanelComponent.Render(gameWorld);
+
+        if (showDebugPanel)
+        {
+            debugPanelComponent.Render(gameWorld);
+        }
+
         var writtenCharacterCount = ConsoleTextComponent.FlushFrame();
         renderDiagnostics.RecordTerminalWrite(writtenCharacterCount);
     }
