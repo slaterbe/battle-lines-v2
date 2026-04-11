@@ -92,6 +92,40 @@ public static class ConsoleTextComponent
         Console.ForegroundColor = originalColor;
     }
 
+    public static void WriteWrappedLines(string text, int maxWidth, ConsoleColor color = ConsoleColor.Gray)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            WriteLine(string.Empty, color);
+            return;
+        }
+
+        var effectiveWidth = Math.Max(1, maxWidth);
+        foreach (var rawLine in text.Replace("\r", string.Empty).Split('\n'))
+        {
+            var remaining = rawLine.Trim();
+            if (remaining.Length == 0)
+            {
+                WriteLine(string.Empty, color);
+                continue;
+            }
+
+            while (remaining.Length > effectiveWidth)
+            {
+                var splitIndex = remaining.LastIndexOf(' ', effectiveWidth);
+                if (splitIndex <= 0)
+                {
+                    splitIndex = effectiveWidth;
+                }
+
+                WriteLine(remaining[..splitIndex].TrimEnd(), color);
+                remaining = remaining[splitIndex..].TrimStart();
+            }
+
+            WriteLine(remaining, color);
+        }
+    }
+
     public static void WriteHighlighted(
         string text,
         ConsoleColor foregroundColor = ConsoleColor.Black,

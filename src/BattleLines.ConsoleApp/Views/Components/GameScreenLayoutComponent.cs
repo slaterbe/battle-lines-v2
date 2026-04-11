@@ -21,6 +21,7 @@ public class GameScreenLayoutComponent
         string? goalMessage = null,
         string? supplementalDetails = null,
         Action? supplementalDetailsRenderer = null,
+        Action? postWaveOverviewRenderer = null,
         Action? playerUnitsRenderer = null,
         bool showResources = true,
         bool showWaveOverview = true,
@@ -60,6 +61,15 @@ public class GameScreenLayoutComponent
         if (showWaveOverview)
         {
             waveOverviewComponent.Render(gameWorld);
+
+            if (postWaveOverviewRenderer is not null)
+            {
+                ConsoleTextComponent.NewLine();
+                ConsoleTextComponent.NewLine();
+                postWaveOverviewRenderer();
+                ConsoleTextComponent.NewLine();
+            }
+
             ConsoleTextComponent.NewLine();
         }
 

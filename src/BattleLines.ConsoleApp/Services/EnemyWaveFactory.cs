@@ -24,6 +24,7 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
+            VictoryMessage = "You have unlocked Village upgrades",
             Waves =
             [
                 CreateWave(2, EnemyWaveRewardType.Gold, 5)
@@ -35,6 +36,7 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
+            VictoryMessage = "Your line holds through the assault, and the village stands unbroken.",
             Waves =
             [
                 CreateWave(3, EnemyWaveRewardType.Gold, 5),
@@ -50,6 +52,7 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
+            VictoryMessage = "The warband shatters against your defense. For now, the frontier is safe.",
             Waves =
             [
                 CreateWave(6, EnemyWaveRewardType.Gold, 10),

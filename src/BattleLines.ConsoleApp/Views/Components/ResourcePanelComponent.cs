@@ -8,6 +8,13 @@ public class ResourcePanelComponent
     private const int MinimumPanelWidth = 38;
     private const int MinimumLeftColumnWidth = 44;
 
+    public static int GetLeftColumnWidth()
+    {
+        return TryGetLayout(out var layout)
+            ? layout.StartX
+            : ConsoleTextComponent.WindowWidth;
+    }
+
     public void Render(GameWorld gameWorld, GameCommandCost? selectedCommandCost, string selectedCommandLabel)
     {
         if (!TryGetLayout(out var layout))

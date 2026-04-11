@@ -24,6 +24,12 @@ public class PostBattleView : IGameView
             commandOptions,
             selectedCommandIndex,
             goalMessage: gameWorld.GoalMessage,
+            postWaveOverviewRenderer: gameWorld.LastBattleWon && !string.IsNullOrWhiteSpace(gameWorld.EnemyWaves.VictoryMessage)
+                ? () => ConsoleTextComponent.WriteWrappedLines(
+                    gameWorld.EnemyWaves.VictoryMessage,
+                    Math.Max(1, ResourcePanelComponent.GetLeftColumnWidth() - 1),
+                    ConsoleColor.Blue)
+                : null,
             showCurrentWave: false,
             showPlayerUnits: false);
     }
