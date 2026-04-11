@@ -53,6 +53,49 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void BattleLine_RendersEnemyArmySummary()
+    {
+        var gameWorld = new GameWorld
+        {
+            EnemyWaves = new EnemyWaveSetModel
+            {
+                Waves =
+                [
+                    new EnemyWaveModel
+                    {
+                        Enemies =
+                        [
+                            new EnemyWaveUnitModel { EnemyType = UnitType.GiantRat, Count = 3 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        var renderedLine = BattleLineComponent.RenderEnemyArmyLine(gameWorld);
+
+        Assert.Equal("Enemy Army: |||", renderedLine);
+    }
+
+    [Fact]
+    public void BattleLine_RendersPlayerArmySummary()
+    {
+        var gameWorld = new GameWorld
+        {
+            MaxArmySize = 6,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.Fighter] = 2,
+                [UnitType.SpearmenLvl1] = 1
+            }
+        };
+
+        var renderedLine = BattleLineComponent.RenderPlayerArmyLine(gameWorld);
+
+        Assert.Equal("Player Army: |||OOO", renderedLine);
+    }
+
+    [Fact]
     public void Create_StartsPlayerWithNoSpearmen()
     {
         var gameWorld = new GameWorldFactory().Create();

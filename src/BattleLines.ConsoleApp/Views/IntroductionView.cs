@@ -21,8 +21,6 @@ public class IntroductionView : IGameView
         ConsoleTextComponent.SetCursorPosition(0, 1);
         GameTitle.Render();
 
-        ConsoleTextComponent.WriteLine(gameWorld.GoalMessage, ConsoleColor.Yellow);
-        ConsoleTextComponent.NewLine();
         RenderIntroductionText(gameWorld);
 
         var commandMenuHeight = CommandMenu.MeasureHeight(commandOptions, selectedCommandIndex);

@@ -20,7 +20,8 @@ public static class Program
             new PostBattleController());
         var gameEventService = new GameEventService();
         var gameWorldFactory = new GameWorldFactory();
-        var renderService = new RenderService();
+        var renderDiagnostics = new RenderDiagnostics();
+        var renderService = new RenderService(renderDiagnostics);
         var skipIntroduction = args.Any(arg => arg.Equals("--skip-intro", StringComparison.OrdinalIgnoreCase));
         var gameWorld = gameWorldFactory.Create(skipIntroduction);
         var stateDumper = new GameWorldStateDumper();

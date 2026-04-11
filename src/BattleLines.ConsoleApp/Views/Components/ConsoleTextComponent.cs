@@ -19,11 +19,11 @@ public static class ConsoleTextComponent
             Math.Min(Console.WindowHeight, MaxRenderHeight));
     }
 
-    public static void FlushFrame()
+    public static int FlushFrame()
     {
         if (activeFrameBuffer is null)
         {
-            return;
+            return 0;
         }
 
         var frameDiff = activeFrameBuffer.ToAnsiDiff(lastFrameBuffer);
@@ -34,6 +34,7 @@ public static class ConsoleTextComponent
 
         lastFrameBuffer = activeFrameBuffer;
         activeFrameBuffer = null;
+        return frameDiff.Length;
     }
 
     public static void RestoreConsoleAfterExit()

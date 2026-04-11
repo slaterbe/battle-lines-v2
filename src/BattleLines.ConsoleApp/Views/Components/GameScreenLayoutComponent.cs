@@ -9,6 +9,7 @@ public class GameScreenLayoutComponent
     private readonly ResourcePanelComponent resourcePanelComponent = new();
     private readonly WaveOverviewComponent waveOverviewComponent = new();
     private readonly CurrentWaveComponent currentWaveComponent = new();
+    private readonly BattleLineComponent battleLineComponent = new();
     private readonly PlayerUnitsComponent playerUnitsComponent = new();
     private readonly CommandMenuComponent commandMenuComponent = new();
 
@@ -26,7 +27,8 @@ public class GameScreenLayoutComponent
         bool showResources = true,
         bool showWaveOverview = true,
         bool showCurrentWave = true,
-        bool showPlayerUnits = true)
+        bool showPlayerUnits = true,
+        bool showBattleLine = true)
     {
         var selectedCommandLabel =
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
@@ -76,6 +78,12 @@ public class GameScreenLayoutComponent
         if (showCurrentWave)
         {
             currentWaveComponent.Render(gameWorld);
+        }
+
+        if (showBattleLine && showCurrentWave && showPlayerUnits)
+        {
+            ConsoleTextComponent.NewLine();
+            battleLineComponent.Render(gameWorld);
         }
 
         if (showPlayerUnits)

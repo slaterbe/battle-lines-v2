@@ -21,10 +21,6 @@ public class PlayerUnitsComponent
         TryGetPreviewUnitModel(selectedCommandLabel, out var previewUnitModel);
         var previewUnitType = GetPreviewUnitType(selectedCommandLabel);
 
-        ConsoleTextComponent.WriteLine(
-            $"Army: {UnitDisplayComponent.RenderArmyCount(gameWorld)}",
-            ConsoleColor.Blue);
-
         foreach (var unitType in UnitDisplayOrder)
         {
             WriteUnitCountLine(gameWorld, unitType, previewUnitType == unitType ? 1 : 0);

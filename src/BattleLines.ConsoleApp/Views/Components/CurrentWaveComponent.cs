@@ -15,10 +15,6 @@ public class CurrentWaveComponent
         var currentWave = gameWorld.EnemyWaves.Waves[0];
         var totalEnemyCount = currentWave.Enemies.Sum(enemy => enemy.Count);
 
-        ConsoleTextComponent.WriteLine(
-            $"Army: {UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.GiantRat, totalEnemyCount)}",
-            ConsoleColor.Red);
-
         foreach (var enemy in currentWave.Enemies)
         {
             ConsoleTextComponent.WriteLine(

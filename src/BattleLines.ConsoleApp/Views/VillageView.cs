@@ -21,7 +21,8 @@ public class VillageView : IGameView
             playerUnitsRenderer: () => PlayerUnits.Render(gameWorld, GetSelectedCommandLabel(commandOptions, selectedCommandIndex)),
             showResources: true,
             showWaveOverview: false,
-            showCurrentWave: false);
+            showCurrentWave: false,
+            showBattleLine: false);
     }
 
     private static string GetSelectedCommandLabel(

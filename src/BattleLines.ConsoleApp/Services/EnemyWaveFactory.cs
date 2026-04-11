@@ -24,7 +24,8 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
-            VictoryMessage = "You have unlocked Village upgrades",
+            FlavourVictoryMessage = "The first swarm breaks beneath your defense, and the village dares to hope.",
+            FlashingVictoryMessage = "Unlocked Village upgrades",
             Waves =
             [
                 CreateWave(2, EnemyWaveRewardType.Gold, 5)
@@ -36,7 +37,8 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
-            VictoryMessage = "Your line holds through the assault, and the village stands unbroken.",
+            FlavourVictoryMessage = "Your line holds through the assault, and the village stands unbroken.",
+            FlashingVictoryMessage = "Unlocked spears",
             Waves =
             [
                 CreateWave(3, EnemyWaveRewardType.Gold, 5),
@@ -52,7 +54,8 @@ public class EnemyWaveFactory
     {
         return new EnemyWaveSetModel
         {
-            VictoryMessage = "The warband shatters against your defense. For now, the frontier is safe.",
+            FlavourVictoryMessage = "The warband shatters against your defense. For now, the frontier is safe.",
+            FlashingVictoryMessage = "More to unlock",
             Waves =
             [
                 CreateWave(6, EnemyWaveRewardType.Gold, 10),

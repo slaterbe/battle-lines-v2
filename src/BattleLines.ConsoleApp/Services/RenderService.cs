@@ -1,4 +1,5 @@
 using BattleLines.ConsoleApp.Commands;
+using BattleLines.ConsoleApp.Debug;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views;
 using BattleLines.ConsoleApp.Views.Components;
@@ -8,10 +9,14 @@ namespace BattleLines.ConsoleApp.Services;
 public class RenderService
 {
     private readonly IReadOnlyDictionary<GameState, IGameView> views;
-    private readonly DebugPanelComponent debugPanelComponent = new();
+    private readonly DebugPanelComponent debugPanelComponent;
+    private readonly RenderDiagnostics renderDiagnostics;
 
-    public RenderService()
+    public RenderService(RenderDiagnostics renderDiagnostics)
     {
+        this.renderDiagnostics = renderDiagnostics;
+        debugPanelComponent = new DebugPanelComponent(renderDiagnostics);
+
         views = new Dictionary<GameState, IGameView>
         {
             [GameState.Introduction] = new IntroductionView(),
@@ -30,9 +35,11 @@ public class RenderService
             view = views[GameState.Village];
         }
 
+        renderDiagnostics.RecordRenderAttempt();
         ConsoleTextComponent.BeginFrame();
         view.Render(gameWorld, commandOptions, selectedCommandIndex);
         debugPanelComponent.Render(gameWorld);
-        ConsoleTextComponent.FlushFrame();
+        var writtenCharacterCount = ConsoleTextComponent.FlushFrame();
+        renderDiagnostics.RecordTerminalWrite(writtenCharacterCount);
     }
 }
