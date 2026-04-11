@@ -36,7 +36,6 @@ public class AddFighterCommand : IGameCommand
         gameWorld.Villagers -= 1;
         gameWorld.PlayerUnits[UnitType.Fighter] = currentCount + 1;
         gameWorld.FightersCreated += 1;
-        gameWorld.IsFiveFightersCreated = gameWorld.FightersCreated >= 5;
         gameWorldStatsService.Refresh(gameWorld);
         return false;
     }

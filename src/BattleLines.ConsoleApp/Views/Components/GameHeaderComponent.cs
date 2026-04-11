@@ -8,7 +8,7 @@ public class GameHeaderComponent
 
     public void Render(string statusMessage, ConsoleColor statusColor, string? goalMessage = null)
     {
-        ConsoleTextComponent.SetCursorPosition(0, 0);
+        ConsoleTextComponent.SetCursorPosition(0, 1);
 
         gameTitleComponent.Render();
 

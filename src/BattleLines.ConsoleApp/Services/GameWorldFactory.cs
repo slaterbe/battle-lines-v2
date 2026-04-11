@@ -33,7 +33,8 @@ public class GameWorldFactory
             TotalWaveCount = enemyWaves.Waves.Count,
             WavePosition = 0,
             BattlePosition = startingBattlePosition,
-            MaxArmySize = 8
+            MaxArmySize = 8,
+            GoalMessage = "Goal: Recruit 5 fighters."
         };
 
         if (gameWorld.IsSkipIntroduction)

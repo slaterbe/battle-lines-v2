@@ -43,9 +43,12 @@ public class UpgradeAvailabilityTests
     }
 
     [Fact]
-    public void ResolveBattleTick_UnlocksUpgrades_AfterFirstCombat()
+    public void FirstBattleWin_UnlocksUpgrades_AfterReturningToVillage()
     {
         var gameWorld = new GameWorldFactory().Create();
+        var eventService = new GameEventService();
+        gameWorld.IsFiveFightersCreated = true;
+        gameWorld.GoalMessage = "Goal: Defend the village!!!";
         gameWorld.State = BattleLines.ConsoleApp.Models.GameState.Village;
 
         new StartBattleCommand().Execute(gameWorld);
@@ -54,8 +57,12 @@ public class UpgradeAvailabilityTests
         gameWorld.PlayerTotalMaxAttack = gameWorld.CurrentWaveTotalHealth;
 
         new ResolveBattleTickCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
+        new ExitPostBattleCommand().Execute(gameWorld);
+        eventService.CheckEvents(gameWorld);
 
         Assert.True(gameWorld.IsUpgradesVisible);
+        Assert.Equal("Goal: Defeat all 5 enemy waves.", gameWorld.GoalMessage);
     }
 
     [Fact]

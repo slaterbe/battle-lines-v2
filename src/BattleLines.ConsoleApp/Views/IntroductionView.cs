@@ -18,7 +18,7 @@ public class IntroductionView : IGameView
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        ConsoleTextComponent.SetCursorPosition(0, 0);
+        ConsoleTextComponent.SetCursorPosition(0, 1);
         GameTitle.Render();
 
         ConsoleTextComponent.WriteLine(gameWorld.GoalMessage, ConsoleColor.Yellow);
