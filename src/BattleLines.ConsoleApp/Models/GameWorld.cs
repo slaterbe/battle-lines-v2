@@ -29,7 +29,7 @@ public class GameWorld
 
     // Army state
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];
-    public int MaxArmySize { get; set; }
+    public int FrontLineCapacity { get; set; }
     public int PlayerTotalHealth { get; set; }
     public int PlayerTotalAttack { get; set; }
     public int PlayerTotalMaxAttack { get; set; }

@@ -26,7 +26,7 @@ public class AddFighterCommand : IGameCommand
         }
 
         var totalArmySize = gameWorld.PlayerUnits.Values.Sum();
-        if (totalArmySize >= gameWorld.MaxArmySize)
+        if (totalArmySize >= gameWorld.FrontLineCapacity)
         {
             return false;
         }

@@ -13,7 +13,7 @@ public class GameFlowTests
     {
         var gameWorld = new GameWorld
         {
-            MaxArmySize = 8,
+            FrontLineCapacity = 8,
             PlayerUnits = new Dictionary<UnitType, int>
             {
                 [UnitType.SpearmenLvl1] = 3,
@@ -31,7 +31,7 @@ public class GameFlowTests
     {
         var gameWorld = new GameWorld
         {
-            MaxArmySize = 8,
+            FrontLineCapacity = 8,
             State = GameState.Battle,
             PlayerTotalHealth = 48,
             PlayerHealthAtBattleStart = 62,
@@ -82,7 +82,7 @@ public class GameFlowTests
     {
         var gameWorld = new GameWorld
         {
-            MaxArmySize = 6,
+            FrontLineCapacity = 6,
             PlayerUnits = new Dictionary<UnitType, int>
             {
                 [UnitType.Fighter] = 2,
@@ -128,7 +128,7 @@ public class GameFlowTests
     {
         var gameWorld = new GameWorldFactory().Create();
 
-        Assert.Equal(8, gameWorld.MaxArmySize);
+        Assert.Equal(8, gameWorld.FrontLineCapacity);
     }
 
     [Fact]
@@ -165,14 +165,14 @@ public class GameFlowTests
     public void AddSpearman_DoesNothing_WhenArmyIsFull()
     {
         var gameWorld = new GameWorldFactory().Create();
-        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.MaxArmySize;
+        gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.FrontLineCapacity;
         gameWorld.Villagers = 10;
         gameWorld.Spears = 10;
         new GameWorldStatsService().Refresh(gameWorld);
 
         new AddSpearmanCommand().Execute(gameWorld);
 
-        Assert.Equal(gameWorld.MaxArmySize, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
+        Assert.Equal(gameWorld.FrontLineCapacity, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(10, gameWorld.Villagers);
         Assert.Equal(10, gameWorld.Spears);
     }

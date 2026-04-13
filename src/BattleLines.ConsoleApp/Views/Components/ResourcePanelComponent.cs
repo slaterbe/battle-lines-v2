@@ -38,12 +38,12 @@ public class ResourcePanelComponent
         WriteStatRow(
             layout.StartX,
             currentRow++,
-            "Army Cap",
-            gameWorld.MaxArmySize.ToString(),
+            "Battle Line",
+            gameWorld.FrontLineCapacity.ToString(),
             "--",
             0,
-            selectedCommandLabel == "Boost Army Size",
-            selectedCommandLabel == "Boost Army Size",
+            selectedCommandLabel == "Expand Battle Line",
+            selectedCommandLabel == "Expand Battle Line",
             layout);
         WriteAt(layout.StartX, currentRow, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
     }
@@ -189,9 +189,9 @@ public class ResourcePanelComponent
         var content =
             "Resource".PadRight(layout.LabelWidth) +
             " " +
-            "Stock".PadLeft(layout.StockWidth) +
+            "Supply".PadLeft(layout.StockWidth) +
             " ".PadRight(Math.Max(1, stockGapWidth)) +
-            "Prod".PadLeft(layout.ProductionWidth);
+            "Income".PadLeft(layout.ProductionWidth);
         WriteBorderedLine(startX, row, content, layout.ContentWidth, ConsoleColor.DarkYellow);
     }
 

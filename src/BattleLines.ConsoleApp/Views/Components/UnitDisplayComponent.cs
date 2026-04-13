@@ -24,7 +24,7 @@ public static class UnitDisplayComponent
 
     private static string RenderArmyPositions(GameWorld gameWorld)
     {
-        var clampedMaxPositions = Math.Max(0, gameWorld.MaxArmySize);
+        var clampedMaxPositions = Math.Max(0, gameWorld.FrontLineCapacity);
         var totalArmySize = gameWorld.PlayerUnits.Values.Sum();
         var displayedCount = Math.Clamp(totalArmySize, 0, clampedMaxPositions);
 

@@ -13,21 +13,21 @@ public class CurrentWaveComponent
         }
 
         var currentWave = gameWorld.EnemyWaves.Waves[0];
-        var totalEnemyCount = currentWave.Enemies.Sum(enemy => enemy.Count);
-
-        foreach (var enemy in currentWave.Enemies)
-        {
-            ConsoleTextComponent.WriteLine(
-                $"{UnitTypeDisplayNames.Get(enemy.EnemyType)}: {RenderEnemyCountHistory(gameWorld, enemy.EnemyType, enemy.Count)}",
-                ConsoleColor.Red);
-        }
-
         var attackLabel = gameWorld.IsSpearControlsVisible ? "Min Attack" : "Attack";
         ConsoleTextComponent.WriteLine($"Health: {BattleHistoryComponent.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
         ConsoleTextComponent.WriteLine($"{attackLabel}: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
         if (gameWorld.IsSpearControlsVisible)
         {
             ConsoleTextComponent.WriteLine($"Max Attack: {BattleHistoryComponent.RenderEnemyMaxAttack(gameWorld)}", ConsoleColor.Red);
+        }
+
+        ConsoleTextComponent.WriteLine("-----", ConsoleColor.DarkGray);
+
+        foreach (var enemy in currentWave.Enemies)
+        {
+            ConsoleTextComponent.WriteLine(
+                $"{UnitTypeDisplayNames.Get(enemy.EnemyType)}: {RenderEnemyCountHistory(gameWorld, enemy.EnemyType, enemy.Count)}",
+                ConsoleColor.Red);
         }
     }
 
