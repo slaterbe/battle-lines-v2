@@ -132,6 +132,14 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void UnitCatalog_DefaultUnits_DefineUnitAcronyms()
+    {
+        Assert.Equal('F', UnitCatalog.DefaultUnits[UnitType.Fighter].UnitAcronym);
+        Assert.Equal('S', UnitCatalog.DefaultUnits[UnitType.SpearmenLvl1].UnitAcronym);
+        Assert.Equal('R', UnitCatalog.DefaultUnits[UnitType.GiantRat].UnitAcronym);
+    }
+
+    [Fact]
     public void AddSpearman_DoesNothing_OutsideVillageAndPreBattle()
     {
         var gameWorld = new GameWorldFactory().Create();
