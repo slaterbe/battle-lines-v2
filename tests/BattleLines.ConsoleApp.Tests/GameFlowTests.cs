@@ -23,7 +23,7 @@ public class GameFlowTests
 
         var renderedCount = UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.SpearmenLvl1, 3);
 
-        Assert.Equal("|||||OOO", renderedCount);
+        Assert.Equal("FFSSSOOO", renderedCount);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class GameFlowTests
 
         var renderedCount = UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.SpearmenLvl1, 3);
 
-        Assert.Equal("||||XOOO", renderedCount);
+        Assert.Equal("FSSSXOOO", renderedCount);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public class GameFlowTests
 
         var renderedLine = BattleLineComponent.RenderEnemyArmyLine(gameWorld);
 
-        Assert.Equal("|||", renderedLine);
+        Assert.Equal("RRR", renderedLine);
     }
 
     [Fact]
@@ -92,7 +92,7 @@ public class GameFlowTests
 
         var renderedLine = BattleLineComponent.RenderPlayerArmyLine(gameWorld);
 
-        Assert.Equal("|||OOO", renderedLine);
+        Assert.Equal("FFSOOO", renderedLine);
     }
 
     [Fact]

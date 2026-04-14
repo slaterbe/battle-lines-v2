@@ -4,7 +4,7 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class IncreaseSpearProductionCommand : IGameCommand
 {
-    private const int GoldCost = 5;
+    private const int GoldCost = 10;
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Boost Spears";
