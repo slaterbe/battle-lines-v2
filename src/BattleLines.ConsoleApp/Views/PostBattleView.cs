@@ -48,7 +48,7 @@ public class PostBattleView : IGameView
             ConsoleTextComponent.WriteWrappedLines(
                 enemyWaves.FlavourVictoryMessage,
                 maxWidth,
-                ConsoleColor.Blue);
+                ConsoleColor.Green);
 
             if (!string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage))
             {

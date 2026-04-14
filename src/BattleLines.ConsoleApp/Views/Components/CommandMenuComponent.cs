@@ -78,9 +78,9 @@ public class CommandMenuComponent
 
         if (hasSelectedCommand)
         {
-            ConsoleTextComponent.Write("Hint", ConsoleColor.DarkYellow);
-            ConsoleTextComponent.Write(": ", ConsoleColor.DarkYellow);
-            ConsoleTextComponent.WriteLine(commandOptions[selectedCommandIndex].HelpText, ConsoleColor.Green);
+            ConsoleTextComponent.Write("Hint", ConsoleColor.White);
+            ConsoleTextComponent.Write(": ", ConsoleColor.White);
+            ConsoleTextComponent.WriteLine(commandOptions[selectedCommandIndex].HelpText, ConsoleColor.White);
         }
 
         ConsoleTextComponent.Write("Controls", ConsoleColor.DarkYellow);
