@@ -26,6 +26,7 @@ public class EnemyWaveFactory
         {
             FlavourVictoryMessage = "The first swarm breaks beneath your defense, and the village dares to hope.",
             FlashingVictoryMessage = "Unlocked Village upgrades",
+            DetailedVictoryMessage = "Invest in stronger village production before the next assault arrives.",
             Waves =
             [
                 CreateWave(2, EnemyWaveRewardType.Gold, 5)
@@ -39,6 +40,7 @@ public class EnemyWaveFactory
         {
             FlavourVictoryMessage = "Your line holds through the assault, and the village stands unbroken.",
             FlashingVictoryMessage = "Unlocked spears",
+            DetailedVictoryMessage = "Train spearmen to add a harder-hitting unit to your battle line.",
             Waves =
             [
                 CreateWave(3, EnemyWaveRewardType.Gold, 5),
@@ -56,6 +58,7 @@ public class EnemyWaveFactory
         {
             FlavourVictoryMessage = "The warband shatters against your defense. For now, the frontier is safe.",
             FlashingVictoryMessage = "More to unlock",
+            DetailedVictoryMessage = "This victory marks the current frontier. More upgrades and enemies can be added next.",
             Waves =
             [
                 CreateWave(6, EnemyWaveRewardType.Gold, 10),

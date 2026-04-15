@@ -12,7 +12,7 @@ public class PostBattleView : IGameView
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
         var message = gameWorld.LastBattleWon
-            ? "The last of the enemy scatters. The village stands, and your warriors breathe again."
+            ? GetVictoryFlavourText(gameWorld.EnemyWaves)
             : "Battle Lost: Review the outcome and return to the village";
         var messageColor = gameWorld.LastBattleWon
             ? ConsoleColor.Green
@@ -29,36 +29,44 @@ public class PostBattleView : IGameView
                                       HasPostBattleVictoryContent(gameWorld.EnemyWaves)
                 ? () => RenderVictoryMessages(gameWorld.EnemyWaves)
                 : null,
+            showWaveOverview: false,
             showCurrentWave: false,
             showPlayerUnits: false);
     }
 
+    private static string GetVictoryFlavourText(EnemyWaveSetModel enemyWaves)
+    {
+        return !string.IsNullOrWhiteSpace(enemyWaves.FlavourVictoryMessage)
+            ? enemyWaves.FlavourVictoryMessage
+            : "The last of the enemy scatters. The village stands, and your warriors breathe again.";
+    }
+
     private static bool HasPostBattleVictoryContent(EnemyWaveSetModel enemyWaves)
     {
-        return !string.IsNullOrWhiteSpace(enemyWaves.FlavourVictoryMessage) ||
-               !string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage);
+        return !string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage) ||
+               !string.IsNullOrWhiteSpace(enemyWaves.DetailedVictoryMessage);
     }
 
     private static void RenderVictoryMessages(EnemyWaveSetModel enemyWaves)
     {
         var maxWidth = Math.Max(1, ResourcePanelComponent.GetLeftColumnWidth() - 1);
 
-        if (!string.IsNullOrWhiteSpace(enemyWaves.FlavourVictoryMessage))
+        if (!string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage))
         {
-            ConsoleTextComponent.WriteWrappedLines(
-                enemyWaves.FlavourVictoryMessage,
-                maxWidth,
-                ConsoleColor.Green);
+            RenderFlashingVictoryMessage(enemyWaves.FlashingVictoryMessage, maxWidth);
+        }
 
+        if (!string.IsNullOrWhiteSpace(enemyWaves.DetailedVictoryMessage))
+        {
             if (!string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage))
             {
                 ConsoleTextComponent.NewLine();
             }
-        }
 
-        if (!string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage))
-        {
-            RenderFlashingVictoryMessage(enemyWaves.FlashingVictoryMessage, maxWidth);
+            ConsoleTextComponent.WriteWrappedLines(
+                enemyWaves.DetailedVictoryMessage,
+                maxWidth,
+                ConsoleColor.White);
         }
     }
 

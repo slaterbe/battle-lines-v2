@@ -63,15 +63,12 @@ public class GameScreenLayoutComponent
         if (showWaveOverview)
         {
             waveOverviewComponent.Render(gameWorld);
+            ConsoleTextComponent.NewLine();
+        }
 
-            if (postWaveOverviewRenderer is not null)
-            {
-                ConsoleTextComponent.NewLine();
-                ConsoleTextComponent.NewLine();
-                postWaveOverviewRenderer();
-                ConsoleTextComponent.NewLine();
-            }
-
+        if (postWaveOverviewRenderer is not null)
+        {
+            postWaveOverviewRenderer();
             ConsoleTextComponent.NewLine();
         }
 

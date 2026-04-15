@@ -6,6 +6,8 @@ public class EnemyWaveSetModel
 
     public string FlashingVictoryMessage { get; set; } = string.Empty;
 
+    public string DetailedVictoryMessage { get; set; } = string.Empty;
+
     public string FlavourVictoryMessage { get; set; } = string.Empty;
 
     public EnemyWaveRewardType FinalRewardType { get; set; }
