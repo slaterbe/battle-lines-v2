@@ -2,21 +2,19 @@ namespace BattleLines.ConsoleApp.Views.Components;
 
 public static class ConsoleTextComponent
 {
-    private const int MaxRenderWidth = 100;
-    private const int MaxRenderHeight = 28;
     private static ConsoleFrameBuffer? activeFrameBuffer;
     private static ConsoleFrameBuffer? lastFrameBuffer;
 
-    public static int WindowWidth => activeFrameBuffer?.Width ?? Math.Min(Console.WindowWidth, MaxRenderWidth);
-    public static int WindowHeight => activeFrameBuffer?.Height ?? Math.Min(Console.WindowHeight, MaxRenderHeight);
+    public static int WindowWidth => activeFrameBuffer?.Width ?? Math.Min(Console.WindowWidth, ConsoleRenderLayout.MaxCharacterCount);
+    public static int WindowHeight => activeFrameBuffer?.Height ?? Math.Min(Console.WindowHeight, ConsoleRenderLayout.MaxLineCount);
 
     public static int CursorTop => activeFrameBuffer?.CursorTop ?? Console.CursorTop;
 
     public static void BeginFrame()
     {
         activeFrameBuffer = new ConsoleFrameBuffer(
-            Math.Min(Console.WindowWidth, MaxRenderWidth),
-            Math.Min(Console.WindowHeight, MaxRenderHeight));
+            Math.Min(Console.WindowWidth, ConsoleRenderLayout.MaxCharacterCount),
+            Math.Min(Console.WindowHeight, ConsoleRenderLayout.MaxLineCount));
     }
 
     public static int FlushFrame()
@@ -51,13 +49,16 @@ public static class ConsoleTextComponent
 
     public static void SetCursorPosition(int left, int top)
     {
+        var resolvedLeft = ConsoleRenderLayout.ResolveLeft(left, WindowWidth);
+        var resolvedTop = ConsoleRenderLayout.ResolveTop(top, WindowHeight);
+
         if (activeFrameBuffer is not null)
         {
-            activeFrameBuffer.SetCursorPosition(left, top);
+            activeFrameBuffer.SetCursorPosition(resolvedLeft, resolvedTop);
             return;
         }
 
-        Console.SetCursorPosition(left, top);
+        Console.SetCursorPosition(resolvedLeft, resolvedTop);
     }
 
     public static void NewLine()
