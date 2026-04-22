@@ -13,12 +13,15 @@ public class ResourcePanelComponent
         GameCommandCost? selectedCommandCost,
         string selectedCommandLabel,
         int startX,
-        int startY)
+        int startY,
+        int panelWidth)
     {
         var resolvedStartX = ConsoleRenderLayout.ResolveLeft(startX, ConsoleTextComponent.WindowWidth);
         var resolvedStartY = ConsoleRenderLayout.ResolveTop(startY, ConsoleTextComponent.WindowHeight);
-        var panelWidth = Math.Max(MinimumPanelWidth, ConsoleTextComponent.WindowWidth - resolvedStartX - 1);
-        var layout = new ResourcePanelLayout(resolvedStartX, resolvedStartY, panelWidth);
+        var layout = new ResourcePanelLayout(
+            resolvedStartX,
+            resolvedStartY,
+            Math.Max(MinimumPanelWidth, panelWidth));
         var rows = BuildRows(gameWorld, selectedCommandCost, selectedCommandLabel);
         var currentRow = layout.StartY;
 

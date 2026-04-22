@@ -14,39 +14,36 @@ public class VillageView : IGameView
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
     {
-        const int headerStartX = 0;
-        const int headerStartY = 1;
-        const int resourcePanelStartX = -35;
-        const int resourcePanelStartY = 1;
-        const int playerUnitsStartX = 0;
-        const int playerUnitsStartY = 6;
-        const int commandMenuStartX = 0;
-        const int commandMenuStartY = 14;
-
         var selectedCommandLabel = GetSelectedCommandLabel(commandOptions, selectedCommandIndex);
         var selectedCommandCost = GetSelectedCommandCost(commandOptions, selectedCommandIndex);
-        var resourcePanelLeft = ConsoleRenderLayout.ResolveLeft(resourcePanelStartX, ConsoleTextComponent.WindowWidth);
-        var headerMaxWidth = Math.Max(1, resourcePanelLeft - headerStartX - 1);
 
         Header.Render(
             "The village waits for your command. Prepare the defenses.",
             ConsoleColor.Green,
             gameWorld.GoalMessage,
-            headerStartX,
-            headerStartY,
-            headerMaxWidth);
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.HeaderStartY,
+            GameViewLayout.HeaderWidth);
 
         ResourcePanel.Render(
             gameWorld,
             selectedCommandCost,
             selectedCommandLabel,
-            resourcePanelStartX,
-            resourcePanelStartY);
+            GameViewLayout.RightColumnStartX,
+            GameViewLayout.ResourcePanelStartY,
+            GameViewLayout.ResourcePanelWidth);
 
-        PlayerUnits.Render(gameWorld, selectedCommandLabel, playerUnitsStartX, playerUnitsStartY);
+        PlayerUnits.Render(
+            gameWorld,
+            selectedCommandLabel,
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.VillageUnitsStartY);
 
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
-        CommandMenu.Render(commandMenuState, commandMenuStartX, commandMenuStartY);
+        CommandMenu.Render(
+            commandMenuState,
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.VillageCommandMenuStartY);
     }
 
     private static string GetSelectedCommandLabel(

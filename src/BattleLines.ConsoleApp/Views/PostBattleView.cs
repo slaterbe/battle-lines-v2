@@ -22,42 +22,36 @@ public class PostBattleView : IGameView
             ? ConsoleColor.Green
             : ConsoleColor.Yellow;
 
-        const int headerStartX = 0;
-        const int headerStartY = 1;
-        const int resourcePanelStartX = -35;
-        const int resourcePanelStartY = 1;
-        const int summaryStartX = 0;
-        const int commandMenuStartX = 0;
-
         var selectedCommandLabel = GetSelectedCommandLabel(commandOptions, selectedCommandIndex);
         var selectedCommandCost = GetSelectedCommandCost(commandOptions, selectedCommandIndex);
-        var resourcePanelLeft = ConsoleRenderLayout.ResolveLeft(resourcePanelStartX, ConsoleTextComponent.WindowWidth);
-        var headerMaxWidth = Math.Max(1, resourcePanelLeft - headerStartX - 1);
 
         Header.Render(
             message,
             messageColor,
             gameWorld.GoalMessage,
-            headerStartX,
-            headerStartY,
-            headerMaxWidth);
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.HeaderStartY,
+            GameViewLayout.HeaderWidth);
 
         ResourcePanel.Render(
             gameWorld,
             selectedCommandCost,
             selectedCommandLabel,
-            resourcePanelStartX,
-            resourcePanelStartY);
+            GameViewLayout.RightColumnStartX,
+            GameViewLayout.ResourcePanelStartY,
+            GameViewLayout.ResourcePanelWidth);
 
-        var summaryStartY = ConsoleTextComponent.CursorTop;
-        Summary.Render(gameWorld, summaryStartX, summaryStartY, resourcePanelLeft);
+        Summary.Render(
+            gameWorld,
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.PostBattleSummaryStartY,
+            GameViewLayout.HeaderWidth);
 
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
-        var commandMenuHeight = CommandMenu.MeasureHeight(commandMenuState);
-        var commandMenuStartY = Math.Min(
-            ConsoleTextComponent.CursorTop + 1,
-            ConsoleTextComponent.WindowHeight - commandMenuHeight);
-        CommandMenu.Render(commandMenuState, commandMenuStartX, commandMenuStartY);
+        CommandMenu.Render(
+            commandMenuState,
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.PostBattleCommandMenuStartY);
     }
 
     private static string GetSelectedCommandLabel(

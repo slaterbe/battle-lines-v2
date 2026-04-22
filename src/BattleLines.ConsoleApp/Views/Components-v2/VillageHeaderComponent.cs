@@ -14,14 +14,18 @@ public class VillageHeaderComponent
         int startY,
         int maxWidth)
     {
-        ConsoleTextComponent.SetCursorPosition(startX, startY);
+        var goalRowCount = string.IsNullOrWhiteSpace(goalMessage) ? 0 : 1;
+        var titleStartY = startY + goalRowCount;
+        var statusStartY = titleStartY + 1;
 
         if (!string.IsNullOrWhiteSpace(goalMessage))
         {
+            ConsoleTextComponent.SetCursorPosition(startX, startY);
             ConsoleTextComponent.WriteLine(goalMessage, ConsoleColor.Yellow);
         }
 
-        gameTitleComponent.Render(startX, ConsoleTextComponent.CursorTop);
+        gameTitleComponent.Render(startX, titleStartY);
+        ConsoleTextComponent.SetCursorPosition(startX, statusStartY);
         ConsoleTextComponent.WriteWrappedLines(statusMessage, Math.Max(1, maxWidth), statusColor);
     }
 }
