@@ -3,6 +3,7 @@ using BattleLines.ConsoleApp.Models;
 
 namespace BattleLines.ConsoleApp.Views.Components;
 
+[Obsolete("Use explicit ComponentsV2 composition in each view instead of Layout.Render.")]
 public class GameScreenLayoutComponent
 {
     private readonly GameHeaderComponent gameHeaderComponent = new();

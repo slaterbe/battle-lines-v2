@@ -1,12 +1,16 @@
 using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views.Components;
+using BattleLines.ConsoleApp.Views.ComponentsV2;
 
 namespace BattleLines.ConsoleApp.Views;
 
 public class PostBattleView : IGameView
 {
-    private static readonly GameScreenLayoutComponent Layout = new();
+    private static readonly ComponentsV2.GameHeaderComponent Header = new();
+    private static readonly ComponentsV2.ResourcePanelComponent ResourcePanel = new();
+    private static readonly PostBattleSummaryComponent Summary = new();
+    private static readonly ComponentsV2.CommandMenuComponent CommandMenu = new();
     private static readonly TimeSpan VictoryFlashInterval = TimeSpan.FromMilliseconds(850);
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)
@@ -18,20 +22,60 @@ public class PostBattleView : IGameView
             ? ConsoleColor.Green
             : ConsoleColor.Yellow;
 
-        Layout.Render(
-            gameWorld,
+        const int headerStartX = 0;
+        const int headerStartY = 1;
+        const int resourcePanelStartX = -35;
+        const int resourcePanelStartY = 1;
+        const int summaryStartX = 0;
+        const int commandMenuStartX = 0;
+
+        var selectedCommandLabel = GetSelectedCommandLabel(commandOptions, selectedCommandIndex);
+        var selectedCommandCost = GetSelectedCommandCost(commandOptions, selectedCommandIndex);
+        var resourcePanelLeft = ConsoleRenderLayout.ResolveLeft(resourcePanelStartX, ConsoleTextComponent.WindowWidth);
+        var headerMaxWidth = Math.Max(1, resourcePanelLeft - headerStartX - 1);
+
+        Header.Render(
             message,
             messageColor,
-            commandOptions,
-            selectedCommandIndex,
-            goalMessage: gameWorld.GoalMessage,
-            postWaveOverviewRenderer: gameWorld.LastBattleWon &&
-                                      HasPostBattleVictoryContent(gameWorld.EnemyWaves)
-                ? () => RenderVictoryMessages(gameWorld.EnemyWaves)
-                : null,
-            showWaveOverview: false,
-            showCurrentWave: false,
-            showPlayerUnits: false);
+            gameWorld.GoalMessage,
+            headerStartX,
+            headerStartY,
+            headerMaxWidth);
+
+        ResourcePanel.Render(
+            gameWorld,
+            selectedCommandCost,
+            selectedCommandLabel,
+            resourcePanelStartX,
+            resourcePanelStartY);
+
+        var summaryStartY = ConsoleTextComponent.CursorTop;
+        Summary.Render(gameWorld, summaryStartX, summaryStartY, resourcePanelLeft);
+
+        var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
+        var commandMenuHeight = CommandMenu.MeasureHeight(commandMenuState);
+        var commandMenuStartY = Math.Min(
+            ConsoleTextComponent.CursorTop + 1,
+            ConsoleTextComponent.WindowHeight - commandMenuHeight);
+        CommandMenu.Render(commandMenuState, commandMenuStartX, commandMenuStartY);
+    }
+
+    private static string GetSelectedCommandLabel(
+        IReadOnlyList<GameCommandOption> commandOptions,
+        int selectedCommandIndex)
+    {
+        return selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+            ? commandOptions[selectedCommandIndex].Label
+            : string.Empty;
+    }
+
+    private static GameCommandCost? GetSelectedCommandCost(
+        IReadOnlyList<GameCommandOption> commandOptions,
+        int selectedCommandIndex)
+    {
+        return selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+            ? commandOptions[selectedCommandIndex].Cost
+            : null;
     }
 
     private static string GetVictoryFlavourText(EnemyWaveSetModel enemyWaves)
@@ -41,16 +85,14 @@ public class PostBattleView : IGameView
             : "The last of the enemy scatters. The village stands, and your warriors breathe again.";
     }
 
-    private static bool HasPostBattleVictoryContent(EnemyWaveSetModel enemyWaves)
+    public static bool HasPostBattleVictoryContent(EnemyWaveSetModel enemyWaves)
     {
         return !string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage) ||
                !string.IsNullOrWhiteSpace(enemyWaves.DetailedVictoryMessage);
     }
 
-    private static void RenderVictoryMessages(EnemyWaveSetModel enemyWaves)
+    public static void RenderVictoryMessages(EnemyWaveSetModel enemyWaves, int maxWidth)
     {
-        var maxWidth = Math.Max(1, ResourcePanelComponent.GetLeftColumnWidth() - 1);
-
         if (!string.IsNullOrWhiteSpace(enemyWaves.FlashingVictoryMessage))
         {
             RenderFlashingVictoryMessage(enemyWaves.FlashingVictoryMessage, maxWidth);

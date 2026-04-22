@@ -51,7 +51,7 @@ public class WaveView : IGameView
 
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
         var commandMenuHeight = CommandMenu.MeasureHeight(commandMenuState);
-        var commandMenuStartY = Math.Max(
+        var commandMenuStartY = Math.Min(
             ConsoleTextComponent.CursorTop + 1,
             ConsoleTextComponent.WindowHeight - commandMenuHeight);
         CommandMenu.Render(commandMenuState, commandMenuStartX, commandMenuStartY);
