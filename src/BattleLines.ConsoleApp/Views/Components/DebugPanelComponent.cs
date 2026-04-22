@@ -6,6 +6,7 @@ namespace BattleLines.ConsoleApp.Views.Components;
 public class DebugPanelComponent
 {
     private readonly RenderDiagnostics renderDiagnostics;
+    private const int DebugSpacingRows = 2;
 
     public DebugPanelComponent(RenderDiagnostics renderDiagnostics)
     {
@@ -15,16 +16,30 @@ public class DebugPanelComponent
     public void Render(GameWorld gameWorld)
     {
         var snapshot = renderDiagnostics.GetSnapshot();
+        var startRow = ConsoleRenderLayout.MaxLineCount + DebugSpacingRows;
 
-        ConsoleTextComponent.NewLine();
-        ConsoleTextComponent.NewLine();
-        ConsoleTextComponent.WriteLine("--- Debug ---", ConsoleColor.DarkGray);
-        ConsoleTextComponent.WriteLine($"View: {gameWorld.State}", ConsoleColor.DarkGray);
-        ConsoleTextComponent.WriteLine(
-            $"Render attempts/s: {snapshot.RenderAttemptsPerSecond}",
-            ConsoleColor.DarkGray);
-        ConsoleTextComponent.WriteLine(
-            $"Terminal writes/s: {snapshot.TerminalWritesPerSecond}",
-            ConsoleColor.DarkGray);
+        WriteDebugLine(0, startRow++, "--- Debug ---");
+        WriteDebugLine(0, startRow++, $"View: {gameWorld.State}");
+        WriteDebugLine(0, startRow++, $"Render attempts/s: {snapshot.RenderAttemptsPerSecond}");
+        WriteDebugLine(0, startRow, $"Terminal writes/s: {snapshot.TerminalWritesPerSecond}");
+    }
+
+    private static void WriteDebugLine(int left, int top, string text)
+    {
+        if (top >= Console.BufferHeight)
+        {
+            return;
+        }
+
+        var availableWidth = Math.Max(1, Console.WindowWidth - left);
+        var paddedText = text.Length >= availableWidth
+            ? text[..availableWidth]
+            : text.PadRight(availableWidth);
+
+        var originalForegroundColor = Console.ForegroundColor;
+        Console.SetCursorPosition(left, top);
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.Write(paddedText);
+        Console.ForegroundColor = originalForegroundColor;
     }
 }

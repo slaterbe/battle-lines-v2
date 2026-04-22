@@ -18,11 +18,11 @@ public class IntroductionView : IGameView
         const int introductionStartX = 0;
         const int introductionStartY = 3;
         const int commandMenuStartX = 0;
-        const int commandMenuStartY = -3;
 
         GameTitle.Render(titleStartX, titleStartY);
         Introduction.Render(gameWorld, introductionStartX, introductionStartY);
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
+        var commandMenuStartY = GameViewLayout.GetBottomAnchoredStartY(CommandMenu.MeasureHeight(commandMenuState));
         CommandMenu.Render(commandMenuState, commandMenuStartX, commandMenuStartY);
     }
 }

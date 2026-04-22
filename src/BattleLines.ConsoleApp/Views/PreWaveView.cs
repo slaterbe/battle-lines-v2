@@ -41,10 +41,11 @@ public class PreWaveView : IGameView
             GameViewLayout.HeaderWidth);
 
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
+        var commandMenuStartY = GameViewLayout.GetBottomAnchoredStartY(CommandMenu.MeasureHeight(commandMenuState));
         CommandMenu.Render(
             commandMenuState,
             GameViewLayout.LeftColumnStartX,
-            GameViewLayout.WaveCommandMenuStartY);
+            commandMenuStartY);
     }
 
     private static string GetSelectedCommandLabel(

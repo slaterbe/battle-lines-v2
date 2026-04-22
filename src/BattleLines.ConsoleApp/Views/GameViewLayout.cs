@@ -1,3 +1,5 @@
+using BattleLines.ConsoleApp.Views.Components;
+
 namespace BattleLines.ConsoleApp.Views;
 
 public static class GameViewLayout
@@ -15,7 +17,8 @@ public static class GameViewLayout
     public const int WaveBattlefieldStartY = 5;
     public const int PostBattleSummaryStartY = 5;
 
-    public const int VillageCommandMenuStartY = 14;
-    public const int WaveCommandMenuStartY = 17;
-    public const int PostBattleCommandMenuStartY = 16;
+    public static int GetBottomAnchoredStartY(int componentHeight)
+    {
+        return Math.Max(0, ConsoleRenderLayout.MaxLineCount - Math.Max(1, componentHeight));
+    }
 }

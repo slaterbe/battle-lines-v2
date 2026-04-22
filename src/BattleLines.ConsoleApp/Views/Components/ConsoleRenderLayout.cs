@@ -3,7 +3,7 @@ namespace BattleLines.ConsoleApp.Views.Components;
 public static class ConsoleRenderLayout
 {
     public const int MaxCharacterCount = 100;
-    public const int MaxLineCount = 22;
+    public const int MaxLineCount = 28;
 
     public static int ResolveLeft(int left, int width)
     {

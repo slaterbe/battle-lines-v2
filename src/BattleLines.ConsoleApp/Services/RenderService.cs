@@ -40,13 +40,12 @@ public class RenderService
         renderDiagnostics.RecordRenderAttempt();
         ConsoleTextComponent.BeginFrame();
         view.Render(gameWorld, commandOptions, selectedCommandIndex);
+        var writtenCharacterCount = ConsoleTextComponent.FlushFrame();
+        renderDiagnostics.RecordTerminalWrite(writtenCharacterCount);
 
         if (showDebugPanel)
         {
             debugPanelComponent.Render(gameWorld);
         }
-
-        var writtenCharacterCount = ConsoleTextComponent.FlushFrame();
-        renderDiagnostics.RecordTerminalWrite(writtenCharacterCount);
     }
 }
