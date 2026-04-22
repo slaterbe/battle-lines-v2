@@ -6,12 +6,17 @@ public class BattleLineComponent
 {
     public void Render(GameWorld gameWorld)
     {
+        Render(gameWorld, ResourcePanelComponent.GetLeftColumnWidth());
+    }
+
+    public void Render(GameWorld gameWorld, int contentWidth)
+    {
         if (ShouldShowEnemyArmy(gameWorld))
         {
-            WriteCenteredLine(RenderEnemyArmyLine(gameWorld), ConsoleColor.Red);
+            WriteCenteredLine(RenderEnemyArmyLine(gameWorld), ConsoleColor.Red, contentWidth);
         }
 
-        WriteCenteredLine(RenderPlayerArmyLine(gameWorld), ConsoleColor.Blue);
+        WriteCenteredLine(RenderPlayerArmyLine(gameWorld), ConsoleColor.Blue, contentWidth);
     }
 
     public static string RenderEnemyArmyLine(GameWorld gameWorld)
@@ -39,10 +44,10 @@ public class BattleLineComponent
         return gameWorld.State != GameState.Village;
     }
 
-    private static void WriteCenteredLine(string text, ConsoleColor color)
+    private static void WriteCenteredLine(string text, ConsoleColor color, int contentWidth)
     {
-        var contentWidth = Math.Max(1, ResourcePanelComponent.GetLeftColumnWidth());
-        var left = Math.Max(0, (contentWidth - text.Length) / 2);
+        var effectiveContentWidth = Math.Max(1, contentWidth);
+        var left = Math.Max(0, (effectiveContentWidth - text.Length) / 2);
         var top = ConsoleTextComponent.CursorTop;
 
         ConsoleTextComponent.SetCursorPosition(left, top);

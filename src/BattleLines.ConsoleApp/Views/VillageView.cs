@@ -7,7 +7,7 @@ namespace BattleLines.ConsoleApp.Views;
 
 public class VillageView : IGameView
 {
-    private static readonly VillageHeaderComponent Header = new();
+    private static readonly ComponentsV2.GameHeaderComponent Header = new();
     private static readonly ComponentsV2.ResourcePanelComponent ResourcePanel = new();
     private static readonly VillagePlayerUnitsComponent PlayerUnits = new();
     private static readonly ComponentsV2.CommandMenuComponent CommandMenu = new();
