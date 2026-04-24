@@ -19,7 +19,8 @@ public abstract class GameStateControllerBase : IGameStateController
                 command.Category,
                 command.Label,
                 command.HelpText.ReplaceLineEndings(" "),
-                command.GetCost()))
+                command.GetCost(),
+                command is IHoldToExecuteCommand))
             .ToArray();
     }
 

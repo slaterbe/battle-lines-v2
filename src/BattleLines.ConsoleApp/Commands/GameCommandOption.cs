@@ -1,3 +1,8 @@
 namespace BattleLines.ConsoleApp.Commands;
 
-public sealed record GameCommandOption(GameCommandCategory Category, string Label, string HelpText, GameCommandCost? Cost);
+public sealed record GameCommandOption(
+    GameCommandCategory Category,
+    string Label,
+    string HelpText,
+    GameCommandCost? Cost,
+    bool RequiresHoldToExecute = false);

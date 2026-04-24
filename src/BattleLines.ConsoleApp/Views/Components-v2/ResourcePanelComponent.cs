@@ -75,7 +75,7 @@ public class ResourcePanelComponent
                     selectedCommandLabel == "Boost Spears"));
         }
 
-        if (gameWorld.IsUpgradesVisible)
+        if (gameWorld.IsUpgradesVisible || gameWorld.Gold > 0)
         {
             rows.Add(
                 new(

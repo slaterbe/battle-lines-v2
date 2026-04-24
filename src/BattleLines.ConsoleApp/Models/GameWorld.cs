@@ -16,6 +16,7 @@ public class GameWorld
     public int Gold { get; set; }
     public int VillagerProduction { get; set; }
     public int SpearProduction { get; set; }
+    public double VillageGoldGatherProgress { get; set; }
 
     // World and encounter state
     public GameState State { get; set; } = GameState.Village;

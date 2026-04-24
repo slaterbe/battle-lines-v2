@@ -8,6 +8,8 @@ namespace BattleLines.ConsoleApp;
 public static class Program
 {
     private static readonly TimeSpan TickRate = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan HoldToGatherDuration = TimeSpan.FromSeconds(1.4);
+    private static readonly TimeSpan HoldRepeatGrace = TimeSpan.FromMilliseconds(275);
 
     public static void Main(string[] args)
     {
@@ -30,6 +32,8 @@ public static class Program
         var shouldExit = false;
         var selectedCommandIndex = 0;
         var previousGameState = gameWorld.State;
+        DateTime? holdStartedAt = null;
+        DateTime? holdLastSeenAt = null;
         ConsoleCancelEventHandler cancelHandler = (_, eventArgs) =>
         {
             eventArgs.Cancel = true;
@@ -61,11 +65,26 @@ public static class Program
                         case ConsoleKey.DownArrow:
                         case ConsoleKey.RightArrow:
                             selectedCommandIndex = GetNextCommandIndex(selectedCommandIndex, availableCommands.Count);
+                            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
                             break;
                         case ConsoleKey.Enter:
-                            shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
-                            gameEventService.CheckEvents(gameWorld);
-                            stateDumper.Dump(gameWorld);
+                            if (IsVillageHoldCommandSelected(gameWorld, availableCommands, selectedCommandIndex))
+                            {
+                                var holdNow = DateTime.UtcNow;
+                                if (holdLastSeenAt is null || holdNow - holdLastSeenAt > HoldRepeatGrace)
+                                {
+                                    holdStartedAt = holdNow;
+                                }
+
+                                holdLastSeenAt = holdNow;
+                            }
+                            else
+                            {
+                                shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
+                                gameEventService.CheckEvents(gameWorld);
+                                stateDumper.Dump(gameWorld);
+                                ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+                            }
                             break;
                     }
                 }
@@ -77,6 +96,18 @@ public static class Program
                 }
 
                 var now = DateTime.UtcNow;
+                UpdateVillageHoldProgress(
+                    gameWorld,
+                    commandOptions: controllerFactory.GetController(gameWorld.State).GetCommandOptions(gameWorld),
+                    selectedCommandIndex,
+                    now,
+                    ref holdStartedAt,
+                    ref holdLastSeenAt,
+                    controllerFactory,
+                    gameEventService,
+                    stateDumper,
+                    ref shouldExit);
+
                 if (now >= nextTickAt)
                 {
                     controllerFactory.GetController(gameWorld.State).Tick(gameWorld);
@@ -131,5 +162,68 @@ public static class Program
         }
 
         return (selectedCommandIndex - 1 + optionCount) % optionCount;
+    }
+
+    private static void UpdateVillageHoldProgress(
+        Models.GameWorld gameWorld,
+        IReadOnlyList<Commands.GameCommandOption> commandOptions,
+        int selectedCommandIndex,
+        DateTime now,
+        ref DateTime? holdStartedAt,
+        ref DateTime? holdLastSeenAt,
+        Controllers.GameStateControllerFactory controllerFactory,
+        Services.GameEventService gameEventService,
+        Debug.GameWorldStateDumper stateDumper,
+        ref bool shouldExit)
+    {
+        if (!IsVillageHoldCommandSelected(gameWorld, commandOptions, selectedCommandIndex))
+        {
+            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+            return;
+        }
+
+        if (holdStartedAt is null || holdLastSeenAt is null)
+        {
+            gameWorld.VillageGoldGatherProgress = 0;
+            return;
+        }
+
+        if (now - holdLastSeenAt > HoldRepeatGrace)
+        {
+            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+            return;
+        }
+
+        gameWorld.VillageGoldGatherProgress = Math.Clamp((now - holdStartedAt.Value).TotalMilliseconds / HoldToGatherDuration.TotalMilliseconds, 0, 1);
+        if (gameWorld.VillageGoldGatherProgress < 1)
+        {
+            return;
+        }
+
+        shouldExit = controllerFactory.GetController(gameWorld.State).HandleCommand(gameWorld, selectedCommandIndex);
+        gameEventService.CheckEvents(gameWorld);
+        stateDumper.Dump(gameWorld);
+        ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+    }
+
+    private static bool IsVillageHoldCommandSelected(
+        Models.GameWorld gameWorld,
+        IReadOnlyList<Commands.GameCommandOption> commandOptions,
+        int selectedCommandIndex)
+    {
+        return gameWorld.State == Models.GameState.Village &&
+            selectedCommandIndex >= 0 &&
+            selectedCommandIndex < commandOptions.Count &&
+            commandOptions[selectedCommandIndex].RequiresHoldToExecute;
+    }
+
+    private static void ResetVillageHoldState(
+        Models.GameWorld gameWorld,
+        ref DateTime? holdStartedAt,
+        ref DateTime? holdLastSeenAt)
+    {
+        holdStartedAt = null;
+        holdLastSeenAt = null;
+        gameWorld.VillageGoldGatherProgress = 0;
     }
 }

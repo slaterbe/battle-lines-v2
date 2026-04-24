@@ -9,7 +9,8 @@ public class VillageController : GameStateControllerBase
     {
         var commands = new List<IGameCommand>
         {
-            new AddFighterCommand()
+            new AddFighterCommand(),
+            new GatherGoldCommand()
         };
 
         if (gameWorld.IsFiveFightersCreated)
