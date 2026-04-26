@@ -5,5 +5,6 @@ public enum GameCommandCategory
     Battle = 0,
     Army = 1,
     Retreat = 2,
-    Upgrade = 3
+    Upgrade = 3,
+    Travel = 4
 }

@@ -11,6 +11,7 @@ public class GameWorld
     public int FightersCreated { get; set; }
 
     // Resources and production
+    public int Food { get; set; }
     public int Villagers { get; set; }
     public int Spears { get; set; }
     public int Gold { get; set; }

@@ -19,6 +19,7 @@ public class GameWorldFactory
             IsIntroductionTextFullyRevealed = false,
             IsFiveFightersCreated = false,
             FightersCreated = 0,
+            Food = 0,
             Villagers = 5,
             Spears = 0,
             VillagerProduction = 2,

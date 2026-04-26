@@ -381,6 +381,7 @@ public class GameFlowTests
         var gameWorld = new GameWorld
         {
             State = GameState.Battle,
+            Food = 9,
             Villagers = 12,
             Gold = 7,
             PlayerUnits = new Dictionary<UnitType, int>
@@ -400,6 +401,7 @@ public class GameFlowTests
             var json = File.ReadAllText(outputPath);
 
             Assert.Contains("\"State\": \"Battle\"", json);
+            Assert.Contains("\"Food\": 9", json);
             Assert.Contains("\"Villagers\": 12", json);
             Assert.Contains("\"Gold\": 7", json);
         }

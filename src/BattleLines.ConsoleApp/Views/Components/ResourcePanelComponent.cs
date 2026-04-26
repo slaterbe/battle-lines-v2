@@ -79,6 +79,13 @@ public class ResourcePanelComponent
         var rows = new List<ResourcePanelRow>
         {
             new(
+                "Food",
+                gameWorld.Food,
+                "--",
+                0,
+                false,
+                false),
+            new(
                 "Villagers",
                 gameWorld.Villagers,
                 $"+{gameWorld.VillagerProduction}",
