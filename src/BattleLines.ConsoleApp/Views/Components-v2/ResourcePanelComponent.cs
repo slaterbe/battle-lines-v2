@@ -59,7 +59,7 @@ public class ResourcePanelComponent
                 gameWorld.Villagers,
                 $"+{gameWorld.VillagerProduction}",
                 selectedCommandCost?.Villagers ?? 0,
-                selectedCommandLabel == "Boost Villagers",
+                (selectedCommandCost?.VillagersGain ?? 0) > 0 || selectedCommandLabel == "Boost Villagers",
                 selectedCommandLabel == "Boost Villagers")
         };
 
@@ -71,7 +71,7 @@ public class ResourcePanelComponent
                     gameWorld.Spears,
                     $"+{gameWorld.SpearProduction}",
                     selectedCommandCost?.Spears ?? 0,
-                    selectedCommandLabel == "Boost Spears",
+                    (selectedCommandCost?.SpearsGain ?? 0) > 0 || selectedCommandLabel == "Boost Spears",
                     selectedCommandLabel == "Boost Spears"));
         }
 
@@ -83,7 +83,7 @@ public class ResourcePanelComponent
                     gameWorld.Gold,
                     "--",
                     selectedCommandCost?.Gold ?? 0,
-                    false,
+                    (selectedCommandCost?.GoldGain ?? 0) > 0,
                     false));
         }
 

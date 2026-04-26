@@ -47,6 +47,8 @@ public class VillageView : IGameView
             HoldAction.Render(
                 selectedCommandLabel,
                 gameWorld.VillageGoldGatherProgress,
+                gameWorld.IsVillageGoldGatheringActive,
+                gameWorld.VillageGoldGatherSpeedMultiplier,
                 GameViewLayout.LeftColumnStartX,
                 commandMenuStartY - HoldAction.MeasureHeight() - 1);
         }

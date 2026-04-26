@@ -9,19 +9,9 @@ public class VillageController : GameStateControllerBase
     {
         var commands = new List<IGameCommand>
         {
-            new AddFighterCommand(),
+            new StartBattleCommand(),
             new GatherGoldCommand()
         };
-
-        if (gameWorld.IsFiveFightersCreated)
-        {
-            commands.Insert(0, new StartBattleCommand());
-        }
-
-        if (gameWorld.IsSpearControlsVisible)
-        {
-            commands.Add(new AddSpearmanCommand());
-        }
 
         if (gameWorld.IsUpgradesVisible)
         {

@@ -8,8 +8,9 @@ namespace BattleLines.ConsoleApp;
 public static class Program
 {
     private static readonly TimeSpan TickRate = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan HoldToGatherDuration = TimeSpan.FromSeconds(1.4);
-    private static readonly TimeSpan HoldRepeatGrace = TimeSpan.FromMilliseconds(275);
+    private static readonly TimeSpan BaseGatherDuration = TimeSpan.FromSeconds(1.4);
+    private static readonly TimeSpan MinimumGatherDuration = TimeSpan.FromSeconds(0.55);
+    private static readonly TimeSpan GatherAccelerationDuration = TimeSpan.FromSeconds(10);
 
     public static void Main(string[] args)
     {
@@ -32,8 +33,8 @@ public static class Program
         var shouldExit = false;
         var selectedCommandIndex = 0;
         var previousGameState = gameWorld.State;
-        DateTime? holdStartedAt = null;
-        DateTime? holdLastSeenAt = null;
+        DateTime? gatherStartedAt = null;
+        DateTime? gatherCycleStartedAt = null;
         ConsoleCancelEventHandler cancelHandler = (_, eventArgs) =>
         {
             eventArgs.Cancel = true;
@@ -61,29 +62,33 @@ public static class Program
                         case ConsoleKey.UpArrow:
                         case ConsoleKey.LeftArrow:
                             selectedCommandIndex = GetPreviousCommandIndex(selectedCommandIndex, availableCommands.Count);
+                            ResetVillageGatherState(gameWorld, ref gatherStartedAt, ref gatherCycleStartedAt);
                             break;
                         case ConsoleKey.DownArrow:
                         case ConsoleKey.RightArrow:
                             selectedCommandIndex = GetNextCommandIndex(selectedCommandIndex, availableCommands.Count);
-                            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+                            ResetVillageGatherState(gameWorld, ref gatherStartedAt, ref gatherCycleStartedAt);
+                            break;
+                        case ConsoleKey.Escape:
+                            ResetVillageGatherState(gameWorld, ref gatherStartedAt, ref gatherCycleStartedAt);
                             break;
                         case ConsoleKey.Enter:
                             if (IsVillageHoldCommandSelected(gameWorld, availableCommands, selectedCommandIndex))
                             {
-                                var holdNow = DateTime.UtcNow;
-                                if (holdLastSeenAt is null || holdNow - holdLastSeenAt > HoldRepeatGrace)
+                                if (gatherStartedAt is null)
                                 {
-                                    holdStartedAt = holdNow;
+                                    var gatherNow = DateTime.UtcNow;
+                                    gatherStartedAt = gatherNow;
+                                    gatherCycleStartedAt = gatherNow;
+                                    gameWorld.IsVillageGoldGatheringActive = true;
                                 }
-
-                                holdLastSeenAt = holdNow;
                             }
                             else
                             {
                                 shouldExit = activeController.HandleCommand(gameWorld, selectedCommandIndex);
                                 gameEventService.CheckEvents(gameWorld);
                                 stateDumper.Dump(gameWorld);
-                                ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+                                ResetVillageGatherState(gameWorld, ref gatherStartedAt, ref gatherCycleStartedAt);
                             }
                             break;
                     }
@@ -101,8 +106,8 @@ public static class Program
                     commandOptions: controllerFactory.GetController(gameWorld.State).GetCommandOptions(gameWorld),
                     selectedCommandIndex,
                     now,
-                    ref holdStartedAt,
-                    ref holdLastSeenAt,
+                    ref gatherStartedAt,
+                    ref gatherCycleStartedAt,
                     controllerFactory,
                     gameEventService,
                     stateDumper,
@@ -169,8 +174,8 @@ public static class Program
         IReadOnlyList<Commands.GameCommandOption> commandOptions,
         int selectedCommandIndex,
         DateTime now,
-        ref DateTime? holdStartedAt,
-        ref DateTime? holdLastSeenAt,
+        ref DateTime? gatherStartedAt,
+        ref DateTime? gatherCycleStartedAt,
         Controllers.GameStateControllerFactory controllerFactory,
         Services.GameEventService gameEventService,
         Debug.GameWorldStateDumper stateDumper,
@@ -178,23 +183,22 @@ public static class Program
     {
         if (!IsVillageHoldCommandSelected(gameWorld, commandOptions, selectedCommandIndex))
         {
-            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+            ResetVillageGatherState(gameWorld, ref gatherStartedAt, ref gatherCycleStartedAt);
             return;
         }
 
-        if (holdStartedAt is null || holdLastSeenAt is null)
+        if (gatherStartedAt is null || gatherCycleStartedAt is null)
         {
             gameWorld.VillageGoldGatherProgress = 0;
+            gameWorld.IsVillageGoldGatheringActive = false;
+            gameWorld.VillageGoldGatherSpeedMultiplier = 1;
             return;
         }
 
-        if (now - holdLastSeenAt > HoldRepeatGrace)
-        {
-            ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
-            return;
-        }
-
-        gameWorld.VillageGoldGatherProgress = Math.Clamp((now - holdStartedAt.Value).TotalMilliseconds / HoldToGatherDuration.TotalMilliseconds, 0, 1);
+        gameWorld.IsVillageGoldGatheringActive = true;
+        var currentGatherDuration = GetCurrentGatherDuration(now - gatherStartedAt.Value);
+        gameWorld.VillageGoldGatherSpeedMultiplier = BaseGatherDuration.TotalMilliseconds / currentGatherDuration.TotalMilliseconds;
+        gameWorld.VillageGoldGatherProgress = Math.Clamp((now - gatherCycleStartedAt.Value).TotalMilliseconds / currentGatherDuration.TotalMilliseconds, 0, 1);
         if (gameWorld.VillageGoldGatherProgress < 1)
         {
             return;
@@ -203,7 +207,8 @@ public static class Program
         shouldExit = controllerFactory.GetController(gameWorld.State).HandleCommand(gameWorld, selectedCommandIndex);
         gameEventService.CheckEvents(gameWorld);
         stateDumper.Dump(gameWorld);
-        ResetVillageHoldState(gameWorld, ref holdStartedAt, ref holdLastSeenAt);
+        gatherCycleStartedAt = now;
+        gameWorld.VillageGoldGatherProgress = 0;
     }
 
     private static bool IsVillageHoldCommandSelected(
@@ -217,13 +222,24 @@ public static class Program
             commandOptions[selectedCommandIndex].RequiresHoldToExecute;
     }
 
-    private static void ResetVillageHoldState(
-        Models.GameWorld gameWorld,
-        ref DateTime? holdStartedAt,
-        ref DateTime? holdLastSeenAt)
+    private static TimeSpan GetCurrentGatherDuration(TimeSpan activeDuration)
     {
-        holdStartedAt = null;
-        holdLastSeenAt = null;
+        var rampProgress = Math.Clamp(activeDuration.TotalMilliseconds / GatherAccelerationDuration.TotalMilliseconds, 0, 1);
+        var durationMilliseconds =
+            BaseGatherDuration.TotalMilliseconds -
+            ((BaseGatherDuration.TotalMilliseconds - MinimumGatherDuration.TotalMilliseconds) * rampProgress);
+        return TimeSpan.FromMilliseconds(durationMilliseconds);
+    }
+
+    private static void ResetVillageGatherState(
+        Models.GameWorld gameWorld,
+        ref DateTime? gatherStartedAt,
+        ref DateTime? gatherCycleStartedAt)
+    {
+        gatherStartedAt = null;
+        gatherCycleStartedAt = null;
         gameWorld.VillageGoldGatherProgress = 0;
+        gameWorld.IsVillageGoldGatheringActive = false;
+        gameWorld.VillageGoldGatherSpeedMultiplier = 1;
     }
 }

@@ -4,9 +4,9 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class DefendVillageCommand : IGameCommand
 {
-    public GameCommandCategory Category => GameCommandCategory.Battle;
-    public string Label => "Defend the village!!!";
-    public string HelpText => "Move straight into the opening defense.";
+    public GameCommandCategory Category => GameCommandCategory.Travel;
+    public string Label => "Go To the Village";
+    public string HelpText => "Leave the introduction and step into the village.";
 
     public bool Execute(GameWorld gameWorld)
     {

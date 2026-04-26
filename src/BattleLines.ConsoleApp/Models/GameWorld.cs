@@ -17,6 +17,8 @@ public class GameWorld
     public int VillagerProduction { get; set; }
     public int SpearProduction { get; set; }
     public double VillageGoldGatherProgress { get; set; }
+    public bool IsVillageGoldGatheringActive { get; set; }
+    public double VillageGoldGatherSpeedMultiplier { get; set; } = 1;
 
     // World and encounter state
     public GameState State { get; set; } = GameState.Village;

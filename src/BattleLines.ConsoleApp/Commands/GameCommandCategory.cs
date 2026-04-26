@@ -2,8 +2,10 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public enum GameCommandCategory
 {
-    Battle = 0,
-    Army = 1,
-    Retreat = 2,
-    Upgrade = 3
+    Travel = 0,
+    Gather = 1,
+    Battle = 2,
+    Army = 3,
+    Retreat = 4,
+    Upgrade = 5
 }
