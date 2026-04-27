@@ -12,6 +12,10 @@ public class IncreaseSpearProductionCommand : IGameCommand
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
 
+    public bool IsVisible(GameWorld gameWorld) =>
+        gameWorld.IsSpearControlsVisible &&
+        gameWorld.IsUpgradesVisible;
+
     public bool Execute(GameWorld gameWorld)
     {
         if (!gameWorld.IsSpearControlsVisible

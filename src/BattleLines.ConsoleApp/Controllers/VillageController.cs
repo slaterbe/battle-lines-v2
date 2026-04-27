@@ -7,23 +7,13 @@ public class VillageController : GameStateControllerBase
 {
     protected override IReadOnlyList<IGameCommand> CreateCommands(GameWorld gameWorld)
     {
-        var commands = new List<IGameCommand>
-        {
+        return
+        [
             new StartBattleCommand(),
             new BuyVillageCommand(),
-            new IncreaseFoodProductionCommand()
-        };
-
-        if (gameWorld.IsUpgradesVisible)
-        {
-            if (gameWorld.IsSpearControlsVisible)
-            {
-                commands.Add(new IncreaseSpearProductionCommand());
-            }
-
-            commands.Add(new IncreaseArmySizeCommand());
-        }
-
-        return commands;
+            new IncreaseFoodProductionCommand(),
+            new IncreaseSpearProductionCommand(),
+            new IncreaseArmySizeCommand()
+        ];
     }
 }

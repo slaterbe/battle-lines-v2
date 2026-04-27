@@ -8,6 +8,8 @@ public class StartBattleCommand : IGameCommand
     public string Label => "Go to the Gates";
     public string HelpText => "Move to battle prep for the next enemy wave.";
 
+    public bool IsVisible(GameWorld gameWorld) => gameWorld.EnemyWaves.Waves.Count > 0;
+
     public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.Village ||

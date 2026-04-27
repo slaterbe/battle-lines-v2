@@ -15,5 +15,10 @@ public interface IGameCommand
         return null;
     }
 
+    bool IsVisible(GameWorld gameWorld)
+    {
+        return true;
+    }
+
     bool Execute(GameWorld gameWorld);
 }

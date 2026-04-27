@@ -13,6 +13,8 @@ public class AddSpearmanCommand : IGameCommand
 
     public GameCommandCost GetCost() => new(Villagers: 1, Spears: 1);
 
+    public bool IsVisible(GameWorld gameWorld) => gameWorld.IsSpearControlsVisible;
+
     public bool Execute(GameWorld gameWorld)
     {
         if (gameWorld.State != GameState.PreBattle)

@@ -12,6 +12,8 @@ public class IncreaseArmySizeCommand : IGameCommand
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
 
+    public bool IsVisible(GameWorld gameWorld) => gameWorld.IsUpgradesVisible;
+
     public bool Execute(GameWorld gameWorld)
     {
         if (!gameWorld.IsUpgradesVisible || gameWorld.State != GameState.Village || gameWorld.Gold < GoldCost)

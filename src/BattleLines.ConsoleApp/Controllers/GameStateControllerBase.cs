@@ -42,6 +42,7 @@ public abstract class GameStateControllerBase : IGameStateController
     protected abstract IReadOnlyList<IGameCommand> CreateCommands(GameWorld gameWorld);
 
     private IReadOnlyList<IGameCommand> GetCommands(GameWorld gameWorld) => CreateCommands(gameWorld)
+        .Where(command => command.IsVisible(gameWorld))
         .OrderBy(command => command.Category)
         .ToArray();
 }
