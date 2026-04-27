@@ -13,6 +13,8 @@ public class IncreaseFoodProductionCommand : IGameCommand
     public string HelpText => $"Spend {GoldCost} gold and {FoodCost} food to increase food income by {FoodProductionIncrease}.";
 
     public GameCommandCost GetCost() => new(Food: FoodCost, Gold: GoldCost);
+    public GameCommandCost GetSupply() => new(Food: -FoodCost, Gold: -GoldCost);
+    public GameCommandCost GetIncome() => new(Food: FoodProductionIncrease);
 
     public bool Execute(GameWorld gameWorld)
     {

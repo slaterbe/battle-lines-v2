@@ -15,6 +15,16 @@ public interface IGameCommand
         return null;
     }
 
+    GameCommandCost? GetSupply()
+    {
+        return null;
+    }
+
+    GameCommandCost? GetIncome()
+    {
+        return null;
+    }
+
     bool IsVisible(GameWorld gameWorld)
     {
         return true;

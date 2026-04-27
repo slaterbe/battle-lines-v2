@@ -12,6 +12,7 @@ public class AddSpearmanCommand : IGameCommand
     public string HelpText => "Spend 1 villager and 1 spear to recruit a spearman.";
 
     public GameCommandCost GetCost() => new(Villagers: 1, Spears: 1);
+    public GameCommandCost GetSupply() => new(Villagers: -1, Spears: -1);
 
     public bool IsVisible(GameWorld gameWorld) => gameWorld.IsSpearControlsVisible;
 

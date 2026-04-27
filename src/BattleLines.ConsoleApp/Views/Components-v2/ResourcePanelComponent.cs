@@ -11,6 +11,8 @@ public class ResourcePanelComponent
     public void Render(
         GameWorld gameWorld,
         GameCommandCost? selectedCommandCost,
+        GameCommandCost? selectedCommandSupply,
+        GameCommandCost? selectedCommandIncome,
         string selectedCommandLabel,
         int startX,
         int startY,
@@ -22,7 +24,7 @@ public class ResourcePanelComponent
             resolvedStartX,
             resolvedStartY,
             Math.Max(MinimumPanelWidth, panelWidth));
-        var rows = BuildRows(gameWorld, selectedCommandCost, selectedCommandLabel);
+        var rows = BuildRows(gameWorld, selectedCommandCost, selectedCommandSupply, selectedCommandIncome);
         var currentRow = layout.StartY;
 
         WriteAt(layout.StartX, currentRow++, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
@@ -41,8 +43,8 @@ public class ResourcePanelComponent
             gameWorld.FrontLineCapacity.ToString(),
             "--",
             0,
-            selectedCommandLabel == "Expand Battle Line",
-            selectedCommandLabel == "Expand Battle Line",
+            selectedCommandLabel == "Expand Battle Line" ? 1 : 0,
+            selectedCommandLabel == "Expand Battle Line" ? 1 : 0,
             layout);
         WriteAt(layout.StartX, currentRow, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
     }
@@ -50,7 +52,8 @@ public class ResourcePanelComponent
     private static List<ResourcePanelRow> BuildRows(
         GameWorld gameWorld,
         GameCommandCost? selectedCommandCost,
-        string selectedCommandLabel)
+        GameCommandCost? selectedCommandSupply,
+        GameCommandCost? selectedCommandIncome)
     {
         var rows = new List<ResourcePanelRow>
         {
@@ -59,15 +62,15 @@ public class ResourcePanelComponent
                 gameWorld.Food,
                 $"+{gameWorld.FoodProduction}",
                 selectedCommandCost?.Food ?? 0,
-                false,
-                selectedCommandLabel == "Expand Farm"),
+                Math.Max(0, selectedCommandSupply?.Food ?? 0),
+                Math.Max(0, selectedCommandIncome?.Food ?? 0)),
             new(
                 "Villagers",
                 gameWorld.Villagers,
                 $"+{gameWorld.VillagerProduction}",
                 selectedCommandCost?.Villagers ?? 0,
-                selectedCommandLabel == "Buy Villager",
-                false)
+                Math.Max(0, selectedCommandSupply?.Villagers ?? 0),
+                Math.Max(0, selectedCommandIncome?.Villagers ?? 0))
         };
 
         if (gameWorld.IsSpearControlsVisible)
@@ -78,8 +81,8 @@ public class ResourcePanelComponent
                     gameWorld.Spears,
                     $"+{gameWorld.SpearProduction}",
                     selectedCommandCost?.Spears ?? 0,
-                    selectedCommandLabel == "Boost Spears",
-                    selectedCommandLabel == "Boost Spears"));
+                    Math.Max(0, selectedCommandSupply?.Spears ?? 0),
+                    Math.Max(0, selectedCommandIncome?.Spears ?? 0)));
         }
 
         rows.Add(
@@ -88,8 +91,8 @@ public class ResourcePanelComponent
                 gameWorld.Gold,
                 "--",
                 selectedCommandCost?.Gold ?? 0,
-                false,
-                false));
+                0,
+                0));
 
         return rows;
     }
@@ -103,8 +106,8 @@ public class ResourcePanelComponent
             resourceRow.Amount.ToString(),
             resourceRow.ProductionDisplay,
             resourceRow.StockCost,
-            resourceRow.ShowStockIncrease,
-            resourceRow.ShowProductionIncrease,
+            resourceRow.StockIncrease,
+            resourceRow.ProductionIncrease,
             layout);
     }
 
@@ -115,8 +118,8 @@ public class ResourcePanelComponent
         string value,
         string trailingValue,
         int stockCost,
-        bool showStockIncrease,
-        bool showProductionIncrease,
+        int stockIncrease,
+        int productionIncrease,
         ResourcePanelLayout layout)
     {
         WriteAt(startX, row, "| ", ConsoleColor.DarkGray);
@@ -129,9 +132,9 @@ public class ResourcePanelComponent
             stockText += $"[-{stockCost}]";
         }
 
-        if (showStockIncrease)
+        if (stockIncrease > 0)
         {
-            stockText += "[+1]";
+            stockText += $"[+{stockIncrease}]";
         }
 
         var paddedStockText = stockText.PadLeft(layout.StockWidth);
@@ -140,21 +143,23 @@ public class ResourcePanelComponent
         if (stockCost > 0)
         {
             var costText = $"[-{stockCost}]";
-            WriteAt(stockStartX + paddedStockText.Length - costText.Length - (showStockIncrease ? 4 : 0), row, costText, ConsoleColor.Red);
+            var stockIncreaseText = stockIncrease > 0 ? $"[+{stockIncrease}]" : string.Empty;
+            WriteAt(stockStartX + paddedStockText.Length - costText.Length - stockIncreaseText.Length, row, costText, ConsoleColor.Red);
         }
 
-        if (showStockIncrease)
+        if (stockIncrease > 0)
         {
-            WriteAt(stockStartX + paddedStockText.Length - 4, row, "[+1]", ConsoleColor.Green);
+            var stockIncreaseText = $"[+{stockIncrease}]";
+            WriteAt(stockStartX + paddedStockText.Length - stockIncreaseText.Length, row, stockIncreaseText, ConsoleColor.Green);
         }
 
         var trailingStartX = startX + 2 + layout.ProductionColumnStart;
-        var suffix = showProductionIncrease ? "[+1]" : string.Empty;
+        var suffix = productionIncrease > 0 ? $"[+{productionIncrease}]" : string.Empty;
         var productionText = trailingValue + suffix;
         var paddedProductionText = productionText.PadLeft(layout.ProductionWidth);
         WriteAt(trailingStartX, row, paddedProductionText[..Math.Min(paddedProductionText.Length, layout.ProductionWidth)], ConsoleColor.Gray);
 
-        if (showProductionIncrease)
+        if (productionIncrease > 0)
         {
             WriteAt(trailingStartX + paddedProductionText.Length - suffix.Length, row, suffix, ConsoleColor.Green);
         }
@@ -209,6 +214,6 @@ public class ResourcePanelComponent
         int Amount,
         string ProductionDisplay,
         int StockCost,
-        bool ShowStockIncrease,
-        bool ShowProductionIncrease);
+        int StockIncrease,
+        int ProductionIncrease);
 }

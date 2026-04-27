@@ -11,6 +11,7 @@ public class IncreaseArmySizeCommand : IGameCommand
     public string HelpText => $"Spend {GoldCost} gold to increase battle line by 1.";
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
+    public GameCommandCost GetSupply() => new(Gold: -GoldCost);
 
     public bool IsVisible(GameWorld gameWorld) => gameWorld.IsUpgradesVisible;
 

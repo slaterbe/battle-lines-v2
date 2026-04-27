@@ -12,6 +12,7 @@ public class AddFighterCommand : IGameCommand
     public string HelpText => "Spend 1 villager to recruit a fighter.";
 
     public GameCommandCost GetCost() => new(Villagers: 1);
+    public GameCommandCost GetSupply() => new(Villagers: -1);
 
     public bool Execute(GameWorld gameWorld)
     {

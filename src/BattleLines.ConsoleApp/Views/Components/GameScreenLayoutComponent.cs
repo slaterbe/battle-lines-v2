@@ -39,13 +39,26 @@ public class GameScreenLayoutComponent
             selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
                 ? commandOptions[selectedCommandIndex].Cost
                 : null;
+        var selectedCommandSupply =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Supply
+                : null;
+        var selectedCommandIncome =
+            selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+                ? commandOptions[selectedCommandIndex].Income
+                : null;
 
         gameHeaderComponent.Render(statusMessage, statusColor, goalMessage);
 
         var leftColumnTop = ConsoleTextComponent.CursorTop;
         if (showResources)
         {
-            resourcePanelComponent.Render(gameWorld, selectedCommandCost, selectedCommandLabel);
+            resourcePanelComponent.Render(
+                gameWorld,
+                selectedCommandCost,
+                selectedCommandSupply,
+                selectedCommandIncome,
+                selectedCommandLabel);
             ConsoleTextComponent.SetCursorPosition(0, leftColumnTop);
         }
 

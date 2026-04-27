@@ -11,6 +11,8 @@ public class IncreaseSpearProductionCommand : IGameCommand
     public string HelpText => $"Spend {GoldCost} gold to increase spear production by 1 and gain 1 spear.";
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
+    public GameCommandCost GetSupply() => new(Gold: -GoldCost, Spears: 1);
+    public GameCommandCost GetIncome() => new(Spears: 1);
 
     public bool IsVisible(GameWorld gameWorld) =>
         gameWorld.IsSpearControlsVisible &&

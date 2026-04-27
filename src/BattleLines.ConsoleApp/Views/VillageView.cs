@@ -16,6 +16,8 @@ public class VillageView : IGameView
     {
         var selectedCommandLabel = GetSelectedCommandLabel(commandOptions, selectedCommandIndex);
         var selectedCommandCost = GetSelectedCommandCost(commandOptions, selectedCommandIndex);
+        var selectedCommandSupply = GetSelectedCommandSupply(commandOptions, selectedCommandIndex);
+        var selectedCommandIncome = GetSelectedCommandIncome(commandOptions, selectedCommandIndex);
 
         Header.Render(
             "The village waits for your command. Prepare the defenses.",
@@ -28,6 +30,8 @@ public class VillageView : IGameView
         ResourcePanel.Render(
             gameWorld,
             selectedCommandCost,
+            selectedCommandSupply,
+            selectedCommandIncome,
             selectedCommandLabel,
             GameViewLayout.RightColumnStartX,
             GameViewLayout.ResourcePanelStartY,
@@ -62,6 +66,24 @@ public class VillageView : IGameView
     {
         return selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
             ? commandOptions[selectedCommandIndex].Cost
+            : null;
+    }
+
+    private static GameCommandCost? GetSelectedCommandSupply(
+        IReadOnlyList<GameCommandOption> commandOptions,
+        int selectedCommandIndex)
+    {
+        return selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+            ? commandOptions[selectedCommandIndex].Supply
+            : null;
+    }
+
+    private static GameCommandCost? GetSelectedCommandIncome(
+        IReadOnlyList<GameCommandOption> commandOptions,
+        int selectedCommandIndex)
+    {
+        return selectedCommandIndex >= 0 && selectedCommandIndex < commandOptions.Count
+            ? commandOptions[selectedCommandIndex].Income
             : null;
     }
 }
