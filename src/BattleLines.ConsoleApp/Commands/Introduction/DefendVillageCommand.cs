@@ -6,7 +6,8 @@ public class DefendVillageCommand : IGameCommand
 {
     public GameCommandCategory Category => GameCommandCategory.Travel;
     public string Label => "Go to Village";
-    public string HelpText => "Travel to the village to prepare your defense.";
+    public string GetHelpText() => "Travel to the village to prepare your defense.";
+    public bool IsDisabled(GameWorld gameWorld) => gameWorld.State != GameState.Introduction;
 
     public bool Execute(GameWorld gameWorld)
     {

@@ -8,7 +8,7 @@ public interface IGameCommand
 
     string Label { get; }
 
-    string HelpText { get; }
+    string GetHelpText();
 
     GameCommandCost? GetCost()
     {
@@ -28,6 +28,11 @@ public interface IGameCommand
     bool IsVisible(GameWorld gameWorld)
     {
         return true;
+    }
+
+    bool IsDisabled(GameWorld gameWorld)
+    {
+        return false;
     }
 
     bool Execute(GameWorld gameWorld);

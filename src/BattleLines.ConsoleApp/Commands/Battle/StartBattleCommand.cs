@@ -6,9 +6,12 @@ public class StartBattleCommand : IGameCommand
 {
     public GameCommandCategory Category => GameCommandCategory.Travel;
     public string Label => "Go to the Gates";
-    public string HelpText => "Move to battle prep for the next enemy wave.";
+    public string GetHelpText() => "Move to battle prep for the next enemy wave.";
 
     public bool IsVisible(GameWorld gameWorld) => gameWorld.EnemyWaves.Waves.Count > 0;
+    public bool IsDisabled(GameWorld gameWorld) =>
+        gameWorld.State != GameState.Village ||
+        gameWorld.EnemyWaves.Waves.Count == 0;
 
     public bool Execute(GameWorld gameWorld)
     {

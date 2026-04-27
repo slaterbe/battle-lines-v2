@@ -8,12 +8,16 @@ public class IncreaseArmySizeCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Expand Battle Line";
-    public string HelpText => $"Spend {GoldCost} gold to increase battle line by 1.";
+    public string GetHelpText() => $"Spend {GoldCost} gold to increase battle line by 1.";
 
     public GameCommandCost GetCost() => new(Gold: GoldCost);
     public GameCommandCost GetSupply() => new(Gold: -GoldCost);
 
     public bool IsVisible(GameWorld gameWorld) => gameWorld.IsUpgradesVisible;
+    public bool IsDisabled(GameWorld gameWorld) =>
+        !gameWorld.IsUpgradesVisible ||
+        gameWorld.State != GameState.Village ||
+        gameWorld.Gold < GoldCost;
 
     public bool Execute(GameWorld gameWorld)
     {

@@ -6,4 +6,5 @@ public sealed record GameCommandOption(
     string HelpText,
     GameCommandCost? Cost,
     GameCommandCost? Supply,
-    GameCommandCost? Income);
+    GameCommandCost? Income,
+    bool IsDisabled);

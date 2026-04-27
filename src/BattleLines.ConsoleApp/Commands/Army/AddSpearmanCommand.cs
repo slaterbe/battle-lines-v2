@@ -9,12 +9,17 @@ public class AddSpearmanCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Army;
     public string Label => "Recruit Spearmen";
-    public string HelpText => "Spend 1 villager and 1 spear to recruit a spearman.";
+    public string GetHelpText() => "Spend 1 villager and 1 spear to recruit a spearman.";
 
     public GameCommandCost GetCost() => new(Villagers: 1, Spears: 1);
     public GameCommandCost GetSupply() => new(Villagers: -1, Spears: -1);
 
     public bool IsVisible(GameWorld gameWorld) => gameWorld.IsSpearControlsVisible;
+    public bool IsDisabled(GameWorld gameWorld) =>
+        gameWorld.State != GameState.PreBattle ||
+        gameWorld.Villagers < 1 ||
+        gameWorld.Spears < 1 ||
+        gameWorld.PlayerUnits.Values.Sum() >= gameWorld.FrontLineCapacity;
 
     public bool Execute(GameWorld gameWorld)
     {

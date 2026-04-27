@@ -9,7 +9,8 @@ public class BeginBattleCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => "Fight Wave";
-    public string HelpText => "Lock in your army and begin the current wave.";
+    public string GetHelpText() => "Lock in your army and begin the current wave.";
+    public bool IsDisabled(GameWorld gameWorld) => gameWorld.State != GameState.PreBattle;
 
     public bool Execute(GameWorld gameWorld)
     {

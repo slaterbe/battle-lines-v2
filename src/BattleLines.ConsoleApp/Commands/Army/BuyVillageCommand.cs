@@ -8,10 +8,13 @@ public class BuyVillageCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Buy;
     public string Label => "Buy Villager";
-    public string HelpText => $"Spend {FoodCost} food to gain 1 villager.";
+    public string GetHelpText() => $"Spend {FoodCost} food to gain 1 villager.";
 
     public GameCommandCost GetCost() => new(Food: FoodCost);
     public GameCommandCost GetSupply() => new(Food: -FoodCost, Villagers: 1);
+    public bool IsDisabled(GameWorld gameWorld) =>
+        gameWorld.State != GameState.Village ||
+        gameWorld.Food < FoodCost;
 
     public bool Execute(GameWorld gameWorld)
     {

@@ -39,11 +39,11 @@ public class CommandMenuComponent
 
             if (isSelected)
             {
-                ConsoleTextComponent.WriteHighlighted(" > ", ConsoleColor.Black, ConsoleColor.DarkYellow);
+                RenderSelectionMarker(commandOption.IsDisabled);
                 ConsoleTextComponent.Write(" ");
-                ConsoleTextComponent.Write(commandOption.Label, ConsoleColor.Yellow);
+                ConsoleTextComponent.Write(commandOption.Label, commandOption.IsDisabled ? ConsoleColor.DarkGray : ConsoleColor.Yellow);
 
-                if (showAnimatedEnterPrompt)
+                if (showAnimatedEnterPrompt && !commandOption.IsDisabled)
                 {
                     ConsoleTextComponent.Write(" ");
                     RenderAnimatedEnterPrompt();
@@ -54,11 +54,30 @@ public class CommandMenuComponent
             }
 
             ConsoleTextComponent.Write("   ", ConsoleColor.Gray);
-            ConsoleTextComponent.WriteLine(commandOption.Label, ConsoleColor.Gray);
+            ConsoleTextComponent.WriteLine(commandOption.Label, commandOption.IsDisabled ? ConsoleColor.DarkGray : ConsoleColor.Gray);
         }
 
         ConsoleTextComponent.NewLine();
         RenderFooter(commandOptions, selectedCommandIndex);
+    }
+
+    private static void RenderSelectionMarker(bool isDisabled)
+    {
+        if (isDisabled)
+        {
+            ConsoleTextComponent.Write(" > ", ConsoleColor.DarkGray);
+            return;
+        }
+
+        var totalMilliseconds = Environment.TickCount64;
+        var isBrightPhase = (totalMilliseconds / 500) % 2 == 0;
+        if (!isBrightPhase)
+        {
+            ConsoleTextComponent.Write("   ", ConsoleColor.Gray);
+            return;
+        }
+
+        ConsoleTextComponent.WriteHighlighted(" > ", ConsoleColor.Black, ConsoleColor.DarkYellow);
     }
 
     private static void RenderAnimatedEnterPrompt()
@@ -80,7 +99,8 @@ public class CommandMenuComponent
         {
             ConsoleTextComponent.Write("Hint", ConsoleColor.White);
             ConsoleTextComponent.Write(": ", ConsoleColor.White);
-            ConsoleTextComponent.WriteLine(commandOptions[selectedCommandIndex].HelpText, ConsoleColor.White);
+            var helpColor = commandOptions[selectedCommandIndex].IsDisabled ? ConsoleColor.DarkGray : ConsoleColor.White;
+            ConsoleTextComponent.WriteLine(commandOptions[selectedCommandIndex].HelpText, helpColor);
         }
 
         ConsoleTextComponent.Write("Controls", ConsoleColor.DarkYellow);

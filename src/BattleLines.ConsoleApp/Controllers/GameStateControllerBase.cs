@@ -18,10 +18,11 @@ public abstract class GameStateControllerBase : IGameStateController
             .Select(command => new GameCommandOption(
                 command.Category,
                 command.Label,
-                command.HelpText.ReplaceLineEndings(" "),
+                command.GetHelpText().ReplaceLineEndings(" "),
                 command.GetCost(),
                 command.GetSupply(),
-                command.GetIncome()))
+                command.GetIncome(),
+                command.IsDisabled(gameWorld)))
             .ToArray();
     }
 
@@ -29,6 +30,11 @@ public abstract class GameStateControllerBase : IGameStateController
     {
         var commands = GetCommands(gameWorld);
         if (selectedCommandIndex < 0 || selectedCommandIndex >= commands.Count)
+        {
+            return false;
+        }
+
+        if (commands[selectedCommandIndex].IsDisabled(gameWorld))
         {
             return false;
         }

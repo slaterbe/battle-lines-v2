@@ -10,11 +10,15 @@ public class IncreaseFoodProductionCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Expand Farm";
-    public string HelpText => $"Spend {GoldCost} gold and {FoodCost} food to increase food income by {FoodProductionIncrease}.";
+    public string GetHelpText() => $"Spend {GoldCost} gold and {FoodCost} food to increase food income by {FoodProductionIncrease}.";
 
     public GameCommandCost GetCost() => new(Food: FoodCost, Gold: GoldCost);
     public GameCommandCost GetSupply() => new(Food: -FoodCost, Gold: -GoldCost);
     public GameCommandCost GetIncome() => new(Food: FoodProductionIncrease);
+    public bool IsDisabled(GameWorld gameWorld) =>
+        gameWorld.State != GameState.Village ||
+        gameWorld.Food < FoodCost ||
+        gameWorld.Gold < GoldCost;
 
     public bool Execute(GameWorld gameWorld)
     {

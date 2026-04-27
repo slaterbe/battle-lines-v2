@@ -9,7 +9,8 @@ public class ReturnToVillageCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Retreat;
     public string Label => "Back to Village";
-    public string HelpText => "Leave battle prep and return to the village screen.";
+    public string GetHelpText() => "Leave battle prep and return to the village screen.";
+    public bool IsDisabled(GameWorld gameWorld) => gameWorld.State != GameState.PreBattle;
 
     public bool Execute(GameWorld gameWorld)
     {

@@ -9,10 +9,14 @@ public class AddFighterCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Army;
     public string Label => "Recruit Fighter";
-    public string HelpText => "Spend 1 villager to recruit a fighter.";
+    public string GetHelpText() => "Spend 1 villager to recruit a fighter.";
 
     public GameCommandCost GetCost() => new(Villagers: 1);
     public GameCommandCost GetSupply() => new(Villagers: -1);
+    public bool IsDisabled(GameWorld gameWorld) =>
+        gameWorld.State != GameState.PreBattle ||
+        gameWorld.Villagers < 1 ||
+        gameWorld.PlayerUnits.Values.Sum() >= gameWorld.FrontLineCapacity;
 
     public bool Execute(GameWorld gameWorld)
     {

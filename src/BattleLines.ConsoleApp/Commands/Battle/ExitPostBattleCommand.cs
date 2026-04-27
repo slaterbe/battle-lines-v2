@@ -21,7 +21,7 @@ public class ExitPostBattleCommand : IGameCommand
 
     public GameCommandCategory Category => GameCommandCategory.Battle;
     public string Label => label;
-    public string HelpText => helpText;
+    public string GetHelpText() => helpText;
 
     public bool Execute(GameWorld gameWorld)
     {
