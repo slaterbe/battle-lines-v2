@@ -17,29 +17,30 @@ public class UpgradeAvailabilityTests
         Assert.DoesNotContain("Boost Villagers", commandLabels);
         Assert.DoesNotContain("Boost Spears", commandLabels);
         Assert.DoesNotContain("Expand Battle Line", commandLabels);
+        Assert.Contains("Expand Farm", commandLabels);
     }
 
     [Fact]
-    public void VillageController_HidesStartBattleCommand_UntilFiveFightersCreated()
+    public void VillageController_ShowsStartBattleCommand_ByDefault()
     {
         var gameWorld = new GameWorldFactory().Create();
         var controller = new VillageController();
 
         var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
 
-        Assert.DoesNotContain("Defend the village", commandLabels);
+        Assert.Contains("Go to the Gates", commandLabels);
     }
 
     [Fact]
-    public void VillageController_ShowsStartBattleCommand_AfterFiveFightersCreated()
+    public void VillageController_HidesArmyCommands()
     {
         var gameWorld = new GameWorldFactory().Create();
         var controller = new VillageController();
-        gameWorld.IsFiveFightersCreated = true;
 
         var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
 
-        Assert.Contains("Defend the village", commandLabels);
+        Assert.DoesNotContain("Recruit Fighter", commandLabels);
+        Assert.DoesNotContain("Recruit Spearmen", commandLabels);
     }
 
     [Fact]
@@ -47,7 +48,6 @@ public class UpgradeAvailabilityTests
     {
         var gameWorld = new GameWorldFactory().Create();
         var eventService = new GameEventService();
-        gameWorld.IsFiveFightersCreated = true;
         gameWorld.GoalMessage = "Goal: Defend the village!!!";
         gameWorld.State = BattleLines.ConsoleApp.Models.GameState.Village;
 
@@ -75,6 +75,45 @@ public class UpgradeAvailabilityTests
 
         Assert.Equal(10, gameWorld.Gold);
         Assert.Equal(2, gameWorld.VillagerProduction);
-        Assert.Equal(5, gameWorld.Villagers);
+        Assert.Equal(2, gameWorld.Villagers);
+    }
+
+    [Fact]
+    public void IncreaseFoodProduction_Works_BeforeUpgradesAreUnlocked()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.Food = 20;
+        gameWorld.Gold = 4;
+        gameWorld.State = BattleLines.ConsoleApp.Models.GameState.Village;
+
+        new IncreaseFoodProductionCommand().Execute(gameWorld);
+
+        Assert.Equal(10, gameWorld.Food);
+        Assert.Equal(2, gameWorld.Gold);
+        Assert.Equal(2, gameWorld.FoodProduction);
+    }
+
+    [Fact]
+    public void VillageController_ShowsBuyVillageCommand()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        var controller = new VillageController();
+
+        var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
+
+        Assert.Contains("Buy Villager", commandLabels);
+    }
+
+    [Fact]
+    public void PreWaveController_ShowsArmyCommands()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = BattleLines.ConsoleApp.Models.GameState.PreBattle;
+        var controller = new PreWaveController();
+
+        var commandLabels = controller.GetCommandOptions(gameWorld).Select(option => option.Label).ToArray();
+
+        Assert.Contains("Recruit Fighter", commandLabels);
+        Assert.Contains("Fight Wave", commandLabels);
     }
 }

@@ -15,7 +15,7 @@ public class AddSpearmanCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (gameWorld.State != GameState.Village && gameWorld.State != GameState.PreBattle)
+        if (gameWorld.State != GameState.PreBattle)
         {
             return false;
         }

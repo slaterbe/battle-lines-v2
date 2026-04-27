@@ -57,16 +57,16 @@ public class ResourcePanelComponent
             new(
                 "Food",
                 gameWorld.Food,
-                "--",
-                0,
+                $"+{gameWorld.FoodProduction}",
+                selectedCommandCost?.Food ?? 0,
                 false,
-                false),
+                selectedCommandLabel == "Expand Farm"),
             new(
                 "Villagers",
                 gameWorld.Villagers,
                 $"+{gameWorld.VillagerProduction}",
                 selectedCommandCost?.Villagers ?? 0,
-                selectedCommandLabel == "Boost Villagers",
+                selectedCommandLabel == "Boost Villagers" || selectedCommandLabel == "Buy Villager",
                 selectedCommandLabel == "Boost Villagers")
         };
 
@@ -82,17 +82,14 @@ public class ResourcePanelComponent
                     selectedCommandLabel == "Boost Spears"));
         }
 
-        if (gameWorld.IsUpgradesVisible)
-        {
-            rows.Add(
-                new(
-                    "Gold",
-                    gameWorld.Gold,
-                    "--",
-                    selectedCommandCost?.Gold ?? 0,
-                    false,
-                    false));
-        }
+        rows.Add(
+            new(
+                "Gold",
+                gameWorld.Gold,
+                "--",
+                selectedCommandCost?.Gold ?? 0,
+                false,
+                false));
 
         return rows;
     }

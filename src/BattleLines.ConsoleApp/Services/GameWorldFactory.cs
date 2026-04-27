@@ -17,11 +17,13 @@ public class GameWorldFactory
             IsSpearControlsVisible = false,
             IsUpgradesVisible = false,
             IsIntroductionTextFullyRevealed = false,
-            IsFiveFightersCreated = false,
+            IsFiveFightersCreated = true,
             FightersCreated = 0,
-            Food = 0,
-            Villagers = 5,
+            Food = 40,
+            Villagers = 2,
             Spears = 0,
+            Gold = 2,
+            FoodProduction = 0,
             VillagerProduction = 2,
             SpearProduction = 0,
             State = GameState.Introduction,
@@ -35,7 +37,7 @@ public class GameWorldFactory
             WavePosition = 0,
             BattlePosition = startingBattlePosition,
             FrontLineCapacity = 8,
-            GoalMessage = "Goal: Recruit 5 fighters."
+            GoalMessage = "Goal: Defend the village!!!"
         };
 
         if (gameWorld.IsSkipIntroduction)

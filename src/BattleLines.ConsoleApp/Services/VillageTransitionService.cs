@@ -11,6 +11,7 @@ public class VillageTransitionService
     {
         if (applyProduction)
         {
+            gameWorld.Food += gameWorld.FoodProduction;
             gameWorld.Villagers += gameWorld.VillagerProduction;
             gameWorld.Spears += gameWorld.SpearProduction;
         }

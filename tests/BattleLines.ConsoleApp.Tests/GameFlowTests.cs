@@ -140,7 +140,7 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void AddSpearman_DoesNothing_OutsideVillageAndPreBattle()
+    public void AddSpearman_DoesNothing_OutsidePreBattle()
     {
         var gameWorld = new GameWorldFactory().Create();
         gameWorld.State = GameState.Battle;
@@ -156,7 +156,7 @@ public class GameFlowTests
     public void AddSpearman_DoesNothing_WhenPlayerCannotPayCost()
     {
         var gameWorld = new GameWorldFactory().Create();
-        gameWorld.State = GameState.Village;
+        gameWorld.State = GameState.PreBattle;
         gameWorld.Villagers = 0;
         gameWorld.Spears = 0;
 
@@ -173,6 +173,7 @@ public class GameFlowTests
     public void AddSpearman_DoesNothing_WhenArmyIsFull()
     {
         var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.PreBattle;
         gameWorld.PlayerUnits[UnitType.SpearmenLvl1] = gameWorld.FrontLineCapacity;
         gameWorld.Villagers = 10;
         gameWorld.Spears = 10;
@@ -183,6 +184,64 @@ public class GameFlowTests
         Assert.Equal(gameWorld.FrontLineCapacity, gameWorld.PlayerUnits[UnitType.SpearmenLvl1]);
         Assert.Equal(10, gameWorld.Villagers);
         Assert.Equal(10, gameWorld.Spears);
+    }
+
+    [Fact]
+    public void AddFighter_DoesNothing_OutsidePreBattle()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        var originalFighterCount = gameWorld.PlayerUnits[UnitType.Fighter];
+        var originalVillagers = gameWorld.Villagers;
+
+        new AddFighterCommand().Execute(gameWorld);
+
+        Assert.Equal(originalFighterCount, gameWorld.PlayerUnits[UnitType.Fighter]);
+        Assert.Equal(originalVillagers, gameWorld.Villagers);
+    }
+
+    [Fact]
+    public void BuyVillage_SpendsFoodAndAddsVillager_InVillage()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.Food = 5;
+        gameWorld.Villagers = 2;
+
+        new BuyVillageCommand().Execute(gameWorld);
+
+        Assert.Equal(0, gameWorld.Food);
+        Assert.Equal(3, gameWorld.Villagers);
+    }
+
+    [Fact]
+    public void BuyVillage_DoesNothing_WhenPlayerCannotPayFoodCost()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.Food = 4;
+        gameWorld.Villagers = 2;
+
+        new BuyVillageCommand().Execute(gameWorld);
+
+        Assert.Equal(4, gameWorld.Food);
+        Assert.Equal(2, gameWorld.Villagers);
+    }
+
+    [Fact]
+    public void IncreaseFoodProduction_SpendsFoodAndAddsFoodIncome_InVillage()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsUpgradesVisible = true;
+        gameWorld.Food = 20;
+        gameWorld.Gold = 4;
+
+        new IncreaseFoodProductionCommand().Execute(gameWorld);
+
+        Assert.Equal(10, gameWorld.Food);
+        Assert.Equal(2, gameWorld.Gold);
+        Assert.Equal(2, gameWorld.FoodProduction);
     }
 
     [Fact]
@@ -316,7 +375,7 @@ public class GameFlowTests
         Assert.Equal(GameState.Village, gameWorld.State);
         Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
         Assert.Equal(0, gameWorld.Spears);
-        Assert.Equal(5, gameWorld.Gold);
+        Assert.Equal(7, gameWorld.Gold);
         Assert.Equal(10, gameWorld.PlayerTotalHealth);
         Assert.Equal(3, gameWorld.PlayerTotalAttack);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
@@ -353,7 +412,7 @@ public class GameFlowTests
 
         Assert.Equal(0, gameWorld.Spears);
         Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
-        Assert.Equal(5, gameWorld.Gold);
+        Assert.Equal(7, gameWorld.Gold);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }
 

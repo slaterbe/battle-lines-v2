@@ -15,6 +15,7 @@ public class GameWorld
     public int Villagers { get; set; }
     public int Spears { get; set; }
     public int Gold { get; set; }
+    public int FoodProduction { get; set; }
     public int VillagerProduction { get; set; }
     public int SpearProduction { get; set; }
 

@@ -4,8 +4,8 @@ namespace BattleLines.ConsoleApp.Commands;
 
 public class StartBattleCommand : IGameCommand
 {
-    public GameCommandCategory Category => GameCommandCategory.Battle;
-    public string Label => "Defend the village";
+    public GameCommandCategory Category => GameCommandCategory.Travel;
+    public string Label => "Go to the Gates";
     public string HelpText => "Move to battle prep for the next enemy wave.";
 
     public bool Execute(GameWorld gameWorld)
