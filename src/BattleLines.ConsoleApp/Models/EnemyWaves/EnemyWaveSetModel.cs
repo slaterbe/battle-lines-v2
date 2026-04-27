@@ -9,8 +9,5 @@ public class EnemyWaveSetModel
     public string DetailedVictoryMessage { get; set; } = string.Empty;
 
     public string FlavourVictoryMessage { get; set; } = string.Empty;
-
-    public EnemyWaveRewardType FinalRewardType { get; set; }
-
-    public int FinalRewardAmount { get; set; }
+    public List<EnemyWaveRewardModel> FinalRewards { get; set; } = [];
 }

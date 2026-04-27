@@ -66,8 +66,8 @@ public class ResourcePanelComponent
                 gameWorld.Villagers,
                 $"+{gameWorld.VillagerProduction}",
                 selectedCommandCost?.Villagers ?? 0,
-                selectedCommandLabel == "Boost Villagers" || selectedCommandLabel == "Buy Villager",
-                selectedCommandLabel == "Boost Villagers")
+                selectedCommandLabel == "Buy Villager",
+                false)
         };
 
         if (gameWorld.IsSpearControlsVisible)

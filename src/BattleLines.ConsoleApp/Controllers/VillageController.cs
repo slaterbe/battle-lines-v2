@@ -16,8 +16,6 @@ public class VillageController : GameStateControllerBase
 
         if (gameWorld.IsUpgradesVisible)
         {
-            commands.Add(new IncreaseVillagerProductionCommand());
-
             if (gameWorld.IsSpearControlsVisible)
             {
                 commands.Add(new IncreaseSpearProductionCommand());

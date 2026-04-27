@@ -375,6 +375,7 @@ public class GameFlowTests
         Assert.Equal(GameState.Village, gameWorld.State);
         Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
         Assert.Equal(0, gameWorld.Spears);
+        Assert.Equal(50, gameWorld.Food);
         Assert.Equal(7, gameWorld.Gold);
         Assert.Equal(10, gameWorld.PlayerTotalHealth);
         Assert.Equal(3, gameWorld.PlayerTotalAttack);
@@ -412,6 +413,7 @@ public class GameFlowTests
 
         Assert.Equal(0, gameWorld.Spears);
         Assert.Equal(5, gameWorld.EnemyWaves.Waves.Count);
+        Assert.Equal(50, gameWorld.Food);
         Assert.Equal(7, gameWorld.Gold);
         Assert.False(gameWorld.HasPendingPostBattleResolution);
     }

@@ -47,7 +47,7 @@ public class ExitPostBattleCommand : IGameCommand
 
         if (battleWon)
         {
-            ApplyReward(gameWorld.EnemyWaves.Waves[0].RewardType, gameWorld.EnemyWaves.Waves[0].RewardAmount, gameWorld);
+            ApplyRewards(gameWorld.EnemyWaves.Waves[0].Rewards, gameWorld);
         }
 
         playerArmyBattleService.ApplyPlayerBattleLosses(gameWorld);
@@ -59,7 +59,7 @@ public class ExitPostBattleCommand : IGameCommand
 
         if (battleWon && gameWorld.EnemyWaves.Waves.Count == 0)
         {
-            ApplyReward(gameWorld.EnemyWaves.FinalRewardType, gameWorld.EnemyWaves.FinalRewardAmount, gameWorld);
+            ApplyRewards(gameWorld.EnemyWaves.FinalRewards, gameWorld);
         }
 
         gameWorld.WavePosition = GetCurrentWavePosition(gameWorld);
@@ -94,6 +94,14 @@ public class ExitPostBattleCommand : IGameCommand
         gameWorldStatsService.Refresh(gameWorld);
         return false;
     }
+    private static void ApplyRewards(IReadOnlyList<EnemyWaveRewardModel> rewards, GameWorld gameWorld)
+    {
+        foreach (var reward in rewards)
+        {
+            ApplyReward(reward.Type, reward.Amount, gameWorld);
+        }
+    }
+
     private static void ApplyReward(EnemyWaveRewardType rewardType, int rewardAmount, GameWorld gameWorld)
     {
         if (rewardAmount <= 0)
@@ -103,6 +111,9 @@ public class ExitPostBattleCommand : IGameCommand
 
         switch (rewardType)
         {
+            case EnemyWaveRewardType.Food:
+                gameWorld.Food += rewardAmount;
+                break;
             case EnemyWaveRewardType.Spears:
                 gameWorld.Spears += rewardAmount;
                 break;

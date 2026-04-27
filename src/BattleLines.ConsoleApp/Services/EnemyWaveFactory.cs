@@ -29,7 +29,7 @@ public class EnemyWaveFactory
             DetailedVictoryMessage = "Invest in stronger village production before the next assault arrives.",
             Waves =
             [
-                CreateWave(2, EnemyWaveRewardType.Gold, 5)
+                CreateWave(2, 10, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 5))
             ]
         };
     }
@@ -43,11 +43,11 @@ public class EnemyWaveFactory
             DetailedVictoryMessage = "Train spearmen to add a harder-hitting unit to your battle line.",
             Waves =
             [
-                CreateWave(3, EnemyWaveRewardType.Gold, 5),
-                CreateWave(5, EnemyWaveRewardType.Gold, 10),
-                CreateWave(7, EnemyWaveRewardType.Gold, 15),
-                CreateWave(9, EnemyWaveRewardType.Gold, 20),
-                CreateWave(11, EnemyWaveRewardType.Gold, 25)
+                CreateWave(3, 10, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 5)),
+                CreateWave(5, 15, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 10)),
+                CreateWave(7, 20, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 15)),
+                CreateWave(9, 25, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 20)),
+                CreateWave(11, 30, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 25))
             ]
         };
     }
@@ -61,20 +61,26 @@ public class EnemyWaveFactory
             DetailedVictoryMessage = "This victory marks the current frontier. More upgrades and enemies can be added next.",
             Waves =
             [
-                CreateWave(6, EnemyWaveRewardType.Gold, 10),
-                CreateWave(8, EnemyWaveRewardType.Spears, 2),
-                CreateWave(10, EnemyWaveRewardType.Gold, 15),
-                CreateWave(12, EnemyWaveRewardType.Spears, 3),
-                CreateWave(14, EnemyWaveRewardType.Gold, 20),
-                CreateWave(16, EnemyWaveRewardType.Spears, 4),
-                CreateWave(18, EnemyWaveRewardType.Gold, 25),
-                CreateWave(20, EnemyWaveRewardType.Spears, 5)
+                CreateWave(6, 10, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 10)),
+                CreateWave(8, 15, new EnemyWaveRewardModel(EnemyWaveRewardType.Spears, 2)),
+                CreateWave(10, 20, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 15)),
+                CreateWave(12, 25, new EnemyWaveRewardModel(EnemyWaveRewardType.Spears, 3)),
+                CreateWave(14, 30, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 20)),
+                CreateWave(16, 35, new EnemyWaveRewardModel(EnemyWaveRewardType.Spears, 4)),
+                CreateWave(18, 40, new EnemyWaveRewardModel(EnemyWaveRewardType.Gold, 25)),
+                CreateWave(20, 45, new EnemyWaveRewardModel(EnemyWaveRewardType.Spears, 5))
             ]
         };
     }
 
-    private static EnemyWaveModel CreateWave(int enemyCount, EnemyWaveRewardType rewardType, int rewardAmount)
+    private static EnemyWaveModel CreateWave(int enemyCount, int foodRewardAmount, params EnemyWaveRewardModel[] additionalRewards)
     {
+        var rewards = new List<EnemyWaveRewardModel>
+        {
+            new(EnemyWaveRewardType.Food, foodRewardAmount)
+        };
+        rewards.AddRange(additionalRewards);
+
         return new EnemyWaveModel
         {
             Enemies =
@@ -85,8 +91,7 @@ public class EnemyWaveFactory
                     Count = enemyCount
                 }
             ],
-            RewardType = rewardType,
-            RewardAmount = rewardAmount
+            Rewards = rewards
         };
     }
 }

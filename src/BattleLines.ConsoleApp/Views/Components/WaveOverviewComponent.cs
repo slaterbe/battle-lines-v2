@@ -51,18 +51,25 @@ public class WaveOverviewComponent
     {
         if (gameWorld.EnemyWaves.Waves.Count == 0)
         {
-            return gameWorld.EnemyWaves.FinalRewardAmount > 0
-                ? $"Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}"
+            return gameWorld.EnemyWaves.FinalRewards.Count > 0
+                ? $"Final Reward: {FormatRewards(gameWorld.EnemyWaves.FinalRewards)}"
                 : string.Empty;
         }
 
         var currentWave = gameWorld.EnemyWaves.Waves[0];
-        var rewardText = $"Reward: {currentWave.RewardAmount} {currentWave.RewardType}";
-        if (gameWorld.EnemyWaves.FinalRewardAmount > 0)
+        var rewardText = $"Reward: {FormatRewards(currentWave.Rewards)}";
+        if (gameWorld.EnemyWaves.FinalRewards.Count > 0)
         {
-            rewardText += $"  Final Reward: {gameWorld.EnemyWaves.FinalRewardAmount} {gameWorld.EnemyWaves.FinalRewardType}";
+            rewardText += $"  Final Reward: {FormatRewards(gameWorld.EnemyWaves.FinalRewards)}";
         }
 
         return rewardText;
+    }
+
+    private static string FormatRewards(IReadOnlyList<EnemyWaveRewardModel> rewards)
+    {
+        return string.Join(", ", rewards
+            .Where(reward => reward.Amount > 0)
+            .Select(reward => $"{reward.Amount} {reward.Type}"));
     }
 }

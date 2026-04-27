@@ -66,19 +66,6 @@ public class UpgradeAvailabilityTests
     }
 
     [Fact]
-    public void IncreaseVillagerProduction_DoesNothing_WhenUpgradesAreLocked()
-    {
-        var gameWorld = new GameWorldFactory().Create();
-        gameWorld.Gold = 10;
-
-        new IncreaseVillagerProductionCommand().Execute(gameWorld);
-
-        Assert.Equal(10, gameWorld.Gold);
-        Assert.Equal(2, gameWorld.VillagerProduction);
-        Assert.Equal(2, gameWorld.Villagers);
-    }
-
-    [Fact]
     public void IncreaseFoodProduction_Works_BeforeUpgradesAreUnlocked()
     {
         var gameWorld = new GameWorldFactory().Create();
