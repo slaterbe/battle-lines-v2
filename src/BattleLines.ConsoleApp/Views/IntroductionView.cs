@@ -2,13 +2,15 @@ using BattleLines.ConsoleApp.Commands;
 using BattleLines.ConsoleApp.Models;
 using BattleLines.ConsoleApp.Views.Components;
 using BattleLines.ConsoleApp.Views.ComponentsV2;
+using BattleLines.ConsoleApp.Views.ComponentsV2.Rendering;
 
 namespace BattleLines.ConsoleApp.Views;
 
 public class IntroductionView : IGameView
 {
     private static readonly ComponentsV2.GameTitleComponent GameTitle = new();
-    private static readonly IntroductionComponent Introduction = new();
+    private static readonly DelayedTextRender<IntroductionComponent> Introduction =
+        new(new IntroductionComponent(), 30, ConsoleColor.Green);
     private static readonly ComponentsV2.CommandMenuComponent CommandMenu = new();
 
     public void Render(GameWorld gameWorld, IReadOnlyList<GameCommandOption> commandOptions, int selectedCommandIndex)

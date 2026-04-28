@@ -1,9 +1,9 @@
 using BattleLines.ConsoleApp.Models;
-using BattleLines.ConsoleApp.Views.Components;
+using BattleLines.ConsoleApp.Views.ComponentsV2.Rendering;
 
 namespace BattleLines.ConsoleApp.Views.ComponentsV2;
 
-public class IntroductionComponent
+public class IntroductionComponent : ITextContentComponent
 {
     private static readonly string[] IntroductionLines =
     [
@@ -14,33 +14,8 @@ public class IntroductionComponent
         "Recruit fighters, rally the village, and hold the line before everything is lost."
     ];
 
-    public void Render(GameWorld gameWorld, int startX, int startY)
+    public IReadOnlyList<string> GetLines(GameWorld gameWorld)
     {
-        ConsoleTextComponent.SetCursorPosition(startX, startY);
-        RenderIntroductionText(gameWorld, startX);
-    }
-
-    private static void RenderIntroductionText(GameWorld gameWorld, int startX)
-    {
-        var maxWidth = Math.Max(1, ConsoleTextComponent.WindowWidth - startX);
-
-        foreach (var line in IntroductionLines)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                ConsoleTextComponent.NewLine();
-                continue;
-            }
-
-            if (gameWorld.IsIntroductionTextFullyRevealed)
-            {
-                ConsoleTextComponent.WriteWrappedLines(line, maxWidth, ConsoleColor.Green);
-                continue;
-            }
-
-            ConsoleTextComponent.WriteLineSlow(line, ConsoleColor.Green);
-        }
-
-        gameWorld.IsIntroductionTextFullyRevealed = true;
+        return IntroductionLines;
     }
 }
