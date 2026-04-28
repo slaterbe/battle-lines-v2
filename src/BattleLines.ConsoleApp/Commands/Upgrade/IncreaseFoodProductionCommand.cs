@@ -7,6 +7,7 @@ public class IncreaseFoodProductionCommand : IGameCommand
     private const int FoodCost = 10;
     private const int GoldCost = 2;
     private const int FoodProductionIncrease = 2;
+    private const int MaxFarmCount = 8;
 
     public GameCommandCategory Category => GameCommandCategory.Upgrade;
     public string Label => "Expand Farm";
@@ -18,11 +19,15 @@ public class IncreaseFoodProductionCommand : IGameCommand
     public bool IsDisabled(GameWorld gameWorld) =>
         gameWorld.State != GameState.Village ||
         gameWorld.Food < FoodCost ||
-        gameWorld.Gold < GoldCost;
+        gameWorld.Gold < GoldCost ||
+        GetFarmCount(gameWorld) >= MaxFarmCount;
 
     public bool Execute(GameWorld gameWorld)
     {
-        if (gameWorld.State != GameState.Village || gameWorld.Food < FoodCost || gameWorld.Gold < GoldCost)
+        if (gameWorld.State != GameState.Village ||
+            gameWorld.Food < FoodCost ||
+            gameWorld.Gold < GoldCost ||
+            GetFarmCount(gameWorld) >= MaxFarmCount)
         {
             return false;
         }
@@ -31,5 +36,10 @@ public class IncreaseFoodProductionCommand : IGameCommand
         gameWorld.Gold -= GoldCost;
         gameWorld.FoodProduction += FoodProductionIncrease;
         return false;
+    }
+
+    private static int GetFarmCount(GameWorld gameWorld)
+    {
+        return Math.Max(0, gameWorld.FoodProduction / FoodProductionIncrease);
     }
 }

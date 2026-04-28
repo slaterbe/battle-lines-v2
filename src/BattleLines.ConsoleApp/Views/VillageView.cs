@@ -9,6 +9,7 @@ public class VillageView : IGameView
 {
     private static readonly ComponentsV2.GameHeaderComponent Header = new();
     private static readonly ComponentsV2.ResourcePanelComponent ResourcePanel = new();
+    private static readonly BattleLineComponent BattleLine = new();
     private static readonly VillagePlayerUnitsComponent PlayerUnits = new();
     private static readonly ComponentsV2.CommandMenuComponent CommandMenu = new();
 
@@ -37,11 +38,16 @@ public class VillageView : IGameView
             GameViewLayout.ResourcePanelStartY,
             GameViewLayout.ResourcePanelWidth);
 
+        ConsoleTextComponent.SetCursorPosition(
+            GameViewLayout.LeftColumnStartX,
+            GameViewLayout.VillageUnitsStartY);
+        BattleLine.Render(gameWorld, GameViewLayout.HeaderWidth);
+
         PlayerUnits.Render(
             gameWorld,
             selectedCommandLabel,
             GameViewLayout.LeftColumnStartX,
-            GameViewLayout.VillageUnitsStartY);
+            GameViewLayout.VillageUnitsStartY + 2);
 
         var commandMenuState = new CommandMenuState(commandOptions, selectedCommandIndex);
         var commandMenuStartY = GameViewLayout.GetBottomAnchoredStartY(CommandMenu.MeasureHeight(commandMenuState));

@@ -7,6 +7,11 @@ public class VillagePlayerUnitsComponent
 {
     private readonly PlayerUnitsComponent playerUnitsComponent = new();
 
+    public int MeasureHeight(GameWorld gameWorld)
+    {
+        return playerUnitsComponent.MeasureHeight(gameWorld);
+    }
+
     public void Render(GameWorld gameWorld, string selectedCommandLabel, int startX, int startY)
     {
         ConsoleTextComponent.SetCursorPosition(startX, startY);

@@ -13,7 +13,7 @@ public static class GameViewLayout
     public const int ResourcePanelStartY = 1;
     public const int ResourcePanelWidth = 35;
 
-    public const int VillageUnitsStartY = 6;
+    public const int VillageUnitsStartY = 5;
     public const int WaveBattlefieldStartY = 5;
     public const int PostBattleSummaryStartY = 5;
 

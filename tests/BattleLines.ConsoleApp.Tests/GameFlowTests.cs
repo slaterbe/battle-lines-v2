@@ -245,6 +245,39 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void IncreaseFoodProduction_DoesNothing_WhenFarmLimitReached()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.Food = 100;
+        gameWorld.Gold = 100;
+        gameWorld.FoodProduction = 16;
+
+        new IncreaseFoodProductionCommand().Execute(gameWorld);
+
+        Assert.Equal(100, gameWorld.Food);
+        Assert.Equal(100, gameWorld.Gold);
+        Assert.Equal(16, gameWorld.FoodProduction);
+    }
+
+    [Fact]
+    public void IncreaseSpearProduction_DoesNothing_WhenSpearMakerLimitReached()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsUpgradesVisible = true;
+        gameWorld.IsSpearControlsVisible = true;
+        gameWorld.Gold = 100;
+        gameWorld.SpearProduction = 8;
+
+        new IncreaseSpearProductionCommand().Execute(gameWorld);
+
+        Assert.Equal(100, gameWorld.Gold);
+        Assert.Equal(8, gameWorld.SpearProduction);
+        Assert.Equal(0, gameWorld.Spears);
+    }
+
+    [Fact]
     public void StartBattle_SetsGameStateToPreBattle()
     {
         var gameWorld = new GameWorldFactory().Create();

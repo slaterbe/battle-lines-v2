@@ -16,6 +16,14 @@ public class PlayerUnitsComponent
         ["Recruit Fighter"] = UnitType.Fighter
     };
 
+    public int MeasureHeight(GameWorld gameWorld)
+    {
+        var visibleUnitLineCount = UnitDisplayOrder.Count(unitType =>
+            gameWorld.PlayerUnits.TryGetValue(unitType, out var count) && count > 0);
+        var statLineCount = gameWorld.IsSpearControlsVisible ? 3 : 2;
+        return visibleUnitLineCount + 1 + statLineCount;
+    }
+
     public void Render(GameWorld gameWorld, string selectedCommandLabel = "")
     {
         TryGetPreviewUnitModel(selectedCommandLabel, out var previewUnitModel);

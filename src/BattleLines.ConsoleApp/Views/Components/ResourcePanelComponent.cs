@@ -39,17 +39,12 @@ public class ResourcePanelComponent
             WriteResourceRow(layout.StartX, currentRow++, row, layout);
         }
 
-        WriteAt(layout.StartX, currentRow++, $"| {new string('-', layout.ContentWidth)} |", ConsoleColor.DarkGray);
-        WriteStatRow(
-            layout.StartX,
-            currentRow++,
-            "Battle Line",
-            gameWorld.FrontLineCapacity.ToString(),
-            "--",
-            0,
-            selectedCommandLabel == "Expand Battle Line" ? 1 : 0,
-            selectedCommandLabel == "Expand Battle Line" ? 1 : 0,
-            layout);
+        WriteCenteredDivider(layout.StartX, currentRow++, "Buildings", layout);
+        WriteFarmBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+        if (gameWorld.IsSpearControlsVisible)
+        {
+            WritePoleturnerBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+        }
         WriteAt(layout.StartX, currentRow, $"+{new string('-', layout.InnerWidth)}+", ConsoleColor.DarkGray);
     }
 
@@ -205,6 +200,84 @@ public class ResourcePanelComponent
             " ".PadRight(Math.Max(1, stockGapWidth)) +
             "Income".PadLeft(layout.ProductionWidth);
         WriteBorderedLine(startX, row, content, layout.ContentWidth, ConsoleColor.DarkYellow);
+    }
+
+    private static void WriteCenteredDivider(int startX, int row, string label, ResourcePanelLayout layout)
+    {
+        var centeredLabel = $" {label} ";
+        var availableWidth = layout.ContentWidth;
+        var leftDashCount = Math.Max(0, (availableWidth - centeredLabel.Length) / 2);
+        var rightDashCount = Math.Max(0, availableWidth - centeredLabel.Length - leftDashCount);
+        var content = new string('-', leftDashCount) + centeredLabel + new string('-', rightDashCount);
+        WriteBorderedLine(startX, row, content, availableWidth, ConsoleColor.DarkYellow);
+    }
+
+    private static void WriteFarmBuildRow(
+        int startX,
+        int row,
+        GameWorld gameWorld,
+        string selectedCommandLabel,
+        ResourcePanelLayout layout)
+    {
+        const int minimumFarmSlots = 8;
+        const int foodProductionPerFarm = 2;
+
+        var farmCount = Math.Max(0, gameWorld.FoodProduction / foodProductionPerFarm);
+        var showPreviewFarm = selectedCommandLabel == "Expand Farm" && farmCount < minimumFarmSlots;
+        var slotCount = Math.Max(minimumFarmSlots, farmCount + (showPreviewFarm ? 1 : 0));
+        var builtFarms = new string('F', farmCount);
+        var previewFarm = showPreviewFarm ? "F" : string.Empty;
+        var emptyFarms = new string('0', Math.Max(0, slotCount - farmCount - (showPreviewFarm ? 1 : 0)));
+        WriteBuildRow(startX, row, "Farm", builtFarms, previewFarm, emptyFarms, layout);
+    }
+
+    private static void WritePoleturnerBuildRow(
+        int startX,
+        int row,
+        GameWorld gameWorld,
+        string selectedCommandLabel,
+        ResourcePanelLayout layout)
+    {
+        const int minimumPoleturnerSlots = 8;
+        var poleturnerCount = Math.Max(0, gameWorld.SpearProduction);
+        var showPreviewPoleturner = selectedCommandLabel == "Spear Maker" && poleturnerCount < minimumPoleturnerSlots;
+        var slotCount = Math.Max(minimumPoleturnerSlots, poleturnerCount + (showPreviewPoleturner ? 1 : 0));
+        var builtPoleturners = new string('P', poleturnerCount);
+        var previewPoleturner = showPreviewPoleturner ? "P" : string.Empty;
+        var emptyPoleturners = new string('0', Math.Max(0, slotCount - poleturnerCount - (showPreviewPoleturner ? 1 : 0)));
+        WriteBuildRow(startX, row, "Spear Mkr", builtPoleturners, previewPoleturner, emptyPoleturners, layout);
+    }
+
+    private static void WriteBuildRow(
+        int startX,
+        int row,
+        string label,
+        string builtDisplay,
+        string previewDisplay,
+        string emptyDisplay,
+        ResourcePanelLayout layout)
+    {
+        var totalDisplay = builtDisplay + previewDisplay + emptyDisplay;
+
+        WriteAt(startX, row, "| ", ConsoleColor.DarkGray);
+        WriteAt(startX + 2, row, label.PadRight(layout.LabelWidth) + " ", ConsoleColor.White);
+
+        var stockStartX = startX + 2 + layout.StockColumnStart;
+        var paddedDisplay = totalDisplay.PadLeft(layout.StockWidth);
+        WriteAt(stockStartX, row, paddedDisplay[..Math.Min(paddedDisplay.Length, layout.StockWidth)], ConsoleColor.White);
+
+        var nextLeft = stockStartX + Math.Max(0, paddedDisplay.Length - totalDisplay.Length);
+        WriteAt(nextLeft, row, builtDisplay, ConsoleColor.White);
+        nextLeft += builtDisplay.Length;
+        if (!string.IsNullOrEmpty(previewDisplay))
+        {
+            WriteAt(nextLeft, row, previewDisplay, ConsoleColor.Green);
+            nextLeft += previewDisplay.Length;
+        }
+
+        WriteAt(nextLeft, row, emptyDisplay, ConsoleColor.White);
+        var rightBorderX = startX + 2 + layout.ContentWidth;
+        WriteAt(rightBorderX, row, " |", ConsoleColor.DarkGray);
     }
 
     private static void WriteBorderedLine(int startX, int row, string content, int contentWidth, ConsoleColor color)
