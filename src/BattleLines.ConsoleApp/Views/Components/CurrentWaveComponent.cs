@@ -1,4 +1,5 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Views.Helper;
 
 namespace BattleLines.ConsoleApp.Views.Components;
 
@@ -14,11 +15,11 @@ public class CurrentWaveComponent
 
         var currentWave = gameWorld.EnemyWaves.Waves[0];
         var attackLabel = gameWorld.IsSpearControlsVisible ? "Min Attack" : "Attack";
-        ConsoleTextComponent.WriteLine($"Health: {BattleHistoryComponent.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
-        ConsoleTextComponent.WriteLine($"{attackLabel}: {BattleHistoryComponent.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
+        ConsoleTextComponent.WriteLine($"Health: {BattleHistoryHelper.RenderEnemyHealth(gameWorld)}", ConsoleColor.Red);
+        ConsoleTextComponent.WriteLine($"{attackLabel}: {BattleHistoryHelper.RenderEnemyAttack(gameWorld)}", ConsoleColor.Red);
         if (gameWorld.IsSpearControlsVisible)
         {
-            ConsoleTextComponent.WriteLine($"Max Attack: {BattleHistoryComponent.RenderEnemyMaxAttack(gameWorld)}", ConsoleColor.Red);
+            ConsoleTextComponent.WriteLine($"Max Attack: {BattleHistoryHelper.RenderEnemyMaxAttack(gameWorld)}", ConsoleColor.Red);
         }
 
         ConsoleTextComponent.WriteLine("-----", ConsoleColor.DarkGray);

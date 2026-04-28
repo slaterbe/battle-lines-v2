@@ -1,8 +1,8 @@
 using BattleLines.ConsoleApp.Models;
 
-namespace BattleLines.ConsoleApp.Views.Components;
+namespace BattleLines.ConsoleApp.Views.Helper;
 
-public static class BattleHistoryComponent
+public static class BattleHistoryHelper
 {
     public static string RenderPlayerHealth(GameWorld gameWorld)
     {

@@ -1,4 +1,5 @@
 using BattleLines.ConsoleApp.Models;
+using BattleLines.ConsoleApp.Views.Helper;
 
 namespace BattleLines.ConsoleApp.Views.Components;
 
@@ -37,12 +38,12 @@ public class PlayerUnitsComponent
         ConsoleTextComponent.WriteLine("---", ConsoleColor.Blue);
 
         var attackLabel = gameWorld.IsSpearControlsVisible ? "Min Attack" : "Attack";
-        WritePlayerStatLine("Health", BattleHistoryComponent.RenderPlayerHealth(gameWorld), previewUnitModel.Health);
-        WritePlayerStatLine(attackLabel, BattleHistoryComponent.RenderPlayerAttack(gameWorld), previewUnitModel.Attack);
+        WritePlayerStatLine("Health", BattleHistoryHelper.RenderPlayerHealth(gameWorld), previewUnitModel.Health);
+        WritePlayerStatLine(attackLabel, BattleHistoryHelper.RenderPlayerAttack(gameWorld), previewUnitModel.Attack);
         if (gameWorld.IsSpearControlsVisible)
         {
             var maxAttackIncrease = previewUnitModel.Attack + previewUnitModel.MaxAttack;
-            WritePlayerStatLine("Max Attack", BattleHistoryComponent.RenderPlayerMaxAttack(gameWorld), maxAttackIncrease);
+            WritePlayerStatLine("Max Attack", BattleHistoryHelper.RenderPlayerMaxAttack(gameWorld), maxAttackIncrease);
         }
     }
 
