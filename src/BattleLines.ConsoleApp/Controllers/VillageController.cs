@@ -13,7 +13,7 @@ public class VillageController : GameStateControllerBase
             new BuyVillageCommand(),
             new IncreaseFoodProductionCommand(),
             new IncreaseSpearProductionCommand(),
-            new IncreaseArmySizeCommand()
+            new UpgradeBarracksCommand()
         ];
     }
 }

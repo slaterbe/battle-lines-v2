@@ -278,6 +278,37 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void UpgradeBarracks_SpendsGoldAndAddsBattlePosition_InVillage()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsUpgradesVisible = true;
+        gameWorld.Gold = 10;
+
+        new UpgradeBarracksCommand().Execute(gameWorld);
+
+        Assert.Equal(5, gameWorld.Gold);
+        Assert.Equal(9, gameWorld.FrontLineCapacity);
+        Assert.Equal(1, gameWorld.BarracksLevel);
+    }
+
+    [Fact]
+    public void UpgradeBarracks_DoesNothing_WhenBarracksLimitReached()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsUpgradesVisible = true;
+        gameWorld.Gold = 100;
+        gameWorld.FrontLineCapacity = GameWorld.BaseFrontLineCapacity + 8;
+
+        new UpgradeBarracksCommand().Execute(gameWorld);
+
+        Assert.Equal(100, gameWorld.Gold);
+        Assert.Equal(GameWorld.BaseFrontLineCapacity + 8, gameWorld.FrontLineCapacity);
+        Assert.Equal(8, gameWorld.BarracksLevel);
+    }
+
+    [Fact]
     public void StartBattle_SetsGameStateToPreBattle()
     {
         var gameWorld = new GameWorldFactory().Create();

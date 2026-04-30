@@ -36,7 +36,7 @@ public class GameWorldFactory
             TotalWaveCount = enemyWaves.Waves.Count,
             WavePosition = 0,
             BattlePosition = startingBattlePosition,
-            FrontLineCapacity = 8,
+            FrontLineCapacity = GameWorld.BaseFrontLineCapacity,
             GoalMessage = "Goal: Defend the village!!!"
         };
 

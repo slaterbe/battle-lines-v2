@@ -41,6 +41,10 @@ public class ResourcePanelComponent
 
         WriteCenteredDivider(layout.StartX, currentRow++, "Buildings", layout);
         WriteFarmBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+        if (gameWorld.IsUpgradesVisible)
+        {
+            WriteBarracksBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+        }
         if (gameWorld.IsSpearControlsVisible)
         {
             WritePoleturnerBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
@@ -246,6 +250,24 @@ public class ResourcePanelComponent
         var previewPoleturner = showPreviewPoleturner ? "P" : string.Empty;
         var emptyPoleturners = new string('0', Math.Max(0, slotCount - poleturnerCount - (showPreviewPoleturner ? 1 : 0)));
         WriteBuildRow(startX, row, "Spear Mkr", builtPoleturners, previewPoleturner, emptyPoleturners, layout);
+    }
+
+    private static void WriteBarracksBuildRow(
+        int startX,
+        int row,
+        GameWorld gameWorld,
+        string selectedCommandLabel,
+        ResourcePanelLayout layout)
+    {
+        const int minimumBarracksSlots = GameWorld.BaseFrontLineCapacity;
+
+        var barracksLevel = gameWorld.BarracksLevel;
+        var showPreviewBarracks = selectedCommandLabel == "Upgrade Barracks" && barracksLevel < minimumBarracksSlots;
+        var slotCount = Math.Max(minimumBarracksSlots, barracksLevel + (showPreviewBarracks ? 1 : 0));
+        var builtBarracks = new string('B', barracksLevel);
+        var previewBarracks = showPreviewBarracks ? "B" : string.Empty;
+        var emptyBarracks = new string('0', Math.Max(0, slotCount - barracksLevel - (showPreviewBarracks ? 1 : 0)));
+        WriteBuildRow(startX, row, "Barracks", builtBarracks, previewBarracks, emptyBarracks, layout);
     }
 
     private static void WriteBuildRow(
