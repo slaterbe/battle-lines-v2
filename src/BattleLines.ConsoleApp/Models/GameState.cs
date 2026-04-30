@@ -7,5 +7,6 @@ public enum GameState
     PreBattle,
     Battle,
     PostWave,
-    PostBattle
+    PostBattle,
+    BattleOutcome
 }

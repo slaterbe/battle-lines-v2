@@ -35,7 +35,8 @@ public static class UnitDisplayComponent
 
         if (gameWorld.State != GameState.Battle &&
             !((gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle) &&
-              gameWorld.HasPendingPostBattleResolution))
+              gameWorld.HasPendingPostBattleResolution) &&
+            gameWorld.State != GameState.BattleOutcome)
         {
             return $"{RenderUnits(gameWorld.PlayerUnits, PlayerBattleLineOrder)}{new string('O', clampedMaxPositions - displayedCount)}";
         }
@@ -56,7 +57,8 @@ public static class UnitDisplayComponent
 
         if (gameWorld.State != GameState.Battle &&
             !((gameWorld.State == GameState.PostWave || gameWorld.State == GameState.PostBattle) &&
-              gameWorld.HasPendingPostBattleResolution))
+              gameWorld.HasPendingPostBattleResolution) &&
+            gameWorld.State != GameState.BattleOutcome)
         {
             return RenderUnit(unitType, displayedCount);
         }

@@ -470,6 +470,33 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void ResolveBattleTick_WhenPlayerLoses_MovesToBattleOutcomeUntilPlayerReturnsToVillage()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+
+        new StartBattleCommand().Execute(gameWorld);
+        new BeginBattleCommand().Execute(gameWorld);
+
+        gameWorld.PlayerTotalAttack = 0;
+        gameWorld.PlayerTotalMaxAttack = 0;
+        gameWorld.CurrentWaveTotalAttack = 100;
+        gameWorld.CurrentWaveTotalMaxAttack = 100;
+
+        new ResolveBattleTickCommand().Execute(gameWorld);
+
+        Assert.Equal(GameState.BattleOutcome, gameWorld.State);
+        Assert.False(gameWorld.LastBattleWon);
+        Assert.False(gameWorld.HasPendingPostBattleResolution);
+
+        new ExitPostBattleCommand().Execute(gameWorld);
+
+        Assert.Equal(GameState.Village, gameWorld.State);
+        Assert.Equal(0, gameWorld.BattlePosition);
+        Assert.Equal(gameWorld.TotalWaveCount, gameWorld.EnemyWaves.Waves.Count);
+    }
+
+    [Fact]
     public void Dump_WritesLatestGameWorldStateToJsonFile()
     {
         var gameWorld = new GameWorld

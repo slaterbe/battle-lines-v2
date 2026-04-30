@@ -25,6 +25,12 @@ public class ExitPostBattleCommand : IGameCommand
 
     public bool Execute(GameWorld gameWorld)
     {
+        if (gameWorld.State == GameState.BattleOutcome)
+        {
+            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true);
+            return false;
+        }
+
         if (gameWorld.State == GameState.PostBattle && !gameWorld.HasPendingPostBattleResolution)
         {
             villageTransitionService.MoveToVillage(gameWorld, applyProduction: true, advanceBattle: true);

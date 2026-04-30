@@ -26,7 +26,8 @@ public class RenderService
             [GameState.PreBattle] = new PreWaveView(),
             [GameState.Battle] = new WaveView(),
             [GameState.PostWave] = new PostWaveView(),
-            [GameState.PostBattle] = new PostBattleView()
+            [GameState.PostBattle] = new PostBattleView(),
+            [GameState.BattleOutcome] = new BattleOutcomeView()
         };
     }
 

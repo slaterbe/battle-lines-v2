@@ -19,7 +19,8 @@ public static class Program
             new PreWaveController(),
             new WaveController(),
             new PostWaveController(),
-            new PostBattleController());
+            new PostBattleController(),
+            new BattleOutcomeController());
         var gameEventService = new GameEventService();
         var gameWorldFactory = new GameWorldFactory();
         var renderDiagnostics = new RenderDiagnostics();

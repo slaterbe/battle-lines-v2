@@ -8,8 +8,6 @@ public class ResolveBattleTickCommand : IGameTickCommand
     private static readonly Random Random = new();
     private readonly GameWorldStatsService gameWorldStatsService = new();
     private readonly PlayerArmyBattleService playerArmyBattleService = new();
-    private readonly VillageTransitionService villageTransitionService = new();
-
     public void Execute(GameWorld gameWorld)
     {
         var previousEnemyHealth = gameWorld.CurrentWaveTotalHealth;
@@ -67,7 +65,8 @@ public class ResolveBattleTickCommand : IGameTickCommand
         if (!gameWorld.LastBattleWon)
         {
             playerArmyBattleService.ApplyPlayerBattleLosses(gameWorld);
-            villageTransitionService.MoveToVillage(gameWorld, applyProduction: true);
+            gameWorld.HasPendingPostBattleResolution = false;
+            gameWorld.State = GameState.BattleOutcome;
             return;
         }
 
