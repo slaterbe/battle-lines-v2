@@ -35,16 +35,13 @@ public class WaveOverviewComponent
         filledSegments = Math.Clamp(filledSegments, 0, progressBarWidth);
 
         var progressBar = $"[{new string('#', filledSegments)}{new string('-', progressBarWidth - filledSegments)}]";
-        ConsoleTextComponent.Write($"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated", ConsoleColor.Cyan);
+        ConsoleTextComponent.WriteLine($"Progress: {progressBar} {defeatedWaveCount}/{totalWaveCount} defeated", ConsoleColor.Cyan);
 
         var rewardText = BuildRewardText(gameWorld);
         if (!string.IsNullOrWhiteSpace(rewardText))
         {
-            ConsoleTextComponent.Write("  ", ConsoleColor.Cyan);
-            ConsoleTextComponent.Write(rewardText, ConsoleColor.Yellow);
+            ConsoleTextComponent.WriteLine(rewardText, ConsoleColor.Yellow);
         }
-
-        ConsoleTextComponent.NewLine();
     }
 
     private static string BuildRewardText(GameWorld gameWorld)
