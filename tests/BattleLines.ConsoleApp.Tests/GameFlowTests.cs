@@ -124,11 +124,11 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void Create_StartsWithEightArmyPositions()
+    public void Create_StartsWithSixArmyPositions()
     {
         var gameWorld = new GameWorldFactory().Create();
 
-        Assert.Equal(8, gameWorld.FrontLineCapacity);
+        Assert.Equal(6, gameWorld.FrontLineCapacity);
     }
 
     [Fact]
@@ -278,34 +278,35 @@ public class GameFlowTests
     }
 
     [Fact]
-    public void UpgradeBarracks_SpendsGoldAndAddsBattlePosition_InVillage()
+    public void UpgradeGateHouse_SpendsGoldAndAddsBattlePosition_InVillage()
     {
         var gameWorld = new GameWorldFactory().Create();
         gameWorld.State = GameState.Village;
         gameWorld.IsUpgradesVisible = true;
         gameWorld.Gold = 10;
 
-        new UpgradeBarracksCommand().Execute(gameWorld);
+        new UpgradeGateHouseCommand().Execute(gameWorld);
 
         Assert.Equal(5, gameWorld.Gold);
-        Assert.Equal(9, gameWorld.FrontLineCapacity);
-        Assert.Equal(1, gameWorld.BarracksLevel);
+        Assert.Equal(7, gameWorld.FrontLineCapacity);
+        Assert.Equal(1, gameWorld.GateHouseLevel);
     }
 
     [Fact]
-    public void UpgradeBarracks_DoesNothing_WhenBarracksLimitReached()
+    public void UpgradeGateHouse_DoesNothing_WhenGateHouseLimitReached()
     {
         var gameWorld = new GameWorldFactory().Create();
         gameWorld.State = GameState.Village;
         gameWorld.IsUpgradesVisible = true;
         gameWorld.Gold = 100;
-        gameWorld.FrontLineCapacity = GameWorld.BaseFrontLineCapacity + 8;
+        gameWorld.GateHouseLevel = 8;
+        gameWorld.FrontLineCapacity = 14;
 
-        new UpgradeBarracksCommand().Execute(gameWorld);
+        new UpgradeGateHouseCommand().Execute(gameWorld);
 
         Assert.Equal(100, gameWorld.Gold);
-        Assert.Equal(GameWorld.BaseFrontLineCapacity + 8, gameWorld.FrontLineCapacity);
-        Assert.Equal(8, gameWorld.BarracksLevel);
+        Assert.Equal(14, gameWorld.FrontLineCapacity);
+        Assert.Equal(8, gameWorld.GateHouseLevel);
     }
 
     [Fact]

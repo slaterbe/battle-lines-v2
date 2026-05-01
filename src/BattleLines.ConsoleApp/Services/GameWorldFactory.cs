@@ -4,6 +4,8 @@ namespace BattleLines.ConsoleApp.Services;
 
 public class GameWorldFactory
 {
+    private const int StartingFrontLineCapacity = 6;
+
     private readonly EnemyWaveFactory enemyWaveFactory = new();
     private readonly GameWorldStatsService gameWorldStatsService = new();
 
@@ -36,7 +38,8 @@ public class GameWorldFactory
             TotalWaveCount = enemyWaves.Waves.Count,
             WavePosition = 0,
             BattlePosition = startingBattlePosition,
-            FrontLineCapacity = GameWorld.BaseFrontLineCapacity,
+            FrontLineCapacity = StartingFrontLineCapacity,
+            GateHouseLevel = 0,
             GoalMessage = "Goal: Defend the village!!!"
         };
 

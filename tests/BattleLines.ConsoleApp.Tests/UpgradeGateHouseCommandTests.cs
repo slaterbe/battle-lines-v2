@@ -3,12 +3,12 @@ using BattleLines.ConsoleApp.Models;
 
 namespace BattleLines.ConsoleApp.Tests;
 
-public class UpgradeBarracksCommandTests
+public class UpgradeGateHouseCommandTests
 {
     [Fact]
-    public void UpgradeBarracks_IsHidden_UntilUpgradesAreUnlocked()
+    public void UpgradeGateHouse_IsHidden_UntilUpgradesAreUnlocked()
     {
-        var command = new UpgradeBarracksCommand();
+        var command = new UpgradeGateHouseCommand();
         var gameWorld = new GameWorld
         {
             IsUpgradesVisible = false,

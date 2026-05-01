@@ -7,7 +7,7 @@ public class VillageStatusComponent
 {
     private const int MinimumFarmSlots = 8;
     private const int FoodProductionPerFarm = 2;
-    private const int MinimumBarracksSlots = GameWorld.BaseFrontLineCapacity;
+    private const int MaximumGateHouseSlots = GameWorld.MaxGateHouseLevel;
 
     public void Render(GameWorld gameWorld, string selectedCommandLabel, int startX, int startY)
     {
@@ -43,24 +43,24 @@ public class VillageStatusComponent
             return;
         }
 
-        var barracksLevel = gameWorld.BarracksLevel;
-        var showPreviewBarracks = selectedCommandLabel == "Upgrade Barracks" && barracksLevel < MinimumBarracksSlots;
-        var barracksSlotCount = Math.Max(MinimumBarracksSlots, barracksLevel + (showPreviewBarracks ? 1 : 0));
+        var gateHouseLevel = gameWorld.GateHouseLevel;
+        var showPreviewGateHouse = selectedCommandLabel == "Upgrade GateHouse" && gateHouseLevel < MaximumGateHouseSlots;
+        var gateHouseSlotCount = Math.Max(MaximumGateHouseSlots, gateHouseLevel + (showPreviewGateHouse ? 1 : 0));
 
-        ConsoleTextComponent.Write("Barracks", ConsoleColor.DarkYellow);
+        ConsoleTextComponent.Write("GateHouse", ConsoleColor.DarkYellow);
         ConsoleTextComponent.Write(": ", ConsoleColor.DarkYellow);
 
-        for (var barracksIndex = 0; barracksIndex < barracksSlotCount; barracksIndex++)
+        for (var gateHouseIndex = 0; gateHouseIndex < gateHouseSlotCount; gateHouseIndex++)
         {
-            if (barracksIndex < barracksLevel)
+            if (gateHouseIndex < gateHouseLevel)
             {
-                ConsoleTextComponent.Write("B", ConsoleColor.DarkYellow);
+                ConsoleTextComponent.Write("G", ConsoleColor.DarkYellow);
                 continue;
             }
 
-            if (showPreviewBarracks && barracksIndex == barracksLevel)
+            if (showPreviewGateHouse && gateHouseIndex == gateHouseLevel)
             {
-                ConsoleTextComponent.Write("B", ConsoleColor.Green);
+                ConsoleTextComponent.Write("G", ConsoleColor.Green);
                 continue;
             }
 

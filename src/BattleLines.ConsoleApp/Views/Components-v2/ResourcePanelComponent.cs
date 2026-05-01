@@ -39,7 +39,7 @@ public class ResourcePanelComponent
         WriteFarmBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
         if (gameWorld.IsUpgradesVisible)
         {
-            WriteBarracksBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+            WriteGateHouseBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
         }
         if (gameWorld.IsSpearControlsVisible)
         {
@@ -225,22 +225,22 @@ public class ResourcePanelComponent
         WriteBuildRow(startX, row, "Spear Mkr", builtPoleturners, previewPoleturner, emptyPoleturners, layout);
     }
 
-    private static void WriteBarracksBuildRow(
+    private static void WriteGateHouseBuildRow(
         int startX,
         int row,
         GameWorld gameWorld,
         string selectedCommandLabel,
         ResourcePanelLayout layout)
     {
-        const int minimumBarracksSlots = GameWorld.BaseFrontLineCapacity;
+        const int maximumGateHouseSlots = GameWorld.MaxGateHouseLevel;
 
-        var barracksLevel = gameWorld.BarracksLevel;
-        var showPreviewBarracks = selectedCommandLabel == "Upgrade Barracks" && barracksLevel < minimumBarracksSlots;
-        var slotCount = Math.Max(minimumBarracksSlots, barracksLevel + (showPreviewBarracks ? 1 : 0));
-        var builtBarracks = new string('B', barracksLevel);
-        var previewBarracks = showPreviewBarracks ? "B" : string.Empty;
-        var emptyBarracks = new string('0', Math.Max(0, slotCount - barracksLevel - (showPreviewBarracks ? 1 : 0)));
-        WriteBuildRow(startX, row, "Barracks", builtBarracks, previewBarracks, emptyBarracks, layout);
+        var gateHouseLevel = gameWorld.GateHouseLevel;
+        var showPreviewGateHouse = selectedCommandLabel == "Upgrade GateHouse" && gateHouseLevel < maximumGateHouseSlots;
+        var slotCount = Math.Max(maximumGateHouseSlots, gateHouseLevel + (showPreviewGateHouse ? 1 : 0));
+        var builtGateHouse = new string('G', gateHouseLevel);
+        var previewGateHouse = showPreviewGateHouse ? "G" : string.Empty;
+        var emptyGateHouse = new string('0', Math.Max(0, slotCount - gateHouseLevel - (showPreviewGateHouse ? 1 : 0)));
+        WriteBuildRow(startX, row, "GateHouse", builtGateHouse, previewGateHouse, emptyGateHouse, layout);
     }
 
     private static void WriteBuildRow(

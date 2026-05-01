@@ -2,7 +2,7 @@ namespace BattleLines.ConsoleApp.Models;
 
 public class GameWorld
 {
-    public const int BaseFrontLineCapacity = 8;
+    public const int MaxGateHouseLevel = 8;
 
     // Progression and feature flags
     public bool IsSkipIntroduction { get; set; }
@@ -34,7 +34,7 @@ public class GameWorld
     // Army state
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];
     public int FrontLineCapacity { get; set; }
-    public int BarracksLevel => Math.Max(0, FrontLineCapacity - BaseFrontLineCapacity);
+    public int GateHouseLevel { get; set; }
     public int PlayerTotalHealth { get; set; }
     public int PlayerTotalAttack { get; set; }
     public int PlayerTotalMaxAttack { get; set; }
