@@ -21,22 +21,18 @@ public class BattleLineComponent
 
     public static string RenderEnemyArmyLine(GameWorld gameWorld)
     {
-        return UnitDisplayComponent.RenderUnitCount(gameWorld, UnitType.GiantRat, GetCurrentEnemyCount(gameWorld));
+        if (gameWorld.EnemyWaves.Waves.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        return string.Concat(gameWorld.EnemyWaves.Waves[0].Enemies.Select(enemy =>
+            UnitDisplayComponent.RenderUnitCount(gameWorld, enemy.EnemyType, enemy.Count)));
     }
 
     public static string RenderPlayerArmyLine(GameWorld gameWorld)
     {
         return UnitDisplayComponent.RenderArmyCount(gameWorld);
-    }
-
-    private static int GetCurrentEnemyCount(GameWorld gameWorld)
-    {
-        if (gameWorld.EnemyWaves.Waves.Count == 0)
-        {
-            return 0;
-        }
-
-        return gameWorld.EnemyWaves.Waves[0].Enemies.Sum(enemy => enemy.Count);
     }
 
     private static bool ShouldShowEnemyArmy(GameWorld gameWorld)

@@ -18,6 +18,7 @@ public class GameWorldFactory
             IsSkipIntroduction = skipIntroduction,
             IsSpearControlsVisible = false,
             IsUpgradesVisible = false,
+            IsMilitiaYardVisible = false,
             IsIntroductionTextFullyRevealed = false,
             IsFiveFightersCreated = true,
             FightersCreated = 0,
@@ -40,6 +41,7 @@ public class GameWorldFactory
             BattlePosition = startingBattlePosition,
             FrontLineCapacity = StartingFrontLineCapacity,
             GateHouseLevel = 0,
+            MilitiaYardLevel = 0,
             GoalMessage = "Goal: Defend the village!!!"
         };
 

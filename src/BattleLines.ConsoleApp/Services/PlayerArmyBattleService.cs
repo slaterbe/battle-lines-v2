@@ -77,18 +77,19 @@ public class PlayerArmyBattleService
         var remainingHealthLoss = Math.Max(0, gameWorld.PlayerHealthAtBattleStart - playerTotalHealth);
 
         foreach (var unitType in gameWorld.PlayerUnitsAtBattleStart.Keys
-                     .OrderBy(GetUnitHealth)
+                     .OrderBy(unitType => GetUnitHealth(gameWorld, unitType))
                      .ThenBy(unitType => unitType))
         {
-            if (!UnitCatalog.DefaultUnits.TryGetValue(unitType, out var unitModel) || unitModel.Health <= 0)
+            var unitHealth = GetUnitHealth(gameWorld, unitType);
+            if (unitHealth <= 0)
             {
                 continue;
             }
 
             var startingCount = gameWorld.PlayerUnitsAtBattleStart[unitType];
-            var unitsLost = Math.Min(startingCount, remainingHealthLoss / unitModel.Health);
+            var unitsLost = Math.Min(startingCount, remainingHealthLoss / unitHealth);
             survivingUnits[unitType] = Math.Max(0, startingCount - unitsLost);
-            remainingHealthLoss -= unitsLost * unitModel.Health;
+            remainingHealthLoss -= unitsLost * unitHealth;
 
             if (remainingHealthLoss <= 0)
             {
@@ -99,10 +100,10 @@ public class PlayerArmyBattleService
         return survivingUnits;
     }
 
-    private static int GetUnitHealth(UnitType unitType)
+    private static int GetUnitHealth(GameWorld gameWorld, UnitType unitType)
     {
         return UnitCatalog.DefaultUnits.TryGetValue(unitType, out var unitModel)
-            ? unitModel.Health
+            ? unitModel.Health + (gameWorld.MilitiaYardLevel * GameWorld.MilitiaYardHealthIncreasePerLevel)
             : int.MaxValue;
     }
 }

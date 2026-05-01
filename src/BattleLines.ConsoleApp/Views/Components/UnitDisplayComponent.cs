@@ -22,8 +22,8 @@ public static class UnitDisplayComponent
         return unitType switch
         {
             UnitType.SpearmenLvl1 => RenderArmyPositions(gameWorld),
-            UnitType.GiantRat => RenderEnemyPositions(gameWorld, unitType, count),
-            _ => count.ToString()
+            UnitType.Fighter => count.ToString(),
+            _ => RenderEnemyPositions(gameWorld, unitType, count)
         };
     }
 

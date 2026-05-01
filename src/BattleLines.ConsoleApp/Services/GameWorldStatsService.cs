@@ -17,6 +17,7 @@ public class GameWorldStatsService
     private static int CalculatePlayerTotalHealth(GameWorld gameWorld)
     {
         var totalHealth = 0;
+        var militiaYardHealthBonus = gameWorld.MilitiaYardLevel * GameWorld.MilitiaYardHealthIncreasePerLevel;
 
         foreach (var playerUnit in gameWorld.PlayerUnits)
         {
@@ -25,7 +26,7 @@ public class GameWorldStatsService
                 continue;
             }
 
-            totalHealth += unitModel.Health * playerUnit.Value;
+            totalHealth += (unitModel.Health + militiaYardHealthBonus) * playerUnit.Value;
         }
 
         return totalHealth;

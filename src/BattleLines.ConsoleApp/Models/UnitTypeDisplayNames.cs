@@ -4,6 +4,8 @@ public static class UnitTypeDisplayNames
 {
     private static readonly IReadOnlyDictionary<UnitType, string> DisplayNames = new Dictionary<UnitType, string>
     {
+        [UnitType.GiantRat] = "Giant Rat",
+        [UnitType.Raider] = "Raider",
         [UnitType.Fighter] = "Fighter",
         [UnitType.SpearmenLvl1] = "Spearmen"
     };

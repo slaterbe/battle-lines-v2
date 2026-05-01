@@ -12,6 +12,13 @@ public static class UnitCatalog
                 Attack = 3,
                 MaxAttack = 0
             },
+            [UnitType.Raider] = new()
+            {
+                UnitAcronym = 'D',
+                Health = 18,
+                Attack = 6,
+                MaxAttack = 2
+            },
             [UnitType.SpearmenLvl1] = new()
             {
                 UnitAcronym = 'S',

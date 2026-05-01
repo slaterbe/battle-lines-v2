@@ -3,11 +3,14 @@ namespace BattleLines.ConsoleApp.Models;
 public class GameWorld
 {
     public const int MaxGateHouseLevel = 8;
+    public const int MaxMilitiaYardLevel = 10;
+    public const int MilitiaYardHealthIncreasePerLevel = 5;
 
     // Progression and feature flags
     public bool IsSkipIntroduction { get; set; }
     public bool IsSpearControlsVisible { get; set; }
     public bool IsUpgradesVisible { get; set; }
+    public bool IsMilitiaYardVisible { get; set; }
     public bool IsIntroductionTextFullyRevealed { get; set; }
     public bool IsFiveFightersCreated { get; set; }
     public int FightersCreated { get; set; }
@@ -35,6 +38,7 @@ public class GameWorld
     public Dictionary<UnitType, int> PlayerUnits { get; set; } = [];
     public int FrontLineCapacity { get; set; }
     public int GateHouseLevel { get; set; }
+    public int MilitiaYardLevel { get; set; }
     public int PlayerTotalHealth { get; set; }
     public int PlayerTotalAttack { get; set; }
     public int PlayerTotalMaxAttack { get; set; }

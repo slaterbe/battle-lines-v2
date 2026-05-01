@@ -17,6 +17,7 @@ public class UpgradeAvailabilityTests
         Assert.DoesNotContain("Boost Villagers", commandLabels);
         Assert.DoesNotContain("Boost Spears", commandLabels);
         Assert.DoesNotContain("Upgrade GateHouse", commandLabels);
+        Assert.DoesNotContain("Upgrade Militia Yard", commandLabels);
         Assert.Contains("Expand Farm", commandLabels);
     }
 

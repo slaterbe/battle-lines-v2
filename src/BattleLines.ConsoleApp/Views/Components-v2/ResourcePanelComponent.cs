@@ -41,6 +41,10 @@ public class ResourcePanelComponent
         {
             WriteGateHouseBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
         }
+        if (gameWorld.IsMilitiaYardVisible)
+        {
+            WriteMilitiaYardBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
+        }
         if (gameWorld.IsSpearControlsVisible)
         {
             WritePoleturnerBuildRow(layout.StartX, currentRow++, gameWorld, selectedCommandLabel, layout);
@@ -241,6 +245,24 @@ public class ResourcePanelComponent
         var previewGateHouse = showPreviewGateHouse ? "G" : string.Empty;
         var emptyGateHouse = new string('0', Math.Max(0, slotCount - gateHouseLevel - (showPreviewGateHouse ? 1 : 0)));
         WriteBuildRow(startX, row, "GateHouse", builtGateHouse, previewGateHouse, emptyGateHouse, layout);
+    }
+
+    private static void WriteMilitiaYardBuildRow(
+        int startX,
+        int row,
+        GameWorld gameWorld,
+        string selectedCommandLabel,
+        ResourcePanelLayout layout)
+    {
+        const int maximumMilitiaYardSlots = GameWorld.MaxMilitiaYardLevel;
+
+        var militiaYardLevel = gameWorld.MilitiaYardLevel;
+        var showPreviewMilitiaYard = selectedCommandLabel == "Upgrade Militia Yard" && militiaYardLevel < maximumMilitiaYardSlots;
+        var slotCount = Math.Max(maximumMilitiaYardSlots, militiaYardLevel + (showPreviewMilitiaYard ? 1 : 0));
+        var builtMilitiaYard = new string('M', militiaYardLevel);
+        var previewMilitiaYard = showPreviewMilitiaYard ? "M" : string.Empty;
+        var emptyMilitiaYard = new string('0', Math.Max(0, slotCount - militiaYardLevel - (showPreviewMilitiaYard ? 1 : 0)));
+        WriteBuildRow(startX, row, "MilitiaYd", builtMilitiaYard, previewMilitiaYard, emptyMilitiaYard, layout);
     }
 
     private static void WriteBuildRow(

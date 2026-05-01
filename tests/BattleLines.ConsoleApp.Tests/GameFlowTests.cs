@@ -78,6 +78,31 @@ public class GameFlowTests
     }
 
     [Fact]
+    public void BattleLine_RendersEnemyArmySummary_ForDifferentEnemyType()
+    {
+        var gameWorld = new GameWorld
+        {
+            EnemyWaves = new EnemyWaveSetModel
+            {
+                Waves =
+                [
+                    new EnemyWaveModel
+                    {
+                        Enemies =
+                        [
+                            new EnemyWaveUnitModel { EnemyType = UnitType.Raider, Count = 3 }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        var renderedLine = BattleLineComponent.RenderEnemyArmyLine(gameWorld);
+
+        Assert.Equal("DDD", renderedLine);
+    }
+
+    [Fact]
     public void BattleLine_RendersPlayerArmySummary()
     {
         var gameWorld = new GameWorld
@@ -137,6 +162,7 @@ public class GameFlowTests
         Assert.Equal('F', UnitCatalog.DefaultUnits[UnitType.Fighter].UnitAcronym);
         Assert.Equal('S', UnitCatalog.DefaultUnits[UnitType.SpearmenLvl1].UnitAcronym);
         Assert.Equal('R', UnitCatalog.DefaultUnits[UnitType.GiantRat].UnitAcronym);
+        Assert.Equal('D', UnitCatalog.DefaultUnits[UnitType.Raider].UnitAcronym);
     }
 
     [Fact]
@@ -307,6 +333,59 @@ public class GameFlowTests
         Assert.Equal(100, gameWorld.Gold);
         Assert.Equal(14, gameWorld.FrontLineCapacity);
         Assert.Equal(8, gameWorld.GateHouseLevel);
+    }
+
+    [Fact]
+    public void UpgradeMilitiaYard_SpendsResourcesAndAddsHealthPerUnit_InVillage()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsMilitiaYardVisible = true;
+        gameWorld.Gold = 30;
+        gameWorld.Villagers = 6;
+
+        new UpgradeMilitiaYardCommand().Execute(gameWorld);
+
+        Assert.Equal(10, gameWorld.Gold);
+        Assert.Equal(2, gameWorld.Villagers);
+        Assert.Equal(1, gameWorld.MilitiaYardLevel);
+        Assert.Equal(15, gameWorld.PlayerTotalHealth);
+    }
+
+    [Fact]
+    public void UpgradeMilitiaYard_DoesNothing_WhenMilitiaYardLimitReached()
+    {
+        var gameWorld = new GameWorldFactory().Create();
+        gameWorld.State = GameState.Village;
+        gameWorld.IsMilitiaYardVisible = true;
+        gameWorld.Gold = 100;
+        gameWorld.Villagers = 100;
+        gameWorld.MilitiaYardLevel = GameWorld.MaxMilitiaYardLevel;
+        new GameWorldStatsService().Refresh(gameWorld);
+
+        new UpgradeMilitiaYardCommand().Execute(gameWorld);
+
+        Assert.Equal(100, gameWorld.Gold);
+        Assert.Equal(100, gameWorld.Villagers);
+        Assert.Equal(GameWorld.MaxMilitiaYardLevel, gameWorld.MilitiaYardLevel);
+    }
+
+    [Fact]
+    public void MilitiaYardHealthBonus_AffectsAllPlayerUnits()
+    {
+        var gameWorld = new GameWorld
+        {
+            MilitiaYardLevel = 2,
+            PlayerUnits = new Dictionary<UnitType, int>
+            {
+                [UnitType.Fighter] = 1,
+                [UnitType.SpearmenLvl1] = 1
+            }
+        };
+
+        new GameWorldStatsService().Refresh(gameWorld);
+
+        Assert.Equal(44, gameWorld.PlayerTotalHealth);
     }
 
     [Fact]
